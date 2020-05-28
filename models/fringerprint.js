@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrpt = require('bcryptjs');
 const config = require('../config/database');
 
-const FringerprintSchhema = mongoose.Schema({
+const FringerprintSchema = mongoose.Schema({
     fringerprint: {
         type: String,
         required: true
@@ -34,7 +34,7 @@ const FringerprintSchhema = mongoose.Schema({
 });
 
 
-const Fringerprint = module.exports = mongoose.model('Fringerprint', FringerprintSchhema);
+const Fringerprint = module.exports = mongoose.model('Fringerprint', FringerprintSchema);
 
 module.exports.addFringerprint = function(newFringerprint,callback){
 
