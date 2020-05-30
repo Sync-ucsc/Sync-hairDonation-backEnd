@@ -24,11 +24,16 @@ const DonorSchema = mongoose.Schema({
         },
         id: {
             type: Number,
+            required: true
         },
         distance: Number
 
     },
     request: [{
+        requestId: {
+            type: Number,
+            required: true
+        },
         requestDay: {
             type: Date
         },
@@ -41,6 +46,10 @@ const DonorSchema = mongoose.Schema({
         finished: {
             type: Boolean
         },
+        canceled: {
+            type: Boolean
+        },
+
 
 
     }]
