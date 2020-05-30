@@ -21,6 +21,7 @@ mongoose.connection.on('erorr', (err) => {
 const app = express();
 
 const donor = require('./routes/donor');
+const salon = require('./routes/salon.route');
 
 const port = 3000;
 
@@ -41,6 +42,7 @@ app.use(passport.session());
 require('./config/passport')(passport);
 
 app.use('/donor',donor);
+app.use('/salon',salon);
 
 app.get('/', (req,res) => {
     res.send('hi');
