@@ -18,8 +18,10 @@ salonRoute.route('/create').post((req, res, next) => {
 
 // Get All Salons
 salonRoute.route('/').get((req, res) => {
+  console.log('ss')
   Salon.find((error, data) => {
     if (error) {
+      console.log(error)
       return next(error)
     } else {
       res.json(data)
@@ -40,7 +42,7 @@ salonRoute.route('/read/:id').get((req, res) => {
 
 
 // Update salon
-salonRoute.route('/update/id').put((req, res, next) => {
+salonRoute.route('/update/:id').put((req, res, next) => {
   Salon.findByIdAndUpdate(req.params.id, {
     $set: req.body
   }, (error, data) => {
@@ -55,10 +57,13 @@ salonRoute.route('/update/id').put((req, res, next) => {
 })
 
 // Delete salon
-salonRoute.route('/delete/id').delete((req, res, next) => {
-  Salon.findOneAndRemove(req.params.id, (error, data) => {
+salonRoute.route('/delete/:id').delete((req, res, next) => {
+  console.log('dd')
+  Salon.findByIdAndDelete(req.params.id, (error, data) => {
     if (error) {
+      console.log(error);
       return next(error);
+      
     } else {
       res.status(200).json({
         msg: data
