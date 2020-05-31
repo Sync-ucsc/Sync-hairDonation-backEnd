@@ -6,6 +6,8 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database')
 
+//socket.io
+const socketIo = require('socket.io');
 
 // conect database
 mongoose.connect(config.database);
@@ -22,6 +24,7 @@ const app = express();
 
 const donor = require('./routes/donor');
 const salon = require('./routes/salon.route');
+const chat = require('./routes/chatRoute');
 
 const port = 3000;
 
@@ -43,6 +46,7 @@ require('./config/passport')(passport);
 
 app.use('/donor',donor);
 app.use('/salon',salon);
+app.use('/chat', chat);
 
 app.get('/', (req,res) => {
     res.send('hi');
@@ -52,6 +56,9 @@ app.get('*', function (req, res) {
     res.sendfile('./public/index.html');
 });
 
-app.listen(port ,() =>{
+const server = app.listen(port ,() =>{
     console.log("server start on "+port);
-})
+});
+
+const io = socketIo(server);
+app.set('io',io);
