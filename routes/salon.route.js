@@ -7,7 +7,7 @@ var io = require('socket.io')(server);
 // Salon model
 let Salon = require('../models/salons');
 
-server.listen(3000/salon);
+//server.listen(3000/salon);
 
 
 
@@ -37,6 +37,7 @@ salonRoute.route('/create').post((req, res, next) => {
 
 // Get All Salons
 salonRoute.route('/').get((req, res) => {
+
   const io = req.app.get('io');
   console.log(io);
   console.log('ss')
@@ -83,13 +84,9 @@ salonRoute.route('/update/:id').put((req, res, next) => {
 
 // Delete salon
 salonRoute.route('/delete/:id').delete((req, res, next) => {
-<<<<<<< HEAD
-  
-=======
   const io = req.app.get('io');
   console.log(io);
   console.log('dd')
->>>>>>> 85d8d94bdb637668bed9e32669ad0ac5c6379549
   Salon.findByIdAndDelete(req.params.id, (error, data) => {
     if (error) {
       console.log(error);
