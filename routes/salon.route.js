@@ -7,7 +7,7 @@ var io = require('socket.io')(server);
 // Salon model
 let Salon = require('../models/salons');
 
-server.listen(3000/salon);
+//server.listen(3000/salon);
 
 
 
@@ -37,6 +37,7 @@ salonRoute.route('/create').post((req, res, next) => {
 
 // Get All Salons
 salonRoute.route('/').get((req, res) => {
+
   const io = req.app.get('io');
   console.log(io);
   console.log('ss')
