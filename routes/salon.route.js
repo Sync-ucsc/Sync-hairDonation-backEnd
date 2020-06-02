@@ -18,7 +18,6 @@ salonRoute.route('/create').post((req, res, next) => {
 
 // Get All Salons
 salonRoute.route('/').get((req, res) => {
-  console.log('ss')
   Salon.find((error, data) => {
     if (error) {
       console.log(error)
@@ -58,7 +57,7 @@ salonRoute.route('/update/:id').put((req, res, next) => {
 
 // Delete salon
 salonRoute.route('/delete/:id').delete((req, res, next) => {
-  console.log('dd')
+  
   Salon.findByIdAndDelete(req.params.id, (error, data) => {
     if (error) {
       console.log(error);
