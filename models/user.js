@@ -27,6 +27,9 @@ const UserSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    active: {
+        type: Boolean
     }
 });
 
@@ -61,5 +64,35 @@ module.exports.comparePassword = function(candidateToken,hash,callback){
             throw err;
         }
         callback(null,isMatch);
+    })
+}
+
+module.exports.register = function(user,callback){
+    let randome = Math.floor(Math.random() * Math.floor(1000000))
+    console.log(randome)
+    let newUser = new User({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        temporyBan: false,
+        active: false,
+        password: randome,
+    })
+
+    User.addUser(newUser, callback);
+}
+
+module.exports.activate = function(id,password,callback){
+    bcrpt.genSalt(10, (err, salt) => {
+        if (err) {
+            throw err;
+        }
+        bcrpt.hash(password, salt, (err, hash) => {
+            if (err)
+                throw err;
+            password = hash;
+            let newUser = User.findByIdAndUpdate(id,{password:password,active:true}, callback);
+        })
     })
 }
