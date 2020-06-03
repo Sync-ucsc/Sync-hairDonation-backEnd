@@ -14,7 +14,17 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    token: {
+    role:{
+        type: String,
+        required: true
+    },
+    temporyBan:{
+        type: Boolean,
+    },
+    banAction:[{
+        type: String,
+    }],
+    password: {
         type: String,
         required: true
     }
@@ -36,16 +46,16 @@ module.exports.addUser = function(newUser,callback){
         if(err){
             throw err;
         }
-        bcrpt.hash(newUser.token, salt,(err,hash)=>{
+        bcrpt.hash(newUser.password, salt,(err,hash)=>{
             if(err)
                 throw err;
-            newUser.token = hash;
+            newUser.password = hash;
             newUser.save(callback)
         })
     })
 }
 
-module.exports.compareToken = function(candidateToken,hash,callback){
+module.exports.comparePassword = function(candidateToken,hash,callback){
     bcrpt.compare(candidateToken,hash, (err,isMatch)=>{
         if( err){
             throw err;
