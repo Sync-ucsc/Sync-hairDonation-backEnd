@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 // Define collection and schema
-let Salon = new Schema({
+const SalonSchema = new Schema({
         name: {
             type: String
         },
@@ -31,8 +31,8 @@ let Salon = new Schema({
         longitude:{
             type:Number
         },
-    }, 
-    {
-        collection: 'Salons'
-    })
-module.exports = mongoose.model('Salon', Salon)
+    });
+
+
+
+const Salon = module.exports = mongoose.model('Salon', SalonSchema)
