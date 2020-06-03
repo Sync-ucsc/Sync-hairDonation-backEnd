@@ -8,6 +8,8 @@ const config = require('./config/database')
 
 //socket.io
 const socketIo = require('socket.io');
+const http = require('http');
+
 
 // conect database
 mongoose.connect(config.database);
@@ -60,5 +62,6 @@ const server = app.listen(port ,() =>{
     console.log("server start on "+port);
 });
 
-const io = socketIo(server);
-app.set('io',io);
+var io = require('socket.io').listen(server);
+app.set('io', io);
+
