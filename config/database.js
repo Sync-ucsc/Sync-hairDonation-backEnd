@@ -1,4 +1,4 @@
 module.exports = {
-    database: 'mongodb://localhost:27017/Admin_db',
+    database: 'mongodb://localhost:27017/Chat_db',
     secret: 'secret'
 }

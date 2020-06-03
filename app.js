@@ -50,7 +50,7 @@ app.use('/chat', chat);
 
 app.get('/', (req,res) => {
     res.send('hi');
-})
+});
 
 app.get('*', function (req, res) {
     res.sendfile('./public/index.html');
@@ -60,5 +60,7 @@ const server = app.listen(port ,() =>{
     console.log("server start on "+port);
 });
 
-const io = socketIo(server);
+global.io = socketIo(server);
+
 app.set('io',io);
+
