@@ -1,4 +1,5 @@
-const chat = require('../models/chatModel');
+const chatModel= require('../models/chat.model');
+const  {messageResponse} = require('../utils/chat.utils');
 
 module.exports = class chatService {
 
@@ -6,13 +7,17 @@ module.exports = class chatService {
 
     }
 
-    sendResponse = (data = '', success = true, debugMessage = 'success') => {
-        return {data, success, debugMessage}
-    };
+    checkConnection(io){
+        io.on('connection', socket => {
+            console.log('new user connected');
+            socket.on('disconnected', () => {console.log('user was disconnected')})
+
+        })
+    }
 
     async addNewMessage(data, io) {
         try {
-            const message = new chat(data);
+            const message = new chatModel(data);
             io.emit('newMessageAdd');
             return await message.save();
         } catch (error) {
@@ -20,10 +25,12 @@ module.exports = class chatService {
         }
     }
 
+
+
     // for testing
     async getAll() {
         try {
-            return await chat.find();
+            return await chatModel.find();
         } catch (error) {
             throw error;
         }
@@ -31,7 +38,7 @@ module.exports = class chatService {
 
     async removeById({id}) {
         try {
-            return await chat.findByIdAndDelete(id);
+            return await chatModel.findByIdAndDelete(id);
         } catch (error) {
             throw error;
         }
@@ -40,10 +47,13 @@ module.exports = class chatService {
 
     async removeAll() {
         try {
-            return await chat.remove({});
+            return await chatModel.remove({});
         } catch (error) {
             throw error;
         }
     }
 
+    BroadCastMessage(io,{message ,id} ){
+
+    }
 };
