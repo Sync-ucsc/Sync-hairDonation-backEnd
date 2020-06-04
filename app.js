@@ -28,6 +28,7 @@ const donor = require('./routes/donor');
 const salon = require('./routes/salon.route');
 const chat = require('./routes/chat.route');
 const payment = require('./routes/payment');
+const getInTouch = require('./routes/getInTouch.route');
 
 const port = 3000;
 
@@ -50,6 +51,8 @@ require('./config/passport')(passport);
 app.use('/donor',donor);
 app.use('/salon',salon);
 app.use('/chat', chat);
+app.use('/payment', chat);
+app.use('/getInTouch', getInTouch);
 
 app.get('/', (req,res) => {
     res.send('hi');
