@@ -3,23 +3,23 @@ const mongoose = require('mongoose');
 const chatSchema = mongoose.Schema({
     senderId: {
         type: String,
-        required: true
+        // required: true
     },
     receiverId: {
         type: String,
-        required: true
+        // required: true
     },
     senderRole: {
         type: String,
-        required: true
+        // required: true
     },
     receiverRole: {
         type: String,
-        required: true
+        // required: true
     },
     message: {
         type: String,
-        required: true
+        // required: true
     },
     createdAt: {
         type: Date,
@@ -28,4 +28,4 @@ const chatSchema = mongoose.Schema({
     },
 });
 
-const Chat = module.exports = mongoose.model('Chat', chatSchema);
+const chatModel = module.exports = mongoose.model('Chat', chatSchema);
