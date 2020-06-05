@@ -25,6 +25,7 @@ mongoose.connection.on('erorr', (err) => {
 const app = express();
 
 const donor = require('./routes/donor');
+const user = require('./routes/users');
 const salon = require('./routes/salon.route');
 const chat = require('./routes/chat.route');
 const payment = require('./routes/payment');
@@ -49,6 +50,7 @@ app.use(passport.session());
 require('./config/passport')(passport);
 
 app.use('/donor',donor);
+app.use('/user', user);
 app.use('/salon',salon);
 app.use('/chat', chat);
 app.use('/payment', chat);

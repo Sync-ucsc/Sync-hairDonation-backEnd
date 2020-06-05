@@ -14,9 +14,22 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    token: {
+    role:{
         type: String,
         required: true
+    },
+    temporyBan:{
+        type: Boolean,
+    },
+    banAction:[{
+        type: String,
+    }],
+    password: {
+        type: String,
+        required: true
+    },
+    active: {
+        type: Boolean
     }
 });
 
@@ -36,20 +49,50 @@ module.exports.addUser = function(newUser,callback){
         if(err){
             throw err;
         }
-        bcrpt.hash(newUser.token, salt,(err,hash)=>{
+        bcrpt.hash(newUser.password, salt,(err,hash)=>{
             if(err)
                 throw err;
-            newUser.token = hash;
+            newUser.password = hash;
             newUser.save(callback)
         })
     })
 }
 
-module.exports.compareToken = function(candidateToken,hash,callback){
+module.exports.comparePassword = function(candidateToken,hash,callback){
     bcrpt.compare(candidateToken,hash, (err,isMatch)=>{
         if( err){
             throw err;
         }
         callback(null,isMatch);
+    })
+}
+
+module.exports.register = function(user,callback){
+    let randome = Math.floor(Math.random() * Math.floor(1000000))
+    console.log(randome)
+    let newUser = new User({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        temporyBan: false,
+        active: false,
+        password: randome,
+    })
+
+    User.addUser(newUser, callback);
+}
+
+module.exports.activate = function(id,password,callback){
+    bcrpt.genSalt(10, (err, salt) => {
+        if (err) {
+            throw err;
+        }
+        bcrpt.hash(password, salt, (err, hash) => {
+            if (err)
+                throw err;
+            password = hash;
+            let newUser = User.findByIdAndUpdate(id,{password:password,active:true}, callback);
+        })
     })
 }
