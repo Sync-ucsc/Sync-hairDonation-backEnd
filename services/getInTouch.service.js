@@ -28,8 +28,12 @@ module.exports = class chatService {
         try {
 
             if(!id) throw 'id not found';
-            return await getInTouchModel.findById(id);
-
+            const data = await getInTouchModel.findById(id);
+            if(data){
+                return data
+            }else {
+                throw 'no data found for id';
+            }
         } catch (error) {
             throw error;
         }
@@ -37,8 +41,15 @@ module.exports = class chatService {
 
     async removeById({id}) {
         try {
-            return await getInTouchModel.findByIdAndDelete(id);
+            const data = await this.getOne({id});
+            if(data){
+                return await getInTouchModel.findByIdAndDelete(id);
+            }else {
+                throw 'no data found for id';
+            }
         } catch (error) {
+
+            console.log(error)
             throw error;
         }
     }
