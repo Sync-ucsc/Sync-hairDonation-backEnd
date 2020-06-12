@@ -47,7 +47,7 @@ router.post('/signup', (req, res) => {
 
 // validate
 
-// check fringerprint
+// check Fingerprint
 
 
 // profile

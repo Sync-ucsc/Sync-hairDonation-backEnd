@@ -28,6 +28,7 @@ const donor = require('./routes/donor');
 const user = require('./routes/users');
 const salon = require('./routes/salon.route');
 const chat = require('./routes/chatRoute');
+const notification = require('./routes/notification');
 
 const port = 3000;
 
@@ -50,6 +51,7 @@ require('./config/passport')(passport);
 app.use('/donor',donor);
 app.use('/user', user);
 app.use('/salon',salon);
+app.use('/notification', notification);
 app.use('/chat', chat);
 
 app.get('/', (req,res) => {
