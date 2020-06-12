@@ -151,6 +151,7 @@ router.get('/profile', passport.authenticate('jwt',{session:false}), (req, res) 
             "banAction": req.user.banAction,
             "firstName": req.user.firstName,
             "lastName": req.user.lastName,
+            "active": req.user.active,
             "email": req.user.email,
         },
         success: true,
@@ -164,6 +165,7 @@ router.get('/validate', (req, res) => {
 
 
 router.post('/activate',  passport.authenticate('jwt',{session:false}),(req,res) =>{
+     console.log(req.body._id);
     User.activate(req.body._id, req.body.password, (err, user) => {
                 if (err) {
                     res.json({

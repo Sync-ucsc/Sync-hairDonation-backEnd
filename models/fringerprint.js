@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const bcrpt = require('bcryptjs');
 const config = require('../config/database');
 
-const FringerprintSchema = mongoose.Schema({
-    fringerprint: {
+const FingerprintSchema = mongoose.Schema({
+    Fingerprint: {
         type: String,
         required: true
     },
@@ -34,52 +34,52 @@ const FringerprintSchema = mongoose.Schema({
 });
 
 
-const Fringerprint = module.exports = mongoose.model('Fringerprint', FringerprintSchema);
+const Fingerprint = module.exports = mongoose.model('Fingerprint', FingerprintSchema);
 
-module.exports.addFringerprint = function(newFringerprint,callback){
+module.exports.addFingerprint = function(newFingerprint,callback){
 
-    newFringerprint.save(callback);
+    newFingerprint.save(callback);
 }
 
-module.exports.getFringerprint = function(fringerprint,callback){
+module.exports.getFingerprint = function(Fingerprint,callback){
     
-    const query = { fringerprint: fringerprint};
-    Fringerprint.findOne(query,callback);
+    const query = { Fingerprint: Fingerprint};
+    Fingerprint.findOne(query,callback);
 }
 
-module.exports.getAllUnusalFringerprint = function(callback){
+module.exports.getAllUnusalFingerprint = function(callback){
     const query = {
             "users.1": {
                 "$exists": true
             }
         };
-    Fringerprint.find(query,callback);
+    Fingerprint.find(query,callback);
 }
 
-module.exports.editFringerprint = function(fringerprint,user,callback){
+module.exports.editFingerprint = function(Fingerprint,user,callback){
 
-     const query =  { fringerprint: fringerprint};
-    Fringerprint.findOneAndUpdate(query,{ $push: { users: user }},callback);
+     const query =  { Fingerprint: Fingerprint};
+    Fingerprint.findOneAndUpdate(query,{ $push: { users: user }},callback);
 }
 
-module.exports.blockFringerprint = function (fringerprint,callback) {
+module.exports.blockFingerprint = function (Fingerprint,callback) {
 
-    const query =  { fringerprint: fringerprint};
-    Fringerprint.findOneAndUpdate(query,{block : true},callback);
-
-}
-
-module.exports.checkFringerprint = function (fringerprint,callback){
-
-     const query =  { fringerprint: fringerprint};
-    Fringerprint.findOneAndUpdate(query,{check : true},callback);
+    const query =  { Fingerprint: Fingerprint};
+    Fingerprint.findOneAndUpdate(query,{block : true},callback);
 
 }
 
-module.exports.unblockFringerprint = function (fringerprint,callback){
+module.exports.checkFingerprint = function (Fingerprint,callback){
+
+     const query =  { Fingerprint: Fingerprint};
+    Fingerprint.findOneAndUpdate(query,{check : true},callback);
+
+}
+
+module.exports.unblockFingerprint = function (Fingerprint,callback){
     
-    const query =  { fringerprint: fringerprint};
-    Fringerprint.findOneAndUpdate(query,{block : false},callback);
+    const query =  { Fingerprint: Fingerprint};
+    Fingerprint.findOneAndUpdate(query,{block : false},callback);
 
 }
 
