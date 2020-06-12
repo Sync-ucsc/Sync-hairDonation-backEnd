@@ -9,7 +9,7 @@ const config = require('./config/database')
 //socket.io
 const socketIo = require('socket.io');
 const http = require('http');
-
+const ChatService =  require('./services/chat.service');
 
 // conect database
 mongoose.connect(config.database);
@@ -27,8 +27,10 @@ const app = express();
 const donor = require('./routes/donor');
 const user = require('./routes/users');
 const salon = require('./routes/salon.route');
-const chat = require('./routes/chatRoute');
 const notification = require('./routes/notification');
+const chat = require('./routes/chat.route');
+const payment = require('./routes/payment');
+const getInTouch = require('./routes/getInTouch.route');
 
 const port = 3000;
 
@@ -53,6 +55,8 @@ app.use('/user', user);
 app.use('/salon',salon);
 app.use('/notification', notification);
 app.use('/chat', chat);
+app.use('/payment', chat);
+app.use('/getInTouch', getInTouch);
 
 app.get('/', (req,res) => {
     res.send('hi');
@@ -67,5 +71,6 @@ const server = app.listen(port ,() =>{
 });
 
 var io = require('socket.io').listen(server);
-app.set('io', io);
 
+app.set('io', io);
+(new ChatService()).checkConnection(io);

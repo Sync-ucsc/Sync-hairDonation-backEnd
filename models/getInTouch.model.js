@@ -1,23 +1,19 @@
 const mongoose = require('mongoose');
 
-const chatSchema = mongoose.Schema({
-    senderId: {
+const getInTouchSchema = mongoose.Schema({
+    name: {
         type: String,
         required: true
     },
-    receiverId: {
-        type: String,
-        required: true
-    },
-    senderRole: {
-        type: String,
-        required: true
-    },
-    receiverRole: {
+    email: {
         type: String,
         required: true
     },
     message: {
+        type: String,
+        required: true
+    },
+    subject: {
         type: String,
         required: true
     },
@@ -28,4 +24,4 @@ const chatSchema = mongoose.Schema({
     },
 });
 
-const Chat = module.exports = mongoose.model('Chat', chatSchema);
+module.exports = mongoose.model('getInTouch', getInTouchSchema);
