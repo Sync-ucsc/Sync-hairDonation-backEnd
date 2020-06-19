@@ -23,6 +23,11 @@ salonRoute.route('/create').post((req, res, next) => {
   salon.save().then(() => {
     io.emit('new-salon');
   });
+  return res.json({
+    data: salon,
+    success: true,
+    msg: 'Salon Created'
+  });
 });
 
 // Get All Salons
