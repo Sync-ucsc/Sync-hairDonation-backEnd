@@ -1,4 +1,4 @@
 module.exports = {
-    database: 'mongodb://localhost:27017/Chat_db',
+    database: 'mongodb+srv://sync:rZKLlITEqORHouPd@cluster0-sczm6.mongodb.net/sync?retryWrites=true&w=majority',
     secret: 'secret'
 }
