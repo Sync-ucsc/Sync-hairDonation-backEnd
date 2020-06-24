@@ -56,7 +56,7 @@ module.exports.getById = function (id, callback) {
 }
 
 //update salon
-module.exports.findByIdAndUpdate = function (updatedSalon, callback) {
+module.exports.updateSalon = function (updatedSalon, callback) {
 
     console.log(updatedSalon._id)
 
@@ -68,7 +68,7 @@ module.exports.findByIdAndUpdate = function (updatedSalon, callback) {
         callback);
 }
 //salon delete
-module.exports.findByIdAndDelete = function (id, callback) {
-    console.log('dx')
+module.exports.deleteSalon = function (id, callback) {
+    console.log('deleted salon')
     Salon.findByIdAndDelete(id, callback);
 }
