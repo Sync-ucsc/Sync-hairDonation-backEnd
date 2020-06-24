@@ -66,7 +66,7 @@ salonRoute.route('/').get((req, res) => {
 // Get a single salon
 salonRoute.get('/read/:id', (req, res) => {
   const io = req.app.get('io');
-  Salon.getById(req.body.id, (err, salon) => {
+  Salon.getById(req.params.id, (err, salon) => {
     if (err) {
       res.json({
         data: '',
@@ -125,7 +125,7 @@ salonRoute.post('/update/:id', (req, res) => {
 // Delete salon
 salonRoute.delete('/delete/:id', (req, res) => {
   const io = req.app.get('io');
-  Salon.findByIdAndDelete(req.body._id, (err,salon) => {
+  Salon.findByIdAndDelete(req.params._id, (err, salon) => {
     if (err) {
       res.json({
         data: err,

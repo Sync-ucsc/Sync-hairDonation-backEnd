@@ -62,9 +62,9 @@ app.get('/', (req,res) => {
     res.send('hi');
 })
 
-app.get('*', function (req, res) {
-    res.sendfile('./public/index.html');
-});
+// app.get('*', function (req, res) {
+//     res.sendfile('./public/index.html');
+// });
 
 const server = app.listen(port ,() =>{
     console.log("server start on "+port);
