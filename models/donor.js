@@ -12,7 +12,8 @@ const DonorSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     telePhone: {
         type: String,
@@ -24,7 +25,6 @@ const DonorSchema = mongoose.Schema({
         },
         id: {
             type: Number,
-            required: true
         },
         distance: Number
 
@@ -55,4 +55,9 @@ const DonorSchema = mongoose.Schema({
     }]
 });
 
-const User = module.exports = mongoose.model('Donor', DonorSchema);
+const Donor = module.exports = mongoose.model('Donor', DonorSchema);
+
+module.exports.addDonor = function (newDonor, callback) {
+    
+    newDonor.save(callback);
+}
