@@ -12,7 +12,8 @@ const UserSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     role:{
         type: String,
@@ -111,4 +112,9 @@ module.exports.activate = function(id,password,callback){
             })
         })
     })
+}
+
+module.exports.deleteUserById = function (id, callback) {
+    console.log('ggg')
+    User.findByIdAndDelete(id, callback);
 }

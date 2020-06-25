@@ -125,7 +125,7 @@ salonRoute.post('/update/:id', (req, res) => {
 // Delete salon
 salonRoute.delete('/delete/:id', (req, res) => {
   const io = req.app.get('io');
-  Salon.findByIdAndDelete(req.params._id, (err, salon) => {
+  Salon.findByIdAndDelete(req.params.id, (err, salon) => {
     if (err) {
       res.json({
         data: err,

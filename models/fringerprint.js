@@ -5,7 +5,8 @@ const config = require('../config/database');
 const FingerprintSchema = mongoose.Schema({
     Fingerprint: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     userType: [{
         type: String

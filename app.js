@@ -67,6 +67,8 @@ app.get('/', (req,res) => {
 // });
 
 const server = app.listen(port ,() =>{
+    var host = 'http://' + /*server.address().address*/ '127.0.0.1' + ':' + server.address().port;
+    app.set('host', host);
     console.log("server start on "+port);
 });
 
