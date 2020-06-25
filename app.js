@@ -31,6 +31,7 @@ const notification = require('./routes/notification');
 const chat = require('./routes/chat.route');
 const payment = require('./routes/payment');
 const getInTouch = require('./routes/getInTouch.route');
+const manager=require('./routes/manager.route')
 
 const port = 3000;
 
@@ -57,6 +58,7 @@ app.use('/notification', notification);
 app.use('/chat', chat);
 app.use('/payment', chat);
 app.use('/getInTouch', getInTouch);
+app.use('/manager',manager);
 
 app.get('/', (req,res) => {
     res.send('hi');
