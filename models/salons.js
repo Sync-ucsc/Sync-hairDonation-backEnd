@@ -58,7 +58,6 @@ module.exports.getById = function (id, callback) {
 //update salon
 module.exports.updateSalon = function (updatedSalon, callback) {
 
-    console.log(updatedSalon._id)
 
     Salon.findByIdAndUpdate(updatedSalon._id, {
         $set: updatedSalon
