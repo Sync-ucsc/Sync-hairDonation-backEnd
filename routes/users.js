@@ -132,7 +132,7 @@ router.post('/authenticate', (req, res) => {
                     return res.json({
                         data: '',
                         success: false,
-                        msg: 'token is invalid'
+                        msg: 'Password is invalid'
                     })
                 }
             } else {
