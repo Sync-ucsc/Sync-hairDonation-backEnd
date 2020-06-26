@@ -23,27 +23,27 @@ salonRoute.route('/create').post((req, res, next) => {
   });
   console.log(newSalon);
   let user = User({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+    firstName: req.body.name,
+    lastName: '',
     role: 'salon',
     email: req.body.email,
   })
   
 
-  Salon.addSalon(newSalon, (err, salon) => {
+  User.register(user, (err, user) => {
     if (err) {
       res.json({
-        data: err,
+        data: '',
         success: false,
-        msg: 'Failed to add salon'
+        msg: 'Faild to register user'
       })
     } else {
-      User.register(user, (err, user) => {
+      Salon.addSalon(newSalon, (err, salon) => {
         if (err) {
           res.json({
-            data: '',
+            data: err,
             success: false,
-            msg: 'Faild to register user'
+            msg: 'Failed to add salon'
           })
         } else {
           res.json({
@@ -54,12 +54,13 @@ salonRoute.route('/create').post((req, res, next) => {
             success: true,
             msg: 'Salon Created',
           })
-           io.emit('new-salon');
+          io.emit('new-salon');
         }
       })
-      
     }
   })
+
+  
   
 });
 
