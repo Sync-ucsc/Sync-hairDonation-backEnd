@@ -4,7 +4,10 @@ const Schema = mongoose.Schema;
 
 // Define collection and schema
 const ManagerSchema = new Schema({
-    name: {
+    firstName: {
+        type: String
+    },
+    lastName: {
         type: String
     },
     email: {
