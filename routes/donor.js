@@ -39,6 +39,38 @@ router.post('/signup', (req, res) => {
 })
 
 
+// Donor request
+router.post('/addDonorRequest', (req, res) => {
+    let request = {
+        requestDay: req.body.requestDay,
+        validDate : req.body.validDate,
+        address: req.body.address,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        finished: false,
+        canceled: false
+    }
+    Donor.addDonorRequest(req.body.email,request,(err,donor)=>{
+        if (err) {
+            console.log(err)
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to add donor requset'
+            })
+        } else {
+            console.log(donor)
+            res.json({
+                data: donor,
+                success: true,
+                msg: 'Donor request added',
+            })
+
+        }
+    })
+})
+
+
 // login
 
 

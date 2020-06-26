@@ -40,6 +40,15 @@ const DonorSchema = mongoose.Schema({
         validDate: {
             type: Date
         },
+        address: {
+            type: String
+        },
+        latitude:{
+            type:Number
+        },
+        longitude:{
+            type:Number
+        },
         appoiment: [{
 
         }],
@@ -55,9 +64,17 @@ const DonorSchema = mongoose.Schema({
     }]
 });
 
+
+
 const Donor = module.exports = mongoose.model('Donor', DonorSchema);
 
 module.exports.addDonor = function (newDonor, callback) {
     
     newDonor.save(callback);
+}
+
+module.exports.addDonorRequest = function(email,req,callback){
+
+    const query =  { email: email};
+    Donor.findOneAndUpdate(query,{ $push: { request: req }},callback);
 }
