@@ -4,6 +4,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config =require('../config/database')
 const User = require('../models/user')
+const Donor = require('../models/donor')
 
 //signup
 router.post('/signup', (req,res) => {
@@ -18,25 +19,53 @@ router.post('/signup', (req,res) => {
             password: req.body.password
         })
 
+        let newDonor = new Donor({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                telePhone: req.body.telePhone,
+            });
+
         User.addUser(newUser, (err, user) => {
             if (err) {
+                
                 res.json({
                     data: '',
                     success: false,
                     msg: 'Faild to register user'
                 })
             } else {
-                res.json({
-                    data: user,
-                    success: true,
-                    msg: 'User registere',
-                })
+                console.log(user) 
+                if (req.body.role == 'patient'){
+                    
+                } else {
+                    console.log(newDonor)
+                    Donor.addDonor(newDonor, (err, donor) => {
+                          if (err) {
+                            res.json({
+                                data: err,
+                                success: false,
+                                msg: 'Faild to register user'
+                            })
+                            
+                          } else {
+                            res.json({
+                                data: {
+                                    user: user,
+                                    donor: donor
+                                },
+                                success: true,
+                                msg: 'User registere',
+                            })
+                          }
+                    })
+                }
             }
         })
 
     } else {
         res.json({
-            data: '',
+            data: err,
             success: false,
             msg: 'Faild to register user'
         });
@@ -46,6 +75,8 @@ router.post('/signup', (req,res) => {
 router.post('/authenticate', (req, res) => {
     const email = req.body.email; 
     const password = req.body.password;
+    var host = req.app.get('host');
+   
     User.getUserBYEmail(email,(err,user)=>{
         if(err){
             throw err;
@@ -78,6 +109,7 @@ router.post('/authenticate', (req, res) => {
                             "firstName": user.firstName,
                             "lastName": user.lastName,
                             "email": user.email,
+                            "iss": host +'/user',
                         }), config.secret, {
                             expiresIn: 604500
                         });
@@ -100,7 +132,7 @@ router.post('/authenticate', (req, res) => {
                     return res.json({
                         data: '',
                         success: false,
-                        msg: 'token is invalid'
+                        msg: 'Password is invalid'
                     })
                 }
             } else {
