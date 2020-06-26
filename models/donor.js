@@ -78,3 +78,32 @@ module.exports.addDonorRequest = function(email,req,callback){
     const query =  { email: email};
     Donor.findOneAndUpdate(query,{ $push: { request: req }},callback);
 }
+
+//Donor get all
+module.exports.getAll = function (callback) {
+
+    Donor.find(callback);
+}
+
+//Donor get by id
+module.exports.getById = function (id, callback) {
+
+    Donor.findById(id, callback);
+}
+
+//Donor salon
+module.exports.updateDonor = function (updatedDonor, callback) {
+
+
+    Donor.findByIdAndUpdate(updatedDonor._id, {
+        $set: updatedDonor
+    }, {
+        useFindAndModify: false
+    },
+        callback);
+}
+//Donor delete
+module.exports.deleteDonor = function (id, callback) {
+    console.log('deleted Donor')
+    Donor.findByIdAndDelete(id, callback);
+}
