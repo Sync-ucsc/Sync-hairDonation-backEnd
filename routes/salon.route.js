@@ -5,6 +5,7 @@ const salonRoute = express.Router();
 
 // Salon model
 let Salon = require('../models/salons');
+let User = require('../models/user');
 
 // Add a Salon
 salonRoute.route('/create').post((req, res, next) => {
@@ -21,6 +22,13 @@ salonRoute.route('/create').post((req, res, next) => {
     longitude: req.body.longitude,
   });
   console.log(newSalon);
+  let user = User({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    role: 'salon',
+    email: req.body.email,
+  })
+  
 
   Salon.addSalon(newSalon, (err, salon) => {
     if (err) {
@@ -30,12 +38,26 @@ salonRoute.route('/create').post((req, res, next) => {
         msg: 'Failed to add salon'
       })
     } else {
-      res.json({
-        data: salon,
-        success: true,
-        msg: 'Salon Created',
+      User.register(user, (err, user) => {
+        if (err) {
+          res.json({
+            data: '',
+            success: false,
+            msg: 'Faild to register user'
+          })
+        } else {
+          res.json({
+            data: {
+              user: user,
+              salon: salon
+            },
+            success: true,
+            msg: 'Salon Created',
+          })
+           io.emit('new-salon');
+        }
       })
-      io.emit('new-salon');
+      
     }
   })
   
