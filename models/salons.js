@@ -8,7 +8,9 @@ const SalonSchema = new Schema({
             type: String
         },
         email: {
-            type: String
+            type: String,
+            required: true,
+            unique: true
         },
         telephone: {
             type: Number

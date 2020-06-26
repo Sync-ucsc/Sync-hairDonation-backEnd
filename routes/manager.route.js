@@ -84,6 +84,7 @@ managerRoute.get('/read/:id', (req, res) => {
 managerRoute.post('/update/:id', (req, res) => {
     const io = req.app.get('io');
     let updatedManager = Manager({
+        _id: req.params.id,
         name: req.body.name,
         email: req.body.email,
         telephone: req.body.telephone,
@@ -117,7 +118,9 @@ managerRoute.post('/update/:id', (req, res) => {
 // Delete a manager
 managerRoute.delete('/delete/:id', (req, res) => {
     const io = req.app.get('io');
-    Manager.deleteManager(req.params._id, (err, manager) => {
+    console.log(req.params.id)
+
+    Manager.deleteManager(req.params.id, (err, manager) => {
         if (err) {
             res.json({
                 data: err,
