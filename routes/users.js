@@ -5,13 +5,14 @@ const jwt = require('jsonwebtoken');
 const config =require('../config/database')
 const User = require('../models/user')
 const Donor = require('../models/donor')
+const Fingerprint = require('../models/fingerprint')
 
 //signup
 router.post('/signup', (req,res) => {
     if (req.body.role == 'donor' || req.body.role == 'patient'){
         let newUser = new User({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
+            firstName: req.body.fname,
+            lastName: req.body.lname,
             email: req.body.email,
             role: req.body.role,
             temporyBan: false,
@@ -20,11 +21,36 @@ router.post('/signup', (req,res) => {
         })
 
         let newDonor = new Donor({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
+                firstName: req.body.fname,
+                lastName: req.body.lname,
                 email: req.body.email,
-                telePhone: req.body.telePhone,
+                telePhone: req.body.phone,
+                nic:req.body.nic,
+                address: req.body.address,
+                lat: req.body.lat,
+                lon: req.body.lon,
+                fingerprint: req.body.fingerprint
+                
             });
+        
+        // let newPatient = new Patient({
+        //     firstName: req.body.firstName,
+        //     lastName: req.body.lastName,
+        //     email: req.body.email,
+        //     telePhone: req.body.telePhone,
+        // });
+
+        let fingerprint = new Fingerprint({
+            Fingerprint: req.body.fingerprint,
+            userType: [req.body.role],
+            users: [{
+                email: req.body.email,
+                registerIp: 111,
+                userType: req.body.role
+            }],
+            block: false,
+            check: false
+        }) 
 
         User.addUser(newUser, (err, user) => {
             if (err) {
@@ -49,14 +75,36 @@ router.post('/signup', (req,res) => {
                             })
                             
                           } else {
-                            res.json({
-                                data: {
-                                    user: user,
-                                    donor: donor
-                                },
-                                success: true,
-                                msg: 'User registere',
-                            })
+                                if(req.body.fpcount == 0) {
+                                    Fingerprint.addFingerprint(fingerprint, (err, fingerprint) => {
+                                        if (err) {
+                                            res.json({
+                                                data: err,
+                                                success: false,
+                                                msg: 'Faild to register user'
+                                            })
+                                        } else {
+                                            res.json({
+                                                data: {
+                                                    user: user,
+                                                    donor: donor,
+                                                    fingerprint: fingerprint
+                                                },
+                                                success: true,
+                                                msg: 'User registere',
+                                            })
+                                        }
+                                    })
+                                } else if (req.body.fpcount == 1) {
+                                    // Fingerprint.
+                                } else {
+                                    res.json({
+                                        data: err,
+                                        success: false,
+                                        msg: 'Faild to register user'
+                                    })
+                                }
+                            
                           }
                     })
                 }

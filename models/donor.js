@@ -19,6 +19,26 @@ const DonorSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    nic: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    lat: {
+        type: Number,
+        required: true
+    },
+    lon: {
+        type: Number,
+        required: true
+    },
+    fingerprint: {
+        type: Number,
+        required: true
+    },
     nearSalon: {
         salon: {
             type: String,
