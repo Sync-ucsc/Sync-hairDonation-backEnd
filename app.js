@@ -32,6 +32,7 @@ const chat = require('./routes/chat.route');
 const payment = require('./routes/payment');
 const getInTouch = require('./routes/getInTouch.route');
 const manager=require('./routes/manager.route')
+const fingerprint = require('./routes/fingerprint')
 
 const port = 3000;
 
@@ -59,6 +60,7 @@ app.use('/chat', chat);
 app.use('/payment', chat);
 app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
+app.use('/fingerprint', fingerprint);
 
 app.get('/', (req,res) => {
     res.send('hi');

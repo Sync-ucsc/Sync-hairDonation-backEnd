@@ -42,9 +42,9 @@ module.exports.addFingerprint = function(newFingerprint,callback){
     newFingerprint.save(callback);
 }
 
-module.exports.getFingerprint = function(Fingerprint,callback){
+module.exports.getFingerprint = function(fingerprint,callback){
     
-    const query = { Fingerprint: Fingerprint};
+    const query = { Fingerprint: fingerprint};
     Fingerprint.findOne(query,callback);
 }
 
