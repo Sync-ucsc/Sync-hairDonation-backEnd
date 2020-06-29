@@ -73,12 +73,11 @@ router.post('/signup', (req,res) => {
 
         User.addUser(newUser, (err, user) => {
             if (err) {
-                
                 res.json({
-                    data: '',
+                    data: err,
                     success: false,
                     msg: 'Faild to register user'
-                })
+                });
             } else {
                 console.log(user) 
                 if (req.body.role == 'patient'){
@@ -87,7 +86,9 @@ router.post('/signup', (req,res) => {
                     console.log(newDonor)
                     Donor.addDonor(newDonor, (err, donor) => {
                           if (err) {
+                            User.deleteUserById(user._id,(err,dd)=>{});
                             res.json({
+                                user: user,
                                 data: err,
                                 success: false,
                                 msg: 'Faild to register user'
@@ -97,6 +98,8 @@ router.post('/signup', (req,res) => {
                                 if(req.body.fpcount == 0) {
                                     Fingerprint.addFingerprint(fingerprint, (err, fingerprint) => {
                                         if (err) {
+                                            User.deleteUserById(user._id, (err, dd) => {});
+                                            Donor.deleteDonor(donor._id, (err, dd) => {});
                                             res.json({
                                                 data: err,
                                                 success: false,
@@ -115,6 +118,9 @@ router.post('/signup', (req,res) => {
                                                 })
                                                 Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
                                                     if (err) {
+                                                        User.deleteUserById(user._id, (err, dd) => {});
+                                                        Donor.deleteDonor(donor._id, (err, dd) => {});
+                                                        Fingerprint.deleteFingerprintById(user._id, (err, dd) => {});
                                                         res.json({
                                                             data: err,
                                                             success: false,
@@ -141,6 +147,8 @@ router.post('/signup', (req,res) => {
                                 } else if (req.body.fpcount == 1) {
                                     Fingerprint.editFingerprint(req.body.fingerprint,nuser,'donor',(err,fingerprint) => {
                                         if (err) {
+                                            User.deleteUserById(user._id, (err, dd) => {});
+                                            Donor.deleteDonor(donor._id, (err, dd) => {});
                                             res.json({
                                                 data: err,
                                                 success: false,
@@ -149,6 +157,8 @@ router.post('/signup', (req,res) => {
                                         } else {
                                             Fingerprint.blockFingerprint(req.body.fingerprint,(err,fingerprint)=>{
                                                 if (err) {
+                                                    User.deleteUserById(user._id, (err, dd) => {});
+                                                    Donor.deleteDonor(donor._id, (err, dd) => {});
                                                     res.json({
                                                         data: err,
                                                         success: false,
@@ -167,6 +177,8 @@ router.post('/signup', (req,res) => {
                                                         })
                                                         Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
                                                             if (err) {
+                                                                User.deleteUserById(user._id, (err, dd) => {});
+                                                                Donor.deleteDonor(donor._id, (err, dd) => {});
                                                                 res.json({
                                                                     data: err,
                                                                     success: false,
@@ -193,6 +205,8 @@ router.post('/signup', (req,res) => {
                                         }
                                     })
                                 } else {
+                                    User.deleteUserById(user._id, (err, dd) => {});
+                                    Donor.deleteDonor(donor._id, (err, dd) => {});
                                     res.json({
                                         data: err,
                                         success: false,
@@ -223,7 +237,11 @@ router.post('/authenticate', (req, res) => {
    
     User.getUserBYEmail(email,(err,user)=>{
         if(err){
-            throw err;
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
         }
         if(!user){
            return res.json({
@@ -234,7 +252,11 @@ router.post('/authenticate', (req, res) => {
         }
         User.comparePassword(password, user.password, (err, isMatch) => {
             if(err){
-                throw err;
+                return res.json({
+                    data: err,
+                    success: false,
+                    msg: 'error'
+                });
             }
             if(user.active){
                 if (isMatch) {
