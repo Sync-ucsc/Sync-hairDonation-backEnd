@@ -71,7 +71,7 @@ app.get('/', (req,res) => {
 // });
 
 const server = app.listen(port ,() =>{
-    var host = 'http://' + /*server.address().address*/'syncucsc.herokuapp.com' + ':' + server.address().port;
+    var host = 'http://' + /*server.address().address*/ '127.0.0.1' + ':' + server.address().port;
     app.set('host', host);
     console.log("server start on "+port);
 });
@@ -80,3 +80,4 @@ var io = require('socket.io').listen(server);
 
 app.set('io', io);
 (new ChatService()).checkConnection(io);
+

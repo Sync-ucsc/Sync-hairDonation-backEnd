@@ -7,7 +7,7 @@ const User = require('../models/user')
 const Donor = require('../models/donor')
 const Fingerprint = require('../models/fingerprint')
 const Ip = require('../models/ip')
-var https = require('https');
+var ipapi = require('ipapi.co')
 
 //signup
 
@@ -17,6 +17,11 @@ router.post('/signup', (req,res) => {
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress
+
+    ip = '112.135.14.4'
+
+
+    
 
     if (req.body.role == 'donor' || req.body.role == 'patient'){
         let newUser = new User({
@@ -29,6 +34,11 @@ router.post('/signup', (req,res) => {
             password: req.body.password
         })
 
+        let nuser = {
+            email: req.body.email,
+            registerIp: ip,
+            userType: req.body.role
+        }
         let newDonor = new Donor({
                 firstName: req.body.fname,
                 lastName: req.body.lname,
@@ -57,24 +67,9 @@ router.post('/signup', (req,res) => {
             check: false
         }) 
         
-
-        let nuser = {
-            email: req.body.email,
-            registerIp: ip,
-            userType: req.body.role
-        }
         
         
-        let newIP = new Ip({
-            ipv4: ip,
-            ipv6: req.body.ip,
-            fingerprint: req.body.fingerprint,
-            city: req.body.city,
-            region: req.body.region,
-            country: req.body.country,
-            userType: [req.body.role],
-            users: [nuser],
-        })
+        
 
         User.addUser(newUser, (err, user) => {
             if (err) {
@@ -108,25 +103,37 @@ router.post('/signup', (req,res) => {
                                                 msg: 'Faild to register user'
                                             })
                                         } else {
-                                            Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
-                                                if (err) {
-                                                    res.json({
-                                                        data: err,
-                                                        success: false,
-                                                        msg: 'Faild to register user'
-                                                    })
-                                                } else {
-                                                    res.json({
-                                                        data: {
-                                                            user: user,
-                                                            donor: donor,
-                                                            fingerprint: fingerprint
-                                                        },
-                                                        success: true,
-                                                        msg: 'User registere',
-                                                    })
-                                                }
-                                            });
+                                            ipapi.location((data)=>{
+                                                let newIP = new Ip({
+                                                    ipv4: ip,
+                                                    fingerprint: req.body.fingerprint,
+                                                    city: data.city,
+                                                    region: data.region,
+                                                    country: data.country,
+                                                    userType: [req.body.role],
+                                                    users: [nuser],
+                                                })
+                                                Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
+                                                    if (err) {
+                                                        res.json({
+                                                            data: err,
+                                                            success: false,
+                                                            msg: 'Faild to register user'
+                                                        })
+                                                    } else {
+                                                        res.json({
+                                                            data: {
+                                                                user: user,
+                                                                donor: donor,
+                                                                fingerprint: fingerprint
+                                                            },
+                                                            success: true,
+                                                            msg: 'User registere',
+                                                        })
+                                                    }
+                                                });
+                                            }, ip)
+                                            
                                             
                                             
                                         }
@@ -148,25 +155,37 @@ router.post('/signup', (req,res) => {
                                                         msg: 'Faild to register user'
                                                     })
                                                 } else {
-                                                    Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
-                                                        if (err) {
-                                                            res.json({
-                                                                data: err,
-                                                                success: false,
-                                                                msg: 'Faild to register user'
-                                                            })
-                                                        } else {
-                                                            res.json({
-                                                                data: {
-                                                                    user: user,
-                                                                    donor: donor,
-                                                                    fingerprint: fingerprint
-                                                                },
-                                                                success: true,
-                                                                msg: 'User registere',
-                                                            })
-                                                        }
-                                                    });
+                                                    ipapi.location((data) => {
+                                                        let newIP = new Ip({
+                                                            ipv4: ip,
+                                                            fingerprint: req.body.fingerprint,
+                                                            city: data.city,
+                                                            region: data.region,
+                                                            country: data.country,
+                                                            userType: [req.body.role],
+                                                            users: [nuser],
+                                                        })
+                                                        Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
+                                                            if (err) {
+                                                                res.json({
+                                                                    data: err,
+                                                                    success: false,
+                                                                    msg: 'Faild to register user'
+                                                                })
+                                                            } else {
+                                                                res.json({
+                                                                    data: {
+                                                                        user: user,
+                                                                        donor: donor,
+                                                                        fingerprint: fingerprint
+                                                                    },
+                                                                    success: true,
+                                                                    msg: 'User registere',
+                                                                })
+                                                            }
+                                                        });
+                                                    },ip)
+                                                    
                                                     
                                                 }
                                             })
@@ -200,6 +219,7 @@ router.post('/authenticate', (req, res) => {
     const email = req.body.email; 
     const password = req.body.password;
     var host = req.app.get('host');
+    
    
     User.getUserBYEmail(email,(err,user)=>{
         if(err){
@@ -269,6 +289,7 @@ router.post('/authenticate', (req, res) => {
                         "firstName": user.firstName,
                         "lastName": user.lastName,
                         "email": user.email,
+                        "iss": host + '/user',
                     }), config.secret, {
                         expiresIn: 604500
                     });

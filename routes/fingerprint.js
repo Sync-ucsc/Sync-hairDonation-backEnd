@@ -9,6 +9,8 @@ const Fingerprint = require('../models/fingerprint');
 
 router.get('/get/:fingerprint',(req,res) =>{
     
+
+    
     Fingerprint.getFingerprint(req.params.fingerprint,(err,fingerprint)=>{
         if (err) {
             res.json({
