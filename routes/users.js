@@ -39,15 +39,15 @@ router.post('/signup', (req,res) => {
         //     email: req.body.email,
         //     telePhone: req.body.telePhone,
         // });
-
+        let nuser = { 
+            email: req.body.email,
+            registerIp: 111,
+            userType: req.body.role
+        }
         let fingerprint = new Fingerprint({
             Fingerprint: req.body.fingerprint,
             userType: [req.body.role],
-            users: [{
-                email: req.body.email,
-                registerIp: 111,
-                userType: req.body.role
-            }],
+            users: [nuser],
             block: false,
             check: false
         }) 
@@ -96,7 +96,36 @@ router.post('/signup', (req,res) => {
                                         }
                                     })
                                 } else if (req.body.fpcount == 1) {
-                                    // Fingerprint.
+                                    Fingerprint.editFingerprint(req.body.fingerprint,nuser,'donor',(err,fingerprint) => {
+                                        if (err) {
+                                            res.json({
+                                                data: err,
+                                                success: false,
+                                                msg: 'Faild to register user'
+                                            })
+                                        } else {
+                                            Fingerprint.blockFingerprint(req.body.fingerprint,(err,fingerprint)=>{
+                                                if (err) {
+                                                    res.json({
+                                                        data: err,
+                                                        success: false,
+                                                        msg: 'Faild to register user'
+                                                    })
+                                                } else {
+                                                    res.json({
+                                                        data: {
+                                                            user: user,
+                                                            donor: donor,
+                                                            fingerprint: fingerprint
+                                                        },
+                                                        success: true,
+                                                        msg: 'User registere',
+                                                    })
+                                                }
+                                            })
+                                            
+                                        }
+                                    })
                                 } else {
                                     res.json({
                                         data: err,

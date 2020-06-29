@@ -57,16 +57,21 @@ module.exports.getAllUnusalFingerprint = function(callback){
     Fingerprint.find(query,callback);
 }
 
-module.exports.editFingerprint = function(Fingerprint,user,callback){
+module.exports.editFingerprint = function(fingerprint,user,role,callback){
 
-     const query =  { Fingerprint: Fingerprint};
-    Fingerprint.findOneAndUpdate(query,{ $push: { users: user }},callback);
+    const query =  { Fingerprint: fingerprint};
+    Fingerprint.findOneAndUpdate(query, {
+        $push: {
+            users: user,
+            userType: role
+        }
+    }, callback);
 }
 
-module.exports.blockFingerprint = function (Fingerprint,callback) {
+module.exports.blockFingerprint = function (fingerprint,callback) {
 
-    const query =  { Fingerprint: Fingerprint};
-    Fingerprint.findOneAndUpdate(query,{block : true},callback);
+    const query =  { Fingerprint: fingerprint};
+    Fingerprint.findOneAndUpdate(query,{block : true,check: false},callback);
 
 }
 
