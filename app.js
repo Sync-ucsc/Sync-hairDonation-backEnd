@@ -32,8 +32,9 @@ const chat = require('./routes/chat.route');
 const payment = require('./routes/payment');
 const getInTouch = require('./routes/getInTouch.route');
 const manager=require('./routes/manager.route')
+const fingerprint = require('./routes/fingerprint')
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 
 //cors middlware
@@ -59,6 +60,7 @@ app.use('/chat', chat);
 app.use('/payment', chat);
 app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
+app.use('/fingerprint', fingerprint);
 
 app.get('/', (req,res) => {
     res.send('hi');
@@ -69,7 +71,7 @@ app.get('/', (req,res) => {
 // });
 
 const server = app.listen(port ,() =>{
-    var host = 'http://' + /*server.address().address*/ '127.0.0.1' + ':' + server.address().port;
+    var host = 'http://' + /*server.address().address*/'syncucsc.herokuapp.com' + ':' + server.address().port;
     app.set('host', host);
     console.log("server start on "+port);
 });

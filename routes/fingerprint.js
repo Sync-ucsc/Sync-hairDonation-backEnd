@@ -1,0 +1,43 @@
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const config = require('../config/database')
+const Fingerprint = require('../models/fingerprint');
+
+
+
+router.get('/get/:fingerprint',(req,res) =>{
+    var ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress
+    console.log(ip)
+    Fingerprint.getFingerprint(req.params.fingerprint,(err,fingerprint)=>{
+        if (err) {
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Failed to get the fingreprint'
+            })
+        } else {
+            if(fingerprint !== null){
+                res.json({
+                    data: fingerprint,
+                    success: true,
+                    msg: 'got the fingerprint',
+                })
+            } else {
+                res.json({
+                    data: '',
+                    success: true,
+                    msg: 'havent the fingerprint',
+                })
+            }
+
+            
+        }
+    })
+})
+
+module.exports = router;
