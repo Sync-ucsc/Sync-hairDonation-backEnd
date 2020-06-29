@@ -8,11 +8,7 @@ const Fingerprint = require('../models/fingerprint');
 
 
 router.get('/get/:fingerprint',(req,res) =>{
-    var ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress
-    console.log(ip)
+    
     Fingerprint.getFingerprint(req.params.fingerprint,(err,fingerprint)=>{
         if (err) {
             res.json({

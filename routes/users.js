@@ -6,9 +6,18 @@ const config =require('../config/database')
 const User = require('../models/user')
 const Donor = require('../models/donor')
 const Fingerprint = require('../models/fingerprint')
+const Ip = require('../models/ip')
+var https = require('https');
 
 //signup
+
 router.post('/signup', (req,res) => {
+
+    var ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress
+
     if (req.body.role == 'donor' || req.body.role == 'patient'){
         let newUser = new User({
             firstName: req.body.fname,
@@ -39,11 +48,7 @@ router.post('/signup', (req,res) => {
         //     email: req.body.email,
         //     telePhone: req.body.telePhone,
         // });
-        let nuser = { 
-            email: req.body.email,
-            registerIp: 111,
-            userType: req.body.role
-        }
+        
         let fingerprint = new Fingerprint({
             Fingerprint: req.body.fingerprint,
             userType: [req.body.role],
@@ -51,6 +56,25 @@ router.post('/signup', (req,res) => {
             block: false,
             check: false
         }) 
+        
+
+        let nuser = {
+            email: req.body.email,
+            registerIp: ip,
+            userType: req.body.role
+        }
+        
+        
+        let newIP = new Ip({
+            ipv4: ip,
+            ipv6: req.body.ip,
+            fingerprint: req.body.fingerprint,
+            city: req.body.city,
+            region: req.body.region,
+            country: req.body.country,
+            userType: [req.body.role],
+            users: [nuser],
+        })
 
         User.addUser(newUser, (err, user) => {
             if (err) {
@@ -84,15 +108,27 @@ router.post('/signup', (req,res) => {
                                                 msg: 'Faild to register user'
                                             })
                                         } else {
-                                            res.json({
-                                                data: {
-                                                    user: user,
-                                                    donor: donor,
-                                                    fingerprint: fingerprint
-                                                },
-                                                success: true,
-                                                msg: 'User registere',
-                                            })
+                                            Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
+                                                if (err) {
+                                                    res.json({
+                                                        data: err,
+                                                        success: false,
+                                                        msg: 'Faild to register user'
+                                                    })
+                                                } else {
+                                                    res.json({
+                                                        data: {
+                                                            user: user,
+                                                            donor: donor,
+                                                            fingerprint: fingerprint
+                                                        },
+                                                        success: true,
+                                                        msg: 'User registere',
+                                                    })
+                                                }
+                                            });
+                                            
+                                            
                                         }
                                     })
                                 } else if (req.body.fpcount == 1) {
@@ -112,15 +148,26 @@ router.post('/signup', (req,res) => {
                                                         msg: 'Faild to register user'
                                                     })
                                                 } else {
-                                                    res.json({
-                                                        data: {
-                                                            user: user,
-                                                            donor: donor,
-                                                            fingerprint: fingerprint
-                                                        },
-                                                        success: true,
-                                                        msg: 'User registere',
-                                                    })
+                                                    Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
+                                                        if (err) {
+                                                            res.json({
+                                                                data: err,
+                                                                success: false,
+                                                                msg: 'Faild to register user'
+                                                            })
+                                                        } else {
+                                                            res.json({
+                                                                data: {
+                                                                    user: user,
+                                                                    donor: donor,
+                                                                    fingerprint: fingerprint
+                                                                },
+                                                                success: true,
+                                                                msg: 'User registere',
+                                                            })
+                                                        }
+                                                    });
+                                                    
                                                 }
                                             })
                                             

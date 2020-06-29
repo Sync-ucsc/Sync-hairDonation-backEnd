@@ -25,6 +25,10 @@ const UserSchema = mongoose.Schema({
     banAction:[{
         type: String,
     }],
+    block:{
+        type: Boolean,
+        default: false,
+    },
     password: {
         type: String,
         required: true
