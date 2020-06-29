@@ -71,7 +71,7 @@ app.get('/', (req,res) => {
 // });
 
 const server = app.listen(port ,() =>{
-    var host = 'http://' + /*server.address().address*/ 'syncucsc.herokuapp.com' + ':' + server.address().port;
+    var host = 'http://' + /*server.address().address*/'syncucsc.herokuapp.com' + ':' + server.address().port;
     app.set('host', host);
     console.log("server start on "+port);
 });
