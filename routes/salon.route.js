@@ -32,6 +32,7 @@ salonRoute.route('/create').post((req, res, next) => {
 
   User.register(user, (err, user) => {
     if (err) {
+      res.status(500);
       res.json({
         data: '',
         success: false,
@@ -40,6 +41,7 @@ salonRoute.route('/create').post((req, res, next) => {
     } else {
       Salon.addSalon(newSalon, (err, salon) => {
         if (err) {
+          res.status(500);
           res.json({
             data: err,
             success: false,
@@ -69,6 +71,7 @@ salonRoute.route('/').get((req, res) => {
   const io = req.app.get('io');
   Salon.getAll((err, salon) => {
     if (err) {
+      res.status(500);
       res.json({
         data: '',
         success: false,
@@ -91,6 +94,7 @@ salonRoute.get('/read/:id', (req, res) => {
   const io = req.app.get('io');
   Salon.getById(req.params.id, (err, salon) => {
     if (err) {
+      res.status(500);
       res.json({
         data: '',
         success: false,
@@ -125,6 +129,7 @@ salonRoute.post('/update/:id', (req, res) => {
 
   Salon.updateSalon(updatedSalon, (err, salon) => {
     if (err) {
+      res.status(500);
       res.json({
         data: err,
         success: false,
@@ -153,6 +158,7 @@ salonRoute.delete('/delete/:id', (req, res) => {
 
   Salon.deleteSalon(req.params.id, (err, salon) => {
     if (err) {
+      res.status(500);
       res.json({
         data: err,
         success: false,

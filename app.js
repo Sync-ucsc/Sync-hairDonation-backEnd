@@ -5,11 +5,14 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database')
+var logger = require('morgan');
+
 
 //socket.io
 const socketIo = require('socket.io');
 const http = require('http');
 const ChatService =  require('./services/chat.service');
+
 
 // conect database
 mongoose.connect(config.database);
@@ -35,6 +38,12 @@ const manager=require('./routes/manager.route')
 const fingerprint = require('./routes/fingerprint')
 
 const port = process.env.PORT || 3000;
+
+if (app.get('env') === 'production') {
+    app.use(logger('combined'));
+} else {
+    app.use(logger('dev'));
+}
 
 
 //cors middlware
@@ -74,6 +83,7 @@ const server = app.listen(port ,() =>{
     var host = 'http://' + /*server.address().address*/ '127.0.0.1' + ':' + server.address().port;
     app.set('host', host);
     console.log("server start on "+port);
+    console.log(app.get('env'));
 });
 
 var io = require('socket.io').listen(server);
@@ -88,7 +98,7 @@ app.use((req,res,next) => {
 })
 
 app.use((erorr,req,res,next)=> {
-    res.status = erorr.status || 500;
+    res.status(erorr.status || 500);
     res.json({
         err: erorr.message,
         data : erorr,

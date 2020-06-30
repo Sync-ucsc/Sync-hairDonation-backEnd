@@ -73,19 +73,19 @@ router.post('/signup', (req,res) => {
 
         User.addUser(newUser, (err, user) => {
             if (err) {
+                res.status(500);
                 res.json({
                     data: err,
                     success: false,
                     msg: 'Faild to register user'
                 });
             } else {
-                console.log(user) 
                 if (req.body.role == 'patient'){
                     
                 } else {
-                    console.log(newDonor)
                     Donor.addDonor(newDonor, (err, donor) => {
                           if (err) {
+                            res.status(500);
                             User.deleteUserById(user._id,(err,dd)=>{});
                             res.json({
                                 user: user,
@@ -98,6 +98,7 @@ router.post('/signup', (req,res) => {
                                 if(req.body.fpcount == 0) {
                                     Fingerprint.addFingerprint(fingerprint, (err, fingerprint) => {
                                         if (err) {
+                                            res.status(500);
                                             User.deleteUserById(user._id, (err, dd) => {});
                                             Donor.deleteDonor(donor._id, (err, dd) => {});
                                             res.json({
@@ -118,6 +119,7 @@ router.post('/signup', (req,res) => {
                                                 })
                                                 Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
                                                     if (err) {
+                                                        res.status(500);
                                                         User.deleteUserById(user._id, (err, dd) => {});
                                                         Donor.deleteDonor(donor._id, (err, dd) => {});
                                                         Fingerprint.deleteFingerprintById(user._id, (err, dd) => {});
@@ -147,6 +149,7 @@ router.post('/signup', (req,res) => {
                                 } else if (req.body.fpcount == 1) {
                                     Fingerprint.editFingerprint(req.body.fingerprint,nuser,'donor',(err,fingerprint) => {
                                         if (err) {
+                                            res.status(500);
                                             User.deleteUserById(user._id, (err, dd) => {});
                                             Donor.deleteDonor(donor._id, (err, dd) => {});
                                             res.json({
@@ -157,6 +160,7 @@ router.post('/signup', (req,res) => {
                                         } else {
                                             Fingerprint.blockFingerprint(req.body.fingerprint,(err,fingerprint)=>{
                                                 if (err) {
+                                                    res.status(500);
                                                     User.deleteUserById(user._id, (err, dd) => {});
                                                     Donor.deleteDonor(donor._id, (err, dd) => {});
                                                     res.json({
@@ -177,6 +181,7 @@ router.post('/signup', (req,res) => {
                                                         })
                                                         Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
                                                             if (err) {
+                                                                res.status(500);
                                                                 User.deleteUserById(user._id, (err, dd) => {});
                                                                 Donor.deleteDonor(donor._id, (err, dd) => {});
                                                                 res.json({
@@ -205,6 +210,7 @@ router.post('/signup', (req,res) => {
                                         }
                                     })
                                 } else {
+                                    res.status(500);
                                     User.deleteUserById(user._id, (err, dd) => {});
                                     Donor.deleteDonor(donor._id, (err, dd) => {});
                                     res.json({
@@ -221,6 +227,7 @@ router.post('/signup', (req,res) => {
         })
 
     } else {
+        res.status(500);
         res.json({
             data: err,
             success: false,
@@ -237,6 +244,7 @@ router.post('/authenticate', (req, res) => {
    
     User.getUserBYEmail(email,(err,user)=>{
         if(err){
+            res.status(500);
             return res.json({
                 data: err,
                 success: false,
@@ -244,7 +252,8 @@ router.post('/authenticate', (req, res) => {
             });
         }
         if(!user){
-           return res.json({
+            res.status(500);
+            return res.json({
                data: '',
                success: false, 
                msg : 'User not found'
@@ -252,6 +261,7 @@ router.post('/authenticate', (req, res) => {
         }
         User.comparePassword(password, user.password, (err, isMatch) => {
             if(err){
+                res.status(500);
                 return res.json({
                     data: err,
                     success: false,
@@ -262,6 +272,7 @@ router.post('/authenticate', (req, res) => {
                 if (isMatch) {
 
                     if (user.temporyBan) {
+                        res.status(500);
                         return res.json({
                             data: '',
                             success: false,
@@ -295,6 +306,7 @@ router.post('/authenticate', (req, res) => {
                         })
                     }
                 } else {
+                    res.status(500);
                     return res.json({
                         data: '',
                         success: false,
@@ -330,6 +342,7 @@ router.post('/authenticate', (req, res) => {
 
                     })
                 } else {
+                    res.status(500);
                     return res.json({
                         data: '',
                         success: false,
@@ -364,9 +377,9 @@ router.get('/validate', (req, res) => {
 
 
 router.post('/activate',  passport.authenticate('jwt',{session:false}),(req,res) =>{
-     console.log(req.body._id);
     User.activate(req.body._id, req.body.password, (err, user) => {
                 if (err) {
+                    res.status(500);
                     res.json({
                         data: '',
                         success: false,
@@ -393,6 +406,7 @@ router.post('/register', (req, res) => {
     })
     User.register(user, (err, user) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: '',
                 success: false,

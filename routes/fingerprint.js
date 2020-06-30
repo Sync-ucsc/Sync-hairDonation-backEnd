@@ -13,6 +13,7 @@ router.get('/get/:fingerprint',(req,res) =>{
     
     Fingerprint.getFingerprint(req.params.fingerprint,(err,fingerprint)=>{
         if (err) {
+            res.status(500);
             res.json({
                 data: '',
                 success: false,

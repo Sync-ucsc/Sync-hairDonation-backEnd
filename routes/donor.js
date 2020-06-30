@@ -7,37 +7,6 @@ const Donor = require('../models/donor');
 const User = require('../models/user');
 
 
-// signup
-router.post('/signup', (req, res) => {
-
-
-    let newUser = new User({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        token: req.body.token
-    });
-
-    let newDonor = new Donor({
-
-    })
-
-    User.addUser(newUser, (err, user) => {
-        if (err) {
-            res.json({
-                success: false,
-                msg: 'Faild to register user'
-            })
-        } else {
-            res.json({
-                success: true,
-                msg: 'User registere',
-                user: user
-            })
-        }
-    })
-})
-
 
 // Donor request
 router.post('/addDonorRequest', (req, res) => {
@@ -52,7 +21,7 @@ router.post('/addDonorRequest', (req, res) => {
     }
     Donor.addDonorRequest(req.body.email,request,(err,donor)=>{
         if (err) {
-            console.log(err)
+          res.status(500);
             res.json({
                 data: err,
                 success: false,
@@ -75,6 +44,7 @@ router.get('/', (req, res) => {
     const io = req.app.get('io');
     Donor.getAll((err, donor) => {
       if (err) {
+        res.status(500);
         res.json({
           data: '',
           success: false,
@@ -97,6 +67,7 @@ router.get('/', (req, res) => {
     const io = req.app.get('io');
     Donor.getById(req.params.id, (err,donor) => {
       if (err) {
+        res.status(500);
         res.json({
           data: '',
           success: false,
@@ -131,6 +102,7 @@ router.get('/', (req, res) => {
   
     Donor.updateDonor(updatedDonor, (err, donor) => {
       if (err) {
+        res.status(500);
         res.json({
           data: err,
           success: false,
@@ -159,6 +131,7 @@ router.get('/', (req, res) => {
   
     Donor.deleteDonor(req.params.id, (err, donor) => {
       if (err) {
+        res.status(500);
         res.json({
           data: err,
           success: false,

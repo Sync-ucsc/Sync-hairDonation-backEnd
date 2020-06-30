@@ -20,6 +20,7 @@ router.post('/add', (req, res) => {
 
     Notification.addNotification(newNotification, (err, notification) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: err,
                 success: false,
@@ -53,6 +54,7 @@ router.post('/edit', (req, res) => {
 
     Notification.editNotification(editNotification, (err, notification) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: err,
                 success: false,
@@ -77,6 +79,7 @@ router.delete('/all',(req,res) =>{
     const io = req.app.get('io');
     Notification.deleteNotificationAll((err, notification) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: '',
                 success: false,
@@ -100,6 +103,7 @@ router.delete('/delete', (req, res) => {
     const io = req.app.get('io');
     Notification.deleteNotificationById(req.body._id, (err, notification) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: err,
                 success: false,
@@ -121,6 +125,7 @@ router.delete('/delete', (req, res) => {
 router.get('/all', (req, res) => {
     Notification.getAll((err, notifications) => {
     if (err) {
+        res.status(500);
         res.json({
             data: '',
             success: false,
@@ -141,6 +146,7 @@ router.get('/all', (req, res) => {
 router.get('/get', (req, res) => {
     Notification.getById(req.body.id,(err, notification) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: '',
                 success: false,

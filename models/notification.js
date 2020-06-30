@@ -37,7 +37,6 @@ module.exports.addNotification = function (newNotification, callback) {
 //Notification edit
 module.exports.editNotification = function (newNotification, callback) {
 
-    console.log(newNotification._id)
 
     Notification.findByIdAndUpdate(newNotification._id, {
         $set: newNotification
@@ -67,6 +66,5 @@ module.exports.deleteNotificationAll = function (callback) {
 
 //Notification delete
 module.exports.deleteNotificationById = function (id, callback) {
-    console.log('dx')
     Notification.findByIdAndDelete(id,callback);
 }

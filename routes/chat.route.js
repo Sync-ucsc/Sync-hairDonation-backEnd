@@ -16,6 +16,7 @@ router.post('/addNewMessage', async ( req , res ) => {
         const response = await chatService.addNewMessage(req.body, req.app.get('io'));
         res.send(sendResponse(response));
     } catch (err) {
+        res.status(500);
         res.send(sendResponse(undefined,false, err));
     }
 
@@ -34,6 +35,7 @@ router.post('/deleteAllMessages' , async ( _ , res) => {
         const response = await chatService.removeAll();
         res.send(sendResponse(response));
     }catch (error) {
+        res.status(500);
         res.send(sendResponse(undefined, false, error));
     }
 });
@@ -43,6 +45,7 @@ router.post('/deleteMessages' , async ( req , res) => {
         const response = await chatService.removeById(req.body);
         res.send(sendResponse(response));
     }catch (error) {
+        res.status(500);
         res.send(sendResponse(undefined, false, error));
     }
 });
