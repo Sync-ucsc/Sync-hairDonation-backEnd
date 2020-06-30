@@ -67,7 +67,20 @@ router.post('/testBroadcast', (req,res) => {
 });
 
 // error routes
-router.get('*' , (_ , res) => res.send(sendResponse(undefined, false, 'path not match get requests')));
-router.post('*' , (_ , res) => res.send(sendResponse(undefined, false, 'path not match post requests')));
-
+router.get('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
 module.exports = router;

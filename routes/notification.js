@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/database')
 const Notification = require('../models/notification');
 
+const {sendResponse} = require('../utils/response.utils');
+
+
 //add notification
 router.post('/add', (req, res) => {
     const io = req.app.get('io');
@@ -162,4 +165,21 @@ router.get('/get', (req, res) => {
     })
 })
 
+// error routes
+router.get('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
 module.exports = router;

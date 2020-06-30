@@ -102,10 +102,9 @@ app.use((req,res,next) => {
 app.use((erorr,req,res,next)=> {
     res.status(erorr.status || 500);
     res.json({
-        err: erorr.message,
-        data : erorr,
+        data: undefined,
         success: false,
-        msg: 'erorr'
+        msg: 'path not match post requests'
     })
 })
 

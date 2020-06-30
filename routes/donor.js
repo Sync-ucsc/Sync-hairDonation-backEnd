@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 const Donor = require('../models/donor');
 const User = require('../models/user');
+const {sendResponse} = require('../utils/response.utils');
 
 
 
@@ -163,4 +164,21 @@ router.get('/', (req, res) => {
 
 // profile
 
+// error routes
+router.get('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
 module.exports = router;

@@ -1,14 +1,15 @@
 const express = require('express');
 const app = express();
-const salonRoute = express.Router();
+const router = express.Router();
 
+const {sendResponse} = require('../utils/response.utils');
 
 // Salon model
 let Salon = require('../models/salons');
 let User = require('../models/user');
 
 // Add a Salon
-salonRoute.route('/create').post((req, res, next) => {
+router.route('/create').post((req, res, next) => {
   const io = req.app.get('io');
   let newSalon = new Salon({
     name: req.body.name,
@@ -67,7 +68,7 @@ salonRoute.route('/create').post((req, res, next) => {
 });
 
 // Get All Salons
-salonRoute.route('/').get((req, res) => {
+router.route('/').get((req, res) => {
   const io = req.app.get('io');
   Salon.getAll((err, salon) => {
     if (err) {
@@ -90,7 +91,7 @@ salonRoute.route('/').get((req, res) => {
 
 
 // Get a single salon
-salonRoute.get('/read/:id', (req, res) => {
+router.get('/read/:id', (req, res) => {
   const io = req.app.get('io');
   Salon.getById(req.params.id, (err, salon) => {
     if (err) {
@@ -112,7 +113,7 @@ salonRoute.get('/read/:id', (req, res) => {
 
 
 // Update salon
-salonRoute.post('/update/:id', (req, res) => {
+router.post('/update/:id', (req, res) => {
   const io = req.app.get('io');
   let updatedSalon = Salon({
     _id: req.params.id,
@@ -152,7 +153,7 @@ salonRoute.post('/update/:id', (req, res) => {
 })
 
 // Delete salon
-salonRoute.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', (req, res) => {
   const io = req.app.get('io');
   console.log(req.params.id)
 
@@ -176,4 +177,23 @@ salonRoute.delete('/delete/:id', (req, res) => {
 
 })
 
-module.exports = salonRoute;
+
+
+// error routes
+router.get('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+  res.status(404);
+  res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+module.exports = router;

@@ -4,6 +4,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database')
 const Fingerprint = require('../models/fingerprint');
+const {sendResponse} = require('../utils/response.utils');
 
 
 
@@ -39,4 +40,21 @@ router.get('/get/:fingerprint',(req,res) =>{
     })
 })
 
+// error routes
+router.get('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
 module.exports = router;
