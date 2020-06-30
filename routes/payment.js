@@ -61,7 +61,20 @@ router.post('/createPayment', ( req , res) => {
 router.get('/testPayment', ( req , res) => {res.send(sendResponse('payment route'));});
 
 // error routes
-router.get('*' , (_ , res) => res.send(sendResponse(undefined, false, 'path not match get requests')));
-router.post('*' , (_ , res) => res.send(sendResponse(undefined, false, 'path not match post requests')));
-
+router.get('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
 module.exports = router;

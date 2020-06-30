@@ -9,6 +9,9 @@ const Fingerprint = require('../models/fingerprint')
 const Ip = require('../models/ip')
 var ipapi = require('ipapi.co')
 
+
+const {sendResponse} = require('../utils/response.utils');
+
 //signup
 
 router.post('/signup', (req,res) => {
@@ -424,5 +427,21 @@ router.post('/register', (req, res) => {
 
 
 
-
+// error routes
+router.get('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
 module.exports = router;
