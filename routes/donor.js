@@ -91,14 +91,16 @@ router.get('/', (req, res) => {
     let updatedDonor = Donor({
       _id: req.params.id,
       firstName: req.body.firstName,
+      lastName: req.body.lastName,
       email: req.body.email,
       telePhone: req.body.telePhone,
-    //   address: req.body.address,
+      address: req.body.address,
+      nic:req.body.nic,
+      lat: req.body.lat,
+      lon: req.body.lon,
     //   checkSystem: req.body.checkSystem,
     //   checkSms: req.body.checkSms,
     //   checkEmail: req.body.checkEmail,
-    //   latitude: req.body.latitude,
-    //   longitude: req.body.longitude,
     })
   
     Donor.updateDonor(updatedDonor, (err, donor) => {
