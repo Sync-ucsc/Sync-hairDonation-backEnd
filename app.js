@@ -37,6 +37,7 @@ const getInTouch = require('./routes/getInTouch.route');
 const manager=require('./routes/manager.route')
 const fingerprint = require('./routes/fingerprint')
 const driverSalonLocations = require('./routes/driverSalonLocation.route');
+const wigRequest = require('./routes/wigRequest.route');
 
 const port = process.env.PORT || 3000;
 
@@ -71,7 +72,8 @@ app.use('/payment', chat);
 app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
 app.use('/fingerprint', fingerprint);
-app.use('/driverSalonLocations', driverSalonLocations)
+app.use('/driverSalonLocations', driverSalonLocations);
+app.use('/wigRequest', wigRequest);
 
 app.get('/', (req,res) => {
     res.send('hi');
