@@ -119,6 +119,5 @@ module.exports.activate = function(id,password,callback){
 }
 
 module.exports.deleteUserById = function (id, callback) {
-    console.log('ggg')
     User.findByIdAndDelete(id, callback);
 }

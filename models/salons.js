@@ -89,6 +89,5 @@ module.exports.updateSalon = function (updatedSalon, callback) {
 }
 //salon delete
 module.exports.deleteSalon = function (id, callback) {
-    console.log('deleted salon')
     Salon.findByIdAndDelete(id, callback);
 }

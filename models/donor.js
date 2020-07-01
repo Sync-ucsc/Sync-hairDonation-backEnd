@@ -124,6 +124,5 @@ module.exports.updateDonor = function (updatedDonor, callback) {
 }
 //Donor delete
 module.exports.deleteDonor = function (id, callback) {
-    console.log('deleted Donor')
     Donor.findByIdAndDelete(id, callback);
 }

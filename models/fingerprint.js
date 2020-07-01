@@ -89,3 +89,6 @@ module.exports.unblockFingerprint = function (Fingerprint,callback){
 
 }
 
+module.exports.deleteFingerprintById = function (id, callback) {
+    Fingerprint.findByIdAndDelete(id, callback);
+}

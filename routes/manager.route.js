@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const managerRoute = express.Router();
+const router = express.Router();
+const {sendResponse} = require('../utils/response.utils');
 
 
 // Manager model
@@ -8,7 +9,7 @@ let Manager = require('../models/manager');
 let User=require('../models/user');
 
 // Add a Manager
-managerRoute.route('/create').post((req, res, next) => {
+router.route('/create').post((req, res, next) => {
     const io = req.app.get('io');
     let newManager = new Manager({
         firstName: req.body.firstName,
@@ -28,6 +29,7 @@ managerRoute.route('/create').post((req, res, next) => {
 
     User.register(user, (err, user) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: '',
                 success: false,
@@ -36,6 +38,7 @@ managerRoute.route('/create').post((req, res, next) => {
         } else {
             Manager.addManager(newManager, (err, salon) => {
                 if (err) {
+                    res.status(500);
                     res.json({
                         data: err,
                         success: false,
@@ -59,10 +62,11 @@ managerRoute.route('/create').post((req, res, next) => {
 
 
 // Get All Managers
-managerRoute.route('/').get((req, res) => {
+router.route('/').get((req, res) => {
     const io = req.app.get('io');
     Manager.getAll((err, manager) => {
         if (err) {
+            res.status(500);
             res.json({
                 data: '',
                 success: false,
@@ -81,7 +85,7 @@ managerRoute.route('/').get((req, res) => {
 
 
 // Get a single manager
-managerRoute.get('/read/:id', (req, res) => {
+router.get('/read/:id', (req, res) => {
     const io = req.app.get('io');
     Manager.getById(req.params.id, (err, manager) => {
         if (err) {
@@ -102,7 +106,7 @@ managerRoute.get('/read/:id', (req, res) => {
 
 
 // Update manager
-managerRoute.post('/update/:id', (req, res) => {
+router.post('/update/:id', (req, res) => {
     const io = req.app.get('io');
     let updatedManager = Manager({
         _id: req.params.id,
@@ -138,7 +142,7 @@ managerRoute.post('/update/:id', (req, res) => {
 })
 
 // Delete a manager
-managerRoute.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', (req, res) => {
     const io = req.app.get('io');
     console.log(req.params.id)
 
@@ -161,4 +165,21 @@ managerRoute.delete('/delete/:id', (req, res) => {
 
 })
 
-module.exports = managerRoute;
+// error routes
+router.get('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+module.exports = router;

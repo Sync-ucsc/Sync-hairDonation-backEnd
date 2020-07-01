@@ -5,11 +5,14 @@ const cors = require('cors');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database')
+var logger = require('morgan');
+
 
 //socket.io
 const socketIo = require('socket.io');
 const http = require('http');
 const ChatService =  require('./services/chat.service');
+
 
 // conect database
 mongoose.connect(config.database);
@@ -36,6 +39,12 @@ const fingerprint = require('./routes/fingerprint')
 const driverSalonLocations = require('./routes/driverSalonLocation.route');
 
 const port = process.env.PORT || 3000;
+
+if (app.get('env') === 'production') {
+    app.use(logger('combined'));
+} else {
+    app.use(logger('dev'));
+}
 
 
 //cors middlware
@@ -73,12 +82,29 @@ app.get('/', (req,res) => {
 // });
 
 const server = app.listen(port ,() =>{
-    var host = 'http://' + /*server.address().address*/'syncucsc.herokuapp.com' + ':' + server.address().port;
+    var host = 'http://' + /*server.address().address*/ '127.0.0.1' + ':' + server.address().port;
     app.set('host', host);
     console.log("server start on "+port);
+    console.log(app.get('env'));
 });
 
 var io = require('socket.io').listen(server);
 
 app.set('io', io);
 (new ChatService()).checkConnection(io);
+
+app.use((req,res,next) => {
+    const erorr = new Error('Not found');
+    erorr.status = 404;
+    next(error);
+})
+
+app.use((erorr,req,res,next)=> {
+    res.status(erorr.status || 500);
+    res.json({
+        data: undefined,
+        success: false,
+        msg: 'path not match post requests'
+    })
+})
+

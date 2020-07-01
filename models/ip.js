@@ -2,14 +2,11 @@ const mongoose = require('mongoose');
 const bcrpt = require('bcryptjs');
 const config = require('../config/database');
 
-const IpSchema = mongoose.Schema({
+const Ipchema = mongoose.Schema({
     ipv4: {
         type: String,
         required: true,
         unique: true
-    },
-    ipv6: {
-        type: String,
     },
     fingerprint:{
         type: Number,
@@ -41,17 +38,18 @@ const IpSchema = mongoose.Schema({
 });
 
 
-const Ip = module.exports = mongoose.model('Ip', IpSchema);
+const Ip = module.exports = mongoose.model('Ip', Ipchema);
 
 module.exports.addIp = function (newIp, user, role, callback) {
 
      Ip.count({ ipv4: newIp.ipv4 }, function (err, count) {
          if (count > 0) {
-             Ip.findOneAndUpdate(query, {
+             Ip.findOneAndUpdate({ ipv4: newIp.ipv4}, {
                  $push: {
                      users: user,
-                     userType: role
-                 }
+                      userType: role,
+                 },
+                 
              }, callback);
          }
          else {

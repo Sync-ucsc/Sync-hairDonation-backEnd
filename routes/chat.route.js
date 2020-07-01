@@ -16,6 +16,7 @@ router.post('/addNewMessage', async ( req , res ) => {
         const response = await chatService.addNewMessage(req.body, req.app.get('io'));
         res.send(sendResponse(response));
     } catch (err) {
+        res.status(500);
         res.send(sendResponse(undefined,false, err));
     }
 
@@ -34,6 +35,7 @@ router.post('/deleteAllMessages' , async ( _ , res) => {
         const response = await chatService.removeAll();
         res.send(sendResponse(response));
     }catch (error) {
+        res.status(500);
         res.send(sendResponse(undefined, false, error));
     }
 });
@@ -43,6 +45,7 @@ router.post('/deleteMessages' , async ( req , res) => {
         const response = await chatService.removeById(req.body);
         res.send(sendResponse(response));
     }catch (error) {
+        res.status(500);
         res.send(sendResponse(undefined, false, error));
     }
 });
@@ -64,7 +67,20 @@ router.post('/testBroadcast', (req,res) => {
 });
 
 // error routes
-router.get('*' , (_ , res) => res.send(sendResponse(undefined, false, 'path not match get requests')));
-router.post('*' , (_ , res) => res.send(sendResponse(undefined, false, 'path not match post requests')));
-
+router.get('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.post('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
+router.put('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match get requests'))
+});
+router.delete('*', (_, res) => {
+    res.status(404);
+    res.send(sendResponse(undefined, false, 'path not match post requests'))
+});
 module.exports = router;
