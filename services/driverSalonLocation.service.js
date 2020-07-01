@@ -68,7 +68,7 @@ module.exports = class chatService {
                     {'$set': {'NeedToDeliverStatus.$.status': data.status}}
                 )
             } else {
-                throw new Error(`parameters not found`)
+                throw new Error(`invalid parameters`)
             }
         } catch (error) {
             throw error
