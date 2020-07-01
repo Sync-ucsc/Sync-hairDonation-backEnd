@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const bcrpt = require('bcryptjs');
 const config = require('../config/database');
 
+// wigRequest
+const wigRequest = require(`./wigRequest.model`);
+
 // patient schema
 const PatientSchema = mongoose.Schema({
     firstName: {
@@ -37,31 +40,7 @@ const PatientSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    request: [{
-        requestId: {
-            type: Number,
-            required: true
-        },
-        requestDay: {
-            type: Date,
-            required: true
-        },
-        wigtype:{
-            type: String,
-            required: true
-        },
-        finished: {
-            type: Boolean,
-            default: false,
-            required: true
-        },
-        canceled: {
-            type: Boolean,
-            default: false,
-            required: true
-        },
-
-    }]
+    request: [wigRequest]
 });
 
 
