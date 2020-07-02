@@ -89,7 +89,6 @@ module.exports.register = function(user,callback){
 }
 
 module.exports.activate = function(id,password,callback){
-     console.log(id);
     bcrpt.genSalt(10, (err, salt) => {
         if (err) {
             throw err;
@@ -99,12 +98,6 @@ module.exports.activate = function(id,password,callback){
                 throw err;
             //password = hash;
            
-            console.log(password);
-            console.log(hash);
-            User.findById(id, (er,u)=>{
-                console.log(u);
-                console.log(er)
-            });
             User.findByIdAndUpdate(id, {
                 $set: {
                     password: hash,
