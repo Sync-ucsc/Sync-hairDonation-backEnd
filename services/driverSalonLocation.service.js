@@ -21,8 +21,9 @@ module.exports = class chatService {
     async addNewLocationToDriver(locationData, driverId) {
         try {
             const locationObject = new location(locationData);
+            console.log(locationObject)
             return await driverSalonLocation.findOneAndUpdate(
-                {_id: driverId},
+                {driverId: driverId},
                 {$push: {locations: locationObject}}
             )
         } catch (error) {
@@ -30,24 +31,48 @@ module.exports = class chatService {
         }
     }
 
-    async changeLocationStatus(status,driverSalonLocationId){
-        try{
+    async changeJobStatus({status}, jobId) {
+        try {
             return await driverSalonLocation.findByIdAndUpdate(
-                {_id: driverSalonLocationId},
+                {_id: jobId},
                 {'status': status}
             )
-        }catch (error) {
+        } catch (error) {
             throw error
         }
     }
 
-    async changeJobStatus(status,jobId){
-        try{
-            return await driverSalonLocation.update(
-                {'locations._id': jobId},
+    async changeLocationStatus({status}, requestId) {
+        try {
+
+            const promise1 = await driverSalonLocation.update(
+                {'locations.requestId': requestId},
                 {'$set': {'locations.$.status': status}}
             )
-        }catch (error) {
+
+            const promise2 = await Salon.update(
+                {'NeedToDeliverStatus._id': requestId},
+                {'$set': {'NeedToDeliverStatus.$.status': status}}
+            )
+
+            return await Promise.all([promise1, promise2]);
+
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getJobById(driverId, {status}) {
+        try {
+            if (!status) {
+                return await driverSalonLocation.find({driverId: driverId})
+            } else {
+                return await driverSalonLocation.find({
+                    driverId: driverId,
+                    'status': status,
+                })
+            }
+        } catch (error) {
             throw error
         }
     }
