@@ -534,7 +534,173 @@ router.post('/authenticate', (req, res) => {
     });
 })
 
+router.post('/request', (req, res) => {
+    const email = req.body.email;
+    const token = req.body.token;
+    var host = req.app.get('host');
+
+
+    User.getUserBYEmail(email, (err, user) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        }
+        if (!user) {
+            res.status(500);
+            return res.json({
+                data: '',
+                success: false,
+                msg: 'User not found'
+            });
+        }
+        if(user.token){
+            User.comparePassword(token, user.token, (err, isMatch) => {
+                if (err) {
+                    res.status(500);
+                    return res.json({
+                        data: err,
+                        success: false,
+                        msg: 'error'
+                    });
+                } else {
+                    if (isMatch) {
+                        const userToken = jwt.sign(({
+                            "_id": user._id,
+                            "role": user.role,
+                            "banAction": user.banAction,
+                            "firstName": user.firstName,
+                            "lastName": user.lastName,
+                            "email": user.email,
+                            "iss": host + '/user',
+                        }), config.secret, {
+                            expiresIn: 604500
+                        });
+                        return res.json({
+                            data: {
+                                userToken: 'JWT' + userToken,
+                                user: {
+                                    email: user.email,
+                                    firstName: user.firstName,
+                                    lastName: user.lastName
+                                }
+                            },
+                            success: true,
+                            msg: 'password change'
+
+                        })
+                    } else {
+                        res.status(500);
+                        return res.json({
+                            data: '',
+                            success: false,
+                            msg: 'token is invalid'
+                        })
+                    }
+                    
+                }
+            })
+        } else {
+            User.comparePassword(token, user.password, (err, isMatch) => {
+                if (err) {
+                    res.status(500);
+                    return res.json({
+                        data: err,
+                        success: false,
+                        msg: 'error'
+                    });
+                } else {
+                    if (isMatch) {
+                        const userToken = jwt.sign(({
+                            "_id": user._id,
+                            "role": user.role,
+                            "banAction": user.banAction,
+                            "firstName": user.firstName,
+                            "lastName": user.lastName,
+                            "email": user.email,
+                            "iss": host + '/user',
+                        }), config.secret, {
+                            expiresIn: 604500
+                        });
+                        return res.json({
+                            data: {
+                                userToken: 'JWT' + userToken,
+                                user: {
+                                    email: user.email,
+                                    firstName: user.firstName,
+                                    lastName: user.lastName
+                                }
+                            },
+                            success: true,
+                            msg: 'password change'
+
+                        })
+                    } else {
+                        res.status(500);
+                        return res.json({
+                            data: '',
+                            success: false,
+                            msg: 'token is invalid'
+                        })
+                    }
+                }
+            })
+        }
+    });
+})
+
+
+
 router.get('/profile', passport.authenticate('jwt',{session:false}), (req, res) => {
+    res.json({
+        data: {
+            "_id": req.user._id,
+            "role": req.user.role,
+            "banAction": req.user.banAction,
+            "firstName": req.user.firstName,
+            "lastName": req.user.lastName,
+            "active": req.user.active,
+            "email": req.user.email,
+        },
+        success: true,
+        msg: 'User profile',
+    });
+})
+
+router.get('/chanePassword', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    User.getUserBYEmail(email, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    return res.json({
+                        data: err,
+                        success: false,
+                        msg: 'err'
+                    });
+                } else {
+                      User.activate(user._id, req.body.password, (err, user) => {
+                          if (err) {
+                              res.status(500);
+                              res.json({
+                                  data: '',
+                                  success: false,
+                                  msg: 'Faild to Password change'
+                              })
+                          } else {
+                              res.json({
+                                  data: user,
+                                  success: true,
+                                  msg: 'Password change',
+                              })
+                          }
+                      })
+                }
+            });
+                
     res.json({
         data: {
             "_id": req.user._id,
@@ -555,23 +721,38 @@ router.get('/validate', (req, res) => {
 })
 
 
-router.post('/activate',  passport.authenticate('jwt',{session:false}),(req,res) =>{
-    User.activate(req.body._id, req.body.password, (err, user) => {
-                if (err) {
-                    res.status(500);
-                    res.json({
-                        data: '',
-                        success: false,
-                        msg: 'Faild to Password change'
-                    })
-                } else {
-                    res.json({
-                        data: user,
-                        success: true,
-                        msg: 'Password change',
-                    })
-                }
-            })
+router.post('/profileChanePassword', passport.authenticate('jwt', {
+            session: false
+        }), (req, res) => {
+     User.getUserBYEmail(email, (err, user) => {
+         if (err) {
+             res.status(500);
+             return res.json({
+                 data: err,
+                 success: false,
+                 msg: 'err'
+             });
+         } else {
+             if(user.password == req.body.oldPassword){
+                 User.activate(user._id, req.body.password, (err, user) => {
+                     if (err) {
+                         res.status(500);
+                         res.json({
+                             data: '',
+                             success: false,
+                             msg: 'Faild to Password change'
+                         })
+                     } else {
+                         res.json({
+                             data: user,
+                             success: true,
+                             msg: 'Password change',
+                         })
+                     }
+                 })
+             }
+         }
+     });
 })
 
 
