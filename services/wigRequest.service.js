@@ -1,6 +1,9 @@
 const Patient = require(`../models/patient`);
 const WigRequest = require(`../models/wigRequest.model`)
 
+const SharedService = require(`../services/shared.service`);
+const sharedService = new SharedService();
+
 module.exports = class wigRequestService {
 
     constructor() {
@@ -44,20 +47,10 @@ module.exports = class wigRequestService {
     async getLastRequestData(patientId) {
         try {
             const result = await Patient.findById(patientId);
-            return result.request.sort((a, b) => {
 
-                const date01 = new Date(a.requestDay)
-                const date02 = new Date(b.requestDay)
+            return result.request
+                .sort((a, b) => sharedService.sortByDate(a.requestDay, b.requestDay))[0];
 
-                if (date01 < date02) {
-                    return 1
-                } else if (date01 > date02) {
-                    return -1
-                } else {
-                    return 0
-                }
-
-            })[0];
         } catch (error) {
             throw error
         }
