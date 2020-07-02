@@ -38,6 +38,7 @@ const manager=require('./routes/manager.route')
 const fingerprint = require('./routes/fingerprint')
 const driverSalonLocations = require('./routes/driverSalonLocation.route');
 const wigRequest = require('./routes/wigRequest.route');
+const sms = require('./routes/sms.route');
 
 const port = process.env.PORT || 3000;
 
@@ -74,6 +75,7 @@ app.use('/manager',manager);
 app.use('/fingerprint', fingerprint);
 app.use('/driverSalonLocations', driverSalonLocations);
 app.use('/wigRequest', wigRequest);
+app.use('/sms', sms);
 
 app.get('/', (req,res) => {
     res.send('hi');
