@@ -3,6 +3,14 @@ const mongoose = require('mongoose');
 // status COLLECTED , NOT_COLLECTED
 
 const locationSchema = mongoose.Schema({
+    salonId: {
+        type: String,
+        required: true,
+    },
+    requestId: {
+        type: String,
+        required: true,
+    },
     lat: {
         type: String,
         required: true
@@ -12,12 +20,12 @@ const locationSchema = mongoose.Schema({
         required: true
     },
     noOfWigs: {
-        type: String,
+        type: Number,
         required: true
     },
     status: {
         type: String,
-        default: 'NOT_COLLECTED',
+        default: 'NeedToDeliver', // NeedToDeliver | Delivered  | Cancel,
         required: true
     },
 });

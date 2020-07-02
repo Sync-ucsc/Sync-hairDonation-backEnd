@@ -39,14 +39,14 @@ router.put('/addNewLocationToDriver/:driverId', async (req, res) => {
     }
 });
 
-router.put('/changeLocationStatus/:driverSalonLocationId', async (req, res) => {
+router.put('/changeLocationStatus/:requestId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
         const status = req.body;
-        const driverSalonLocationId = req.params.driverSalonLocationId
+        const requestId = req.params.requestId
 
-        const response = await driverSalonLocation.changeLocationStatus(status, driverSalonLocationId);
+        const response = await driverSalonLocation.changeLocationStatus(status, requestId);
 
         io.emit('update-driver-location');
 
@@ -75,9 +75,19 @@ router.put('/changeJobStatus/:jobId', async (req, res) => {
     }
 })
 
+router.put('/getJob/:driverId', async (req, res) => {
+    try {
+        const driverId = req.params.driverId
+        res.send(sendResponse(await driverSalonLocation.getJobById(driverId, req.body)))
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
 router.get('/all', async (_, res) => {
     res.send(sendResponse(await driverSalonLocation.getAll()));
 });
+
 
 
 router.post('/deleteOne', async (req, res) => {
