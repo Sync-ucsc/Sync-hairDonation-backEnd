@@ -83,6 +83,28 @@ router.get('/', (req, res) => {
       }
     })
   })
+
+    // Get a single donor by email
+    router.get('/getDonor/', (req, res) => {
+      const io = req.app.get('io');
+      Donor.getDonorByEmail(req.body.email, (err,donor) => {
+        if (err) {
+          res.status(500);
+          res.json({
+            data: '',
+            success: false,
+            msg: 'Failed to get the donor'
+          })
+        } else {
+          res.json({
+            data: donor,
+            success: true,
+            msg: 'got the donor',
+          })
+        }
+      })
+    })
+    
   
   
   // Update donor

@@ -111,6 +111,12 @@ module.exports.getById = function (id, callback) {
     Donor.findById(id, callback);
 }
 
+//Donor get by email
+module.exports.getDonorByEmail = function (email, callback) {
+    const query =  { email: email};
+    Donor.findById(query, callback);
+}
+
 //Donor salon
 module.exports.updateDonor = function (updatedDonor, callback) {
 
