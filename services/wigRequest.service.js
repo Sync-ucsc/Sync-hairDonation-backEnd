@@ -41,6 +41,28 @@ module.exports = class wigRequestService {
         }
     }
 
+    async getLastRequestData(patientId) {
+        try {
+            const result = await Patient.findById(patientId);
+            return result.request.sort((a, b) => {
+
+                const date01 = new Date(a.requestDay)
+                const date02 = new Date(b.requestDay)
+
+                if (date01 < date02) {
+                    return 1
+                } else if (date01 > date02) {
+                    return -1
+                } else {
+                    return 0
+                }
+
+            })[0];
+        } catch (error) {
+            throw error
+        }
+    }
+
     // for testing
 
 
