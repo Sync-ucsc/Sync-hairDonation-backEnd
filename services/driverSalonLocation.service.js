@@ -1,4 +1,4 @@
-const driverSalonLocation = require('../models/driverSalonLocation.model');
+const {driverSalonLocation, location} = require('../models/driverSalonLocation.model');
 const Salon = require('../models/salons');
 const NeedToDeliver = require('../models/NeedToDeliverSchema');
 
@@ -9,7 +9,7 @@ module.exports = class chatService {
     }
 
 
-    async addOne(data) {
+    async addJobToDriver(data) {
         try {
             const DriverSalonLocation = new driverSalonLocation(data);
             return await DriverSalonLocation.save();
@@ -18,32 +18,39 @@ module.exports = class chatService {
         }
     }
 
-    // for testing
-    async getAll() {
+    async addNewLocationToDriver(locationData, driverId) {
         try {
-            return await driverSalonLocation.find();
+            const locationObject = new location(locationData);
+            return await driverSalonLocation.findOneAndUpdate(
+                {_id: driverId},
+                {$push: {locations: locationObject}}
+            )
         } catch (error) {
-            throw error;
+            throw error
         }
     }
 
-    async removeById({id}) {
-        try {
-            return await driverSalonLocation.findByIdAndDelete(id);
-        } catch (error) {
-            throw error;
+    async changeLocationStatus(status,driverSalonLocationId){
+        try{
+            return await driverSalonLocation.findByIdAndUpdate(
+                {_id: driverSalonLocationId},
+                {'status': status}
+            )
+        }catch (error) {
+            throw error
         }
     }
 
-
-    async removeAll() {
-        try {
-            return await driverSalonLocation.remove({});
-        } catch (error) {
-            throw error;
+    async changeJobStatus(status,jobId){
+        try{
+            return await driverSalonLocation.update(
+                {'locations._id': jobId},
+                {'$set': {'locations.$.status': status}}
+            )
+        }catch (error) {
+            throw error
         }
     }
-
 
     // Salon
     async getAllSalon() {
@@ -72,6 +79,32 @@ module.exports = class chatService {
             }
         } catch (error) {
             throw error
+        }
+    }
+
+    // for testing
+    async getAll() {
+        try {
+            return await driverSalonLocation.find();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async removeById({id}) {
+        try {
+            return await driverSalonLocation.findByIdAndDelete(id);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
+    async removeAll() {
+        try {
+            return await driverSalonLocation.remove({});
+        } catch (error) {
+            throw error;
         }
     }
 };
