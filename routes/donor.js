@@ -40,7 +40,7 @@ router.post('/addDonorRequest', (req, res) => {
     })
 })
 
-// Get All Salons
+// Get All Donors
 router.get('/', (req, res) => {
     const io = req.app.get('io');
     Donor.getAll((err, donor) => {
@@ -85,13 +85,13 @@ router.get('/', (req, res) => {
   })
 
     // Get a single donor by email
-    router.get('/getDonor/', (req, res) => {
+    router.get('/getDonor/:email', (req, res) => {
       const io = req.app.get('io');
-      Donor.getDonorByEmail(req.body.email, (err,donor) => {
+      Donor.getDonorByEmail(req.params.email, (err,donor) => {
         if (err) {
           res.status(500);
           res.json({
-            data: '',
+            data: 'err',
             success: false,
             msg: 'Failed to get the donor'
           })
