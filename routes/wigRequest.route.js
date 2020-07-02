@@ -24,6 +24,20 @@ router.put('/add/:patientId', async (req, res) => {
     }
 });
 
+router.get('/lastRequestStatus/:patientId', async (req, res) => {
+    try {
+
+        const patientId = req.params.patientId;
+        const lastRequest = await wigRequestService.getLastRequestData(patientId);
+
+        res.send(sendResponse(lastRequest));
+
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+
+})
+
 router.get('/cancelRequest/:requestId', async (req, res) => {
     try {
         const io = req.app.get('io');
