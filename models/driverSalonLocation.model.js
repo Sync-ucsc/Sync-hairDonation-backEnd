@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // status COLLECTED , NOT_COLLECTED
 
-const location = mongoose.Schema({
+const locationSchema = mongoose.Schema({
     lat: {
         type: String,
         required: true
@@ -31,7 +31,7 @@ const driverSalonLocationSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    locations: [location],
+    locations: [locationSchema],
     createdAt: {
         type: Date,
         default: Date.now(),
@@ -39,9 +39,15 @@ const driverSalonLocationSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        default: 'NOT_COLLECTED',
+        default: 'NOT_COMPLETED',
         required: true
     },
 });
 
-module.exports = mongoose.model('driverSalonLocation', driverSalonLocationSchema);
+const location = mongoose.model('location', locationSchema)
+const driverSalonLocation = mongoose.model('driverSalonLocation', driverSalonLocationSchema);
+
+module.exports = {
+    location: location,
+    driverSalonLocation: driverSalonLocation,
+}

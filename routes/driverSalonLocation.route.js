@@ -9,17 +9,71 @@ const driverSalonLocation = new DriverSalonLocation();
 
 router.use(bodyParser.urlencoded({extended: false}));
 
-router.post('/add', async (req, res) => {
+router.post('/addJobToDriver', async (req, res) => {
     try {
         const io = req.app.get('io');
-        const response = await driverSalonLocation.addOne(req.body);
-        // io.emit('new-contact-us');
+        const response = await driverSalonLocation.addJobToDriver(req.body);
+        io.emit('new-driver-location');
         res.send(sendResponse(response));
-    } catch (err) {
-        console.log(err)
-        res.send(sendResponse(undefined, false, err.toString()));
+    } catch (error) {
+        console.log(error)
+        res.send(sendResponse(undefined, false, error.toString()));
     }
 });
+
+
+router.put('/addNewLocationToDriver/:driverId', async (req, res) => {
+    try {
+        const io = req.app.get('io');
+
+        const locationData = req.body;
+        const driverId = req.params.driverId
+        const response = await driverSalonLocation.addNewLocationToDriver(locationData, driverId);
+
+        io.emit('update-driver-location');
+
+        res.send(sendResponse(response));
+    } catch (error) {
+        console.log(error)
+        res.send(sendResponse(undefined, false, error.toString()));
+    }
+});
+
+router.put('/changeLocationStatus/:driverSalonLocationId', async (req, res) => {
+    try {
+        const io = req.app.get('io');
+
+        const status = req.body;
+        const driverSalonLocationId = req.params.driverSalonLocationId
+
+        const response = await driverSalonLocation.changeLocationStatus(status, driverSalonLocationId);
+
+        io.emit('update-driver-location');
+
+        res.send(sendResponse(response));
+    } catch (error) {
+        console.log(error)
+        res.send(sendResponse(undefined, false, error.toString()));
+    }
+})
+
+router.put('/changeJobStatus/:jobId', async (req, res) => {
+    try {
+        const io = req.app.get('io');
+
+        const status = req.body;
+        const jobId = req.params.jobId
+
+        const response = await driverSalonLocation.changeJobStatus(status, jobId);
+
+        io.emit('update-driver-location');
+
+        res.send(sendResponse(response));
+    } catch (error) {
+        console.log(error)
+        res.send(sendResponse(undefined, false, error.toString()));
+    }
+})
 
 router.get('/all', async (_, res) => {
     res.send(sendResponse(await driverSalonLocation.getAll()));
@@ -48,8 +102,8 @@ router.post(`/updateDeliverStatus`, async (req, res) => {
         res.send(
             sendResponse(
                 await driverSalonLocation.updateNeedToDeliverStatus(
-                    {salonId: `5efa2ed22e4e440d2463c900`, status: 'Delivered', deliverId : `5efa5f0881850944ac73553b`}
-                    ),
+                    {salonId: `5efa2ed22e4e440d2463c900`, status: 'Delivered', deliverId: `5efa5f0881850944ac73553b`}
+                ),
             )
         )
     } catch (error) {
