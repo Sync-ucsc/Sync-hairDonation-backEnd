@@ -4,16 +4,16 @@ const bodyParser = require('body-parser');
 
 const {sendResponse} = require('../utils/response.utils');
 
-const DriverSalonLocation = require('../services/driverSalonLocation.service');
-const driverSalonLocation = new DriverSalonLocation();
+const targetsService = require('../services/targets.service');
+const TargetsService = new targetsService();
 
 router.use(bodyParser.urlencoded({extended: false}));
 
-router.post('/addJobToDriver', async (req, res) => {
+router.post('/addTargetToDriver', async (req, res) => {
     try {
         const io = req.app.get('io');
-        const response = await driverSalonLocation.addJobToDriver(req.body);
-        io.emit('new-driver-location');
+        const response = await TargetsService.addTargetToDriver(req.body);
+        io.emit('new-target');
         res.send(sendResponse(response));
     } catch (error) {
         console.log(error)
@@ -22,15 +22,15 @@ router.post('/addJobToDriver', async (req, res) => {
 });
 
 
-router.put('/addNewLocationToDriver/:driverId', async (req, res) => {
+router.put('/addNewTargetToDriver/:driverEmail', async (req, res) => {
     try {
         const io = req.app.get('io');
 
         const locationData = req.body;
-        const driverId = req.params.driverId
-        const response = await driverSalonLocation.addNewLocationToDriver(locationData, driverId);
+        const driverEmail = req.params.driverEmail
+        const response = await TargetsService.addNewTargetToDriver(locationData, driverEmail);
 
-        io.emit('update-driver-location');
+        io.emit('update-target');
 
         res.send(sendResponse(response));
     } catch (error) {
@@ -46,9 +46,9 @@ router.put('/changeLocationStatus/:requestId', async (req, res) => {
         const status = req.body;
         const requestId = req.params.requestId
 
-        const response = await driverSalonLocation.changeLocationStatus(status, requestId);
+        const response = await TargetsService.changeLocationStatus(status, requestId);
 
-        io.emit('update-driver-location');
+        io.emit('update-target');
 
         res.send(sendResponse(response));
     } catch (error) {
@@ -57,16 +57,16 @@ router.put('/changeLocationStatus/:requestId', async (req, res) => {
     }
 })
 
-router.put('/changeJobStatus/:jobId', async (req, res) => {
+router.put('/changeTargetStatus/:jobId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
         const status = req.body;
         const jobId = req.params.jobId
 
-        const response = await driverSalonLocation.changeJobStatus(status, jobId);
+        const response = await TargetsService.changeTargetStatus(status, jobId);
 
-        io.emit('update-driver-location');
+        io.emit('update-target');
 
         res.send(sendResponse(response));
     } catch (error) {
@@ -75,17 +75,26 @@ router.put('/changeJobStatus/:jobId', async (req, res) => {
     }
 })
 
-router.put('/getJob/:driverId', async (req, res) => {
+router.get('/getAllTarget/:driverEmail', async (req, res) => {
     try {
-        const driverId = req.params.driverId
-        res.send(sendResponse(await driverSalonLocation.getJobById(driverId, req.body)))
+        const driverEmail = req.params.driverEmail
+        res.send(sendResponse(await TargetsService.getAllTargetById(driverEmail, undefined)))
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
+router.get('/getTarget/:driverEmail', async (req, res) => {
+    try {
+        const driverEmail = req.params.driverEmail
+        res.send(sendResponse(await TargetsService.getNotCompletedTargetById(driverEmail, {status: 'NOT_COMPLETED'})))
     }catch (error) {
         res.send(sendResponse(undefined, false, error.toString()))
     }
 })
 
 router.get('/all', async (_, res) => {
-    res.send(sendResponse(await driverSalonLocation.getAll()));
+    res.send(sendResponse(await TargetsService.getAll()));
 });
 
 
@@ -93,7 +102,7 @@ router.get('/all', async (_, res) => {
 router.post('/deleteOne', async (req, res) => {
     try {
         const io = req.app.get('io');
-        const response = await driverSalonLocation.removeById(req.body);
+        const response = await TargetsService.removeById(req.body);
         io.emit('delete-contact-us');
         console.log('delete one');
         res.send(sendResponse(response));
@@ -104,14 +113,14 @@ router.post('/deleteOne', async (req, res) => {
 // salon
 
 router.get(`/allSalon`, async (_, res) => {
-    res.send(sendResponse(await driverSalonLocation.getAllSalon()))
+    res.send(sendResponse(await TargetsService.getAllSalon()))
 })
 
 router.post(`/updateDeliverStatus`, async (req, res) => {
     try {
         res.send(
             sendResponse(
-                await driverSalonLocation.updateNeedToDeliverStatus(
+                await TargetsService.updateNeedToDeliverStatus(
                     {salonId: `5efa2ed22e4e440d2463c900`, status: 'Delivered', deliverId: `5efa5f0881850944ac73553b`}
                 ),
             )
@@ -122,11 +131,11 @@ router.post(`/updateDeliverStatus`, async (req, res) => {
 })
 
 //test routes
-router.get('/ping', (_, res) => res.send(sendResponse('driverSalonLocation Route')));
+router.get('/ping', (_, res) => res.send(sendResponse('TargetsService Route')));
 
 router.post('/deleteAll', async (_, res) => {
     try {
-        res.send(sendResponse(await driverSalonLocation.removeAll()));
+        res.send(sendResponse(await TargetsService.removeAll()));
     } catch (error) {
         res.send(sendResponse(undefined, false, error.toString()));
     }

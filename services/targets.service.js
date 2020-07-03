@@ -1,39 +1,38 @@
-const {driverSalonLocation, location} = require('../models/driverSalonLocation.model');
+const {targets, targetSalonLocations} = require('../models/targets.model');
 const Salon = require('../models/salons');
 const NeedToDeliver = require('../models/NeedToDeliverSchema');
 
-module.exports = class chatService {
+module.exports = class targetService {
 
     constructor() {
 
     }
 
-
-    async addJobToDriver(data) {
+    async addTargetToDriver(data) {
         try {
-            const DriverSalonLocation = new driverSalonLocation(data);
+            const DriverSalonLocation = new targets(data);
             return await DriverSalonLocation.save();
         } catch (error) {
             throw error;
         }
     }
 
-    async addNewLocationToDriver(locationData, driverId) {
+    async addNewTargetToDriver(targetData, driverEmail) {
         try {
-            const locationObject = new location(locationData);
-            console.log(locationObject)
-            return await driverSalonLocation.findOneAndUpdate(
-                {driverId: driverId},
-                {$push: {locations: locationObject}}
+            const targetObject = new targetSalonLocations(targetData);
+            console.log(targetObject)
+            return await targets.findOneAndUpdate(
+                {driverEmail: driverEmail},
+                {$push: {targets: targetObject}}
             )
         } catch (error) {
             throw error
         }
     }
 
-    async changeJobStatus({status}, jobId) {
+    async changeTargetStatus({status}, jobId) {
         try {
-            return await driverSalonLocation.findByIdAndUpdate(
+            return await targets.findByIdAndUpdate(
                 {_id: jobId},
                 {'status': status}
             )
@@ -45,9 +44,9 @@ module.exports = class chatService {
     async changeLocationStatus({status}, requestId) {
         try {
 
-            const promise1 = await driverSalonLocation.update(
-                {'locations.requestId': requestId},
-                {'$set': {'locations.$.status': status}}
+            const promise1 = await targets.update(
+                {'targets.requestId': requestId},
+                {'$set': {'targets.$.status': status}}
             )
 
             const promise2 = await Salon.update(
@@ -62,13 +61,28 @@ module.exports = class chatService {
         }
     }
 
-    async getJobById(driverId, {status}) {
+    async getAllTargetById(driverEmail, {status}) {
         try {
             if (!status) {
-                return await driverSalonLocation.find({driverId: driverId})
+                return await targets.find({driverEmail: driverEmail})
             } else {
-                return await driverSalonLocation.find({
-                    driverId: driverId,
+                return await targets.find({
+                    driverEmail: driverEmail,
+                    'status': status,
+                })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getNotCompletedTargetById(driverEmail, {status}) {
+        try {
+            if (!status) {
+                return await targets.find({driverEmail: driverEmail})
+            } else {
+                return await targets.find({
+                    driverEmail: driverEmail,
                     'status': status,
                 })
             }
@@ -110,7 +124,7 @@ module.exports = class chatService {
     // for testing
     async getAll() {
         try {
-            return await driverSalonLocation.find();
+            return await targets.find();
         } catch (error) {
             throw error;
         }
@@ -118,7 +132,7 @@ module.exports = class chatService {
 
     async removeById({id}) {
         try {
-            return await driverSalonLocation.findByIdAndDelete(id);
+            return await targets.findByIdAndDelete(id);
         } catch (error) {
             throw error;
         }
@@ -127,7 +141,7 @@ module.exports = class chatService {
 
     async removeAll() {
         try {
-            return await driverSalonLocation.remove({});
+            return await targets.remove({});
         } catch (error) {
             throw error;
         }
