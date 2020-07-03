@@ -68,6 +68,39 @@ router.get('/finishRequest/:requestId', async (req, res) => {
     }
 });
 
+//Attendent accept wig request
+router.get('/acceptWigrequest/:requestId', async (req, res) => {
+    try {
+        const io = req.app.get('io');
+        console.log("uhfjbfj")
+        const requestId = req.params.requestId;
+        const result = await wigRequestService.updateWigRequestStatus({attendantStatus: 1}, requestId);
+
+        io.emit('accept-wig-request');
+
+        res.send(sendResponse(result));
+    } catch (error) {
+        console.log(error)
+        res.send(sendResponse(undefined, false, error.toString()));
+    }
+});
+
+//Attendent decline wig request
+router.get('/declineWigrequest/:requestId', async (req, res) => {
+    try {
+        const io = req.app.get('io');
+
+        const requestId = req.params.requestId;
+        const result = await wigRequestService.updateWigRequestStatus({attendantStatus: 2}, requestId);
+
+        io.emit('decline-wig-request');
+
+        res.send(sendResponse(result));
+    } catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()));
+    }
+});
+
 
 router.get('/allPatient', async (_, res) => {
     res.send(sendResponse(await wigRequestService.getAllPatients()));
