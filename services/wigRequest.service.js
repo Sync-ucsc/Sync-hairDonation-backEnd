@@ -27,6 +27,7 @@ module.exports = class wigRequestService {
 
     async updateWigRequestStatus(data, requestId) {
         try {
+            console.log("uhfjbfj");
             if (data.canceled) {
                 return await Patient.update(
                     {'request._id': requestId},
@@ -39,7 +40,21 @@ module.exports = class wigRequestService {
                     {'$set': {'request.$.finished': true}}
                 )
             }
+            if (data.attendantStatus==1) {
+                console.log("uhfjbfj");
+                return await Patient.updateOne(
+                    {'request._id': requestId},
+                    {'$set': {'request.$.attendantStatus': 1}}
+                )
+            }
+            if (data.attendantStatus==2) {
+                return await Patient.update(
+                    {'request._id': requestId},
+                    {'$set': {'request.$.attendantStatus': 2}}
+                )
+            }
         } catch (error) {
+            console.log(error);
             throw error
         }
     }

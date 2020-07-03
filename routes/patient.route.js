@@ -30,6 +30,7 @@ router.get('/', (req, res) => {
                 lastRequest,
                 firstName: p.firstName,
                 lastName: p.lastName,
+                id: p.id,
             })
         })
         // array.forEach(element => {
