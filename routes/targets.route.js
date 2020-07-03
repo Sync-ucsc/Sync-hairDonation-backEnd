@@ -57,14 +57,14 @@ router.put('/changeLocationStatus/:requestId', async (req, res) => {
     }
 })
 
-router.put('/changeTargetStatus/:jobId', async (req, res) => {
+router.put('/changeTargetStatus/:targetId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
         const status = req.body;
-        const jobId = req.params.jobId
+        const targetId = req.params.targetId
 
-        const response = await TargetsService.changeTargetStatus(status, jobId);
+        const response = await TargetsService.changeTargetStatus(status, targetId);
 
         io.emit('update-target');
 

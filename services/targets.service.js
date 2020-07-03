@@ -30,10 +30,10 @@ module.exports = class targetService {
         }
     }
 
-    async changeTargetStatus({status}, jobId) {
+    async changeTargetStatus({status}, targetId) {
         try {
             return await targets.findByIdAndUpdate(
-                {_id: jobId},
+                {_id: targetId},
                 {'status': status}
             )
         } catch (error) {
