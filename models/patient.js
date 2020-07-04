@@ -63,6 +63,12 @@ const PatientSchema = mongoose.Schema({
             default: false,
             required: true
         },
+         //1=accpet, 2=decline
+        attendantStatus: {
+            type: Number,
+            default: 0,
+            required: true
+        },
     }]
 });
 

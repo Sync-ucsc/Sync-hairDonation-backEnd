@@ -30,14 +30,16 @@ const app = express();
 const donor = require('./routes/donor');
 const user = require('./routes/users');
 const salon = require('./routes/salon.route');
+const patient = require('./routes/patient.route');
 const notification = require('./routes/notification');
 const chat = require('./routes/chat.route');
 const payment = require('./routes/payment');
 const getInTouch = require('./routes/getInTouch.route');
 const manager=require('./routes/manager.route')
 const fingerprint = require('./routes/fingerprint')
-const driverSalonLocations = require('./routes/driverSalonLocation.route');
+const targets = require('./routes/targets.route');
 const wigRequest = require('./routes/wigRequest.route');
+const sms = require('./routes/sms.route');
 
 const port = process.env.PORT || 3000;
 
@@ -66,14 +68,16 @@ require('./config/passport')(passport);
 app.use('/donor',donor);
 app.use('/user', user);
 app.use('/salon',salon);
+app.use('/patient',patient);
 app.use('/notification', notification);
 app.use('/chat', chat);
 app.use('/payment', chat);
 app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
 app.use('/fingerprint', fingerprint);
-app.use('/driverSalonLocations', driverSalonLocations);
+app.use('/targets', targets);
 app.use('/wigRequest', wigRequest);
+app.use('/sms', sms);
 
 app.get('/', (req,res) => {
     res.send('hi');
