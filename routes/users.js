@@ -35,7 +35,7 @@ router.post('/signup', (req,res) => {
             email: req.body.email,
             role: req.body.role,
             temporyBan: false,
-            active: true,
+            active: false,
             password: req.body.password
         })
 
