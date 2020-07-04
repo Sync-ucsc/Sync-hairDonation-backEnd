@@ -137,6 +137,19 @@ router.get(`/getSalonNeedToDelivers/:salonId`, async (req, res) => {
     }
 })
 
+// get All salons need to delivers
+router.get(`/allSalonNeedToDelivers`, async (req, res) => {
+    try {
+
+        const response = await TargetsService.getAllSalonNeedToDelivers()
+
+        res.send(sendResponse(response))
+
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
 // add new deliver to salon
 router.put(`/addNewDeliver/:salonId`, async (req , res) => {
     try{
@@ -190,10 +203,11 @@ router.post('*', (_, res) => {
 });
 router.put('*', (_, res) => {
     res.status(404);
-    res.send(sendResponse(undefined, false, 'path not match get requests'))
+    res.send(sendResponse(undefined, false, 'path not match put requests'))
 });
 router.delete('*', (_, res) => {
     res.status(404);
-    res.send(sendResponse(undefined, false, 'path not match post requests'))
+    res.send(sendResponse(undefined, false, 'path not match delete requests'))
 });
+
 module.exports = router;

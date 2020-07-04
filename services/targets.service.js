@@ -104,6 +104,37 @@ module.exports = class targetService {
         }
     }
 
+    async getAllSalonNeedToDelivers() {
+        try{
+
+            const allSalons = await this.getAllSalon()
+
+            return allSalons.map(r => {
+
+                const needToDeliver = r.NeedToDeliverStatus.length > 0 ?
+                    r.NeedToDeliverStatus.filter(target => target.status.toString() === `NeedToDeliver`)[0] : null
+
+                const status = needToDeliver ? needToDeliver.status : `not-found`
+                const createdAt = needToDeliver ? needToDeliver.createdAt : null
+
+                return {
+                    status,
+                    createdAt,
+                    address: r.address,
+                    salonId: r._id,
+                    salonEmail: r.email,
+                    salonName: r.name,
+                    lat: r.latitude,
+                    lng: r.longitude,
+                }
+
+            }).filter(r => r.status !== `not-found`)
+        }catch (error) {
+            throw error
+        }
+    }
+
+
     async getSalonNeedToDelivers(salonId) {
         try{
 
