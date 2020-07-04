@@ -64,7 +64,7 @@ router.get('/', (req, res) => {
   
   
   // Get a single donor
-  router.get('/read/:id', (req, res) => {
+router.get('/read/:id', (req, res) => {
     const io = req.app.get('io');
     Donor.getById(req.params.id, (err,donor) => {
       if (err) {
@@ -82,9 +82,10 @@ router.get('/', (req, res) => {
         })
       }
     })
-  })
+})
 
     // Get a single donor by email
+
     router.get('/getDonor/:email', (req, res) => {
       const io = req.app.get('io');
       Donor.getDonorByEmail(req.params.email, (err,donor) => {
@@ -103,7 +104,7 @@ router.get('/', (req, res) => {
           })
         }
       })
-    })
+})
     
   
   

@@ -35,7 +35,7 @@ router.post('/signup', (req,res) => {
             email: req.body.email,
             role: req.body.role,
             temporyBan: false,
-            active: true,
+            active: false,
             password: req.body.password
         })
 
@@ -755,6 +755,50 @@ router.post('/profileChanePassword', passport.authenticate('jwt', {
      });
 })
 
+// Get All Users
+router.route('/').get((req, res) => {
+  const io = req.app.get('io');
+  User.getAll((err, user) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: '',
+        success: false,
+        msg: 'Failed to get users'
+      })
+    } else {
+      res.json({
+        data: user,
+        success: true,
+        msg: 'got users',
+      })
+    }
+  })
+})
+
+//Delete a User
+router.delete('/delete/:id', (req, res) => {
+  const io = req.app.get('io');
+  console.log(req.params.id);
+
+  Salon.deleteUserById(req.params.id, (err, salon) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: err,
+        success: false,
+        msg: 'Failed to delete the user',
+      });
+    } else {
+      res.json({
+        data: salon,
+        success: true,
+        msg: 'user deleted',
+      });
+      io.emit('delete-user');
+    }
+  });
+});
 
 //example
 router.post('/register', (req, res) => {

@@ -46,4 +46,30 @@ router.get('/', (req, res) => {
     })
   })
 
+  // Delete patient
+router.delete('/delete/:id', (req, res) => {
+  const io = req.app.get('io');
+  console.log(req.params.id)
+
+  Patient.deletePatient(req.params.id, (err, patient) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: err,
+        success: false,
+        msg: 'Failed to delete the patient'
+      })
+    } else {
+      res.json({
+        data: patient,
+        success: true,
+        msg: 'patient deleted',
+      })
+      io.emit('delete-patient');
+    }
+  });
+
+})
+
+
   module.exports = router;
