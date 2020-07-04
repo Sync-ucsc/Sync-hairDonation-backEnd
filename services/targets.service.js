@@ -2,6 +2,10 @@ const {targets, targetSalonLocations} = require('../models/targets.model');
 const Salon = require('../models/salons');
 const NeedToDeliver = require('../models/NeedToDeliverSchema');
 
+const SharedService = require(`../services/shared.service`);
+const sharedService = new SharedService();
+
+
 module.exports = class targetService {
 
     constructor() {
@@ -17,7 +21,7 @@ module.exports = class targetService {
         }
     }
 
-    async addNewTargetToDriver(targetData, driverEmail) {
+    async addNewTargetToTargets(targetData, driverEmail) {
         try {
             const targetObject = new targetSalonLocations(targetData);
             console.log(targetObject)
@@ -100,22 +104,35 @@ module.exports = class targetService {
         }
     }
 
+    async getSalonNeedToDelivers(salonId) {
+        try{
+
+            return await Salon
+                .findById(sharedService.castToObjectId(salonId))
+
+        }catch (error) {
+            throw error
+        }
+    }
+    
+    async addNewDeliveryToSalon(salonId){
+        try{
+            const NeedToDeliverObject = new NeedToDeliver();
+            return await Salon.findOneAndUpdate(
+                {_id: salonId},
+                {$push: {NeedToDeliverStatus: NeedToDeliverObject}}
+            )
+        }catch (error) {
+            throw error
+        }
+    }
+
     async updateNeedToDeliverStatus(data) {
         try {
-            if (!data.status) {
-                const NeedToDeliverObject = new NeedToDeliver();
-                return await Salon.findOneAndUpdate(
-                    {_id: data.salonId},
-                    {$push: {NeedToDeliverStatus: NeedToDeliverObject}}
-                )
-            } else if (data.status && data.deliverId) {
-                return await Salon.update(
-                    {'NeedToDeliverStatus._id': data.deliverId},
-                    {'$set': {'NeedToDeliverStatus.$.status': data.status}}
-                )
-            } else {
-                throw new Error(`invalid parameters`)
-            }
+            return await Salon.update(
+                {'NeedToDeliverStatus._id': data.deliverId},
+                {'$set': {'NeedToDeliverStatus.$.status': data.status}}
+            )
         } catch (error) {
             throw error
         }
@@ -130,7 +147,7 @@ module.exports = class targetService {
         }
     }
 
-    async removeById({id}) {
+    async removeTargetById({id}) {
         try {
             return await targets.findByIdAndDelete(id);
         } catch (error) {

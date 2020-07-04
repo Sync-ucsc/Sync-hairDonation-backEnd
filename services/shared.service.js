@@ -1,3 +1,5 @@
+const mongoose = require(`mongoose`)
+
 module.exports = class sharedService {
 
     constructor() {
@@ -16,7 +18,9 @@ module.exports = class sharedService {
             return 0
         }
 
-
     }
 
+    castToObjectId(id){
+        return mongoose.Types.ObjectId(id, undefined)
+    }
 };
