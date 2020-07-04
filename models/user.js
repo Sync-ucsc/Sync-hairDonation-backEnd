@@ -40,6 +40,12 @@ const UserSchema = mongoose.Schema({
 
 const User = module.exports = mongoose.model('User',UserSchema);
 
+//Get all users
+module.exports.getAll = function (callback) {
+
+    User.find(callback);
+}
+
 module.exports.getUserById = function(id, callback){
     User.findById(id,callback);
 }
