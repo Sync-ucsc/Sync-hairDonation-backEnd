@@ -7,6 +7,14 @@ const targetSalonLocationsSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    salonName: {
+        type: String,
+        required: true
+    },
+    salonEmail: {
+        type: String,
+        required: true
+    },
     requestId: {
         type: String,
         required: true,

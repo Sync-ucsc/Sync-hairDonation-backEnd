@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const NeedToDeliverSchema = module.exports  = new mongoose.Schema({
-    salonId: {
-        type: String,
-        required: true
-    },
     status: {
         type: String,
         default: 'NeedToDeliver', // NeedToDeliver | Delivered | Cancel

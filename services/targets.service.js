@@ -2,6 +2,10 @@ const {targets, targetSalonLocations} = require('../models/targets.model');
 const Salon = require('../models/salons');
 const NeedToDeliver = require('../models/NeedToDeliverSchema');
 
+const SharedService = require(`../services/shared.service`);
+const sharedService = new SharedService();
+
+
 module.exports = class targetService {
 
     constructor() {
@@ -17,7 +21,7 @@ module.exports = class targetService {
         }
     }
 
-    async addNewTargetToDriver(targetData, driverEmail) {
+    async addNewTargetToTargets(targetData, driverEmail) {
         try {
             const targetObject = new targetSalonLocations(targetData);
             console.log(targetObject)
@@ -30,10 +34,10 @@ module.exports = class targetService {
         }
     }
 
-    async changeTargetStatus({status}, jobId) {
+    async changeTargetStatus({status}, targetId) {
         try {
             return await targets.findByIdAndUpdate(
-                {_id: jobId},
+                {_id: targetId},
                 {'status': status}
             )
         } catch (error) {
@@ -100,22 +104,66 @@ module.exports = class targetService {
         }
     }
 
+    async getAllSalonNeedToDelivers() {
+        try{
+
+            const allSalons = await this.getAllSalon()
+
+            return allSalons.map(r => {
+
+                const needToDeliver = r.NeedToDeliverStatus.length > 0 ?
+                    r.NeedToDeliverStatus.filter(target => target.status.toString() === `NeedToDeliver`)[0] : null
+
+                const status = needToDeliver ? needToDeliver.status : `not-found`
+                const createdAt = needToDeliver ? needToDeliver.createdAt : null
+
+                return {
+                    status,
+                    createdAt,
+                    address: r.address,
+                    salonId: r._id,
+                    salonEmail: r.email,
+                    salonName: r.name,
+                    lat: r.latitude,
+                    lng: r.longitude,
+                }
+
+            }).filter(r => r.status !== `not-found`)
+        }catch (error) {
+            throw error
+        }
+    }
+
+
+    async getSalonNeedToDelivers(salonId) {
+        try{
+
+            return await Salon
+                .findById(sharedService.castToObjectId(salonId))
+
+        }catch (error) {
+            throw error
+        }
+    }
+    
+    async addNewDeliveryToSalon(salonId){
+        try{
+            const NeedToDeliverObject = new NeedToDeliver();
+            return await Salon.findOneAndUpdate(
+                {_id: salonId},
+                {$push: {NeedToDeliverStatus: NeedToDeliverObject}}
+            )
+        }catch (error) {
+            throw error
+        }
+    }
+
     async updateNeedToDeliverStatus(data) {
         try {
-            if (!data.status) {
-                const NeedToDeliverObject = new NeedToDeliver();
-                return await Salon.findOneAndUpdate(
-                    {_id: data.salonId},
-                    {$push: {NeedToDeliverStatus: NeedToDeliverObject}}
-                )
-            } else if (data.status && data.deliverId) {
-                return await Salon.update(
-                    {'NeedToDeliverStatus._id': data.deliverId},
-                    {'$set': {'NeedToDeliverStatus.$.status': data.status}}
-                )
-            } else {
-                throw new Error(`invalid parameters`)
-            }
+            return await Salon.update(
+                {'NeedToDeliverStatus._id': data.deliverId},
+                {'$set': {'NeedToDeliverStatus.$.status': data.status}}
+            )
         } catch (error) {
             throw error
         }
@@ -130,7 +178,7 @@ module.exports = class targetService {
         }
     }
 
-    async removeById({id}) {
+    async removeTargetById({id}) {
         try {
             return await targets.findByIdAndDelete(id);
         } catch (error) {
