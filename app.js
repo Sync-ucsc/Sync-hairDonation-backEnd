@@ -109,12 +109,12 @@ app.use((req,res,next) => {
     next(error);
 })
 
-app.use((erorr,req,res,next)=> {
-    res.status(erorr.status || 500);
-    res.json({
-        data: undefined,
-        success: false,
-        msg: 'path not match post requests'
-    })
-})
+// app.use((erorr,req,res,next)=> {
+//     res.status(erorr.status || 500);
+//     res.json({
+//         data: error,
+//         success: false,
+//         msg: 'path not match post requests'
+//     })
+// })
 
