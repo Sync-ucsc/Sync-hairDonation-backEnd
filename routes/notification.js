@@ -30,16 +30,111 @@ router.post('/add', (req, res) => {
                 msg: 'Faild to add notification'
             })
         } else {
+            const vapidKeys = {
+                "publicKey": "BDupwOpn5kof-nBfsXZIviPpMgKzdROwDd-cirX9bxHqE5FKV5_byVBeOnKkIY30iA0octk_V5OvlBFYBKlrabQ",
+                "privateKey": "KmZR5E-pUG9TevPS8HywZrcog_5zMFnhxz687IKmoeo"
+            };
+
+            webpush.setVapidDetails(
+                'mailto:example@yourdomain.org',
+                vapidKeys.publicKey,
+                vapidKeys.privateKey
+            );
+
+            const notificationPayload = {
+                "notification": {
+                    "title": "Angular News",
+                    "body": "Newsletter Available!",
+                    "icon": "assets/main-page-logo-small-hat.png",
+                    "vibrate": [100, 50, 100, 50],
+                    "data": {
+                        "dateOfArrival": Date.now(),
+                        "primaryKey": 1
+                    },
+                    "actions": [{
+                        "action": "explore",
+                        "title": "Go to the site"
+                    }]
+                }
+            };
+
+
+            Promise.all(webpush.map(sub => webpush.sendNotification(
+                    sub, JSON.stringify(notificationPayload))))
+                .then(() => {
+                     res.json({
+                         data: notification,
+                         success: true,
+                         msg: 'notification add',
+                     })
+                     io.emit('add-notification');
+                })
+                .catch(err => {
+                    console.error("Error sending notification, reason: ", err);
+                    res.status(500);
+                    res.json({
+                        data: err,
+                        success: false,
+                        msg: 'Faild to add notification'
+                    })
+                });
+           
+        }
+    })
+
+
+})
+
+router.post('/subcribe',(req,res) => {
+    let sub =res.body.sub;
+    const vapidKeys = {
+        "publicKey": "BDupwOpn5kof-nBfsXZIviPpMgKzdROwDd-cirX9bxHqE5FKV5_byVBeOnKkIY30iA0octk_V5OvlBFYBKlrabQ",
+        "privateKey": "KmZR5E-pUG9TevPS8HywZrcog_5zMFnhxz687IKmoeo"
+    };
+
+    webpush.setVapidDetails(
+        'mailto:example@yourdomain.org',
+        vapidKeys.publicKey,
+        vapidKeys.privateKey
+    );
+
+    const notificationPayload = {
+        "notification": {
+            "title": "Angular News",
+            "body": "Newsletter Available!",
+            "icon": "assets/main-page-logo-small-hat.png",
+            "vibrate": [100, 50, 100, 50],
+            "data": {
+                "dateOfArrival": Date.now(),
+                "primaryKey": 1
+            },
+            "actions": [{
+                "action": "explore",
+                "title": "Go to the site"
+            }]
+        }
+    };
+
+
+    Promise.all(webpush.sendNotification(
+            sub, JSON.stringify(notificationPayload)))
+        .then(() => {
             res.json({
                 data: notification,
                 success: true,
                 msg: 'notification add',
             })
             io.emit('add-notification');
-        }
-    })
-
-
+        })
+        .catch(err => {
+            console.error("Error sending notification, reason: ", err);
+            res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to add notification'
+            })
+        });
 })
 
 // Notification edit
@@ -146,8 +241,8 @@ router.get('/all', (req, res) => {
 
 
 //notification get by id
-router.get('/get', (req, res) => {
-    Notification.getById(req.body.id,(err, notification) => {
+router.get('/get/:id', (req, res) => {
+    Notification.getById(req.prams.id,(err, notification) => {
         if (err) {
             res.status(500);
             res.json({
@@ -164,6 +259,9 @@ router.get('/get', (req, res) => {
         }
     })
 })
+
+//subcribe
+
 
 // error routes
 router.get('*', (_, res) => {
