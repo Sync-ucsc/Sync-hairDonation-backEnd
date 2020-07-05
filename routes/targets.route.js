@@ -9,6 +9,7 @@ const TargetsService = new targetsService();
 
 router.use(bodyParser.urlencoded({extended: false}));
 
+// add new target document for driver
 router.post('/addTargetToDriver', async (req, res) => {
     try {
         const io = req.app.get('io');
@@ -21,14 +22,14 @@ router.post('/addTargetToDriver', async (req, res) => {
     }
 });
 
-
-router.put('/addNewTargetToDriver/:driverEmail', async (req, res) => {
+// add new Target to driver target document targets array
+router.put('/addNewTargetToTarget/:driverEmail', async (req, res) => {
     try {
         const io = req.app.get('io');
 
         const locationData = req.body;
         const driverEmail = req.params.driverEmail
-        const response = await TargetsService.addNewTargetToDriver(locationData, driverEmail);
+        const response = await TargetsService.addNewTargetToTargets(locationData, driverEmail);
 
         io.emit('update-target');
 
@@ -39,6 +40,7 @@ router.put('/addNewTargetToDriver/:driverEmail', async (req, res) => {
     }
 });
 
+// change location status in both target.targets and salon.NeedToDeliver
 router.put('/changeLocationStatus/:requestId', async (req, res) => {
     try {
         const io = req.app.get('io');
@@ -57,14 +59,15 @@ router.put('/changeLocationStatus/:requestId', async (req, res) => {
     }
 })
 
-router.put('/changeTargetStatus/:jobId', async (req, res) => {
+// change target status
+router.put('/changeTargetStatus/:targetId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
         const status = req.body;
-        const jobId = req.params.jobId
+        const targetId = req.params.targetId
 
-        const response = await TargetsService.changeTargetStatus(status, jobId);
+        const response = await TargetsService.changeTargetStatus(status, targetId);
 
         io.emit('update-target');
 
@@ -75,6 +78,7 @@ router.put('/changeTargetStatus/:jobId', async (req, res) => {
     }
 })
 
+// get all target of a driver by email
 router.get('/getAllTarget/:driverEmail', async (req, res) => {
     try {
         const driverEmail = req.params.driverEmail
@@ -84,6 +88,7 @@ router.get('/getAllTarget/:driverEmail', async (req, res) => {
     }
 })
 
+// get NOT_COMPLETED target of a driver
 router.get('/getTarget/:driverEmail', async (req, res) => {
     try {
         const driverEmail = req.params.driverEmail
@@ -93,16 +98,16 @@ router.get('/getTarget/:driverEmail', async (req, res) => {
     }
 })
 
+// get all driver targets
 router.get('/all', async (_, res) => {
     res.send(sendResponse(await TargetsService.getAll()));
 });
 
-
-
-router.post('/deleteOne', async (req, res) => {
+// remove driver target by object id
+router.post('/deleteTarget', async (req, res) => {
     try {
         const io = req.app.get('io');
-        const response = await TargetsService.removeById(req.body);
+        const response = await TargetsService.removeTargetById(req.body);
         io.emit('delete-contact-us');
         console.log('delete one');
         res.send(sendResponse(response));
@@ -110,19 +115,65 @@ router.post('/deleteOne', async (req, res) => {
         res.send(sendResponse(undefined, false, error.toString()));
     }
 });
-// salon
 
+// route connect with SALON model
+
+// get all Salons
 router.get(`/allSalon`, async (_, res) => {
     res.send(sendResponse(await TargetsService.getAllSalon()))
 })
 
+// get Salon Need to delivers
+router.get(`/getSalonNeedToDelivers/:salonId`, async (req, res) => {
+    try {
+
+        const salonId = req.params.salonId;
+        const response = await TargetsService.getSalonNeedToDelivers(salonId);
+
+        res.send(sendResponse(response))
+
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
+// get All salons need to delivers
+router.get(`/allSalonNeedToDelivers`, async (req, res) => {
+    try {
+
+        const response = await TargetsService.getAllSalonNeedToDelivers()
+
+        res.send(sendResponse(response))
+
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
+// add new deliver to salon
+router.put(`/addNewDeliver/:salonId`, async (req , res) => {
+    try{
+        const io = req.app.get(`io`);
+
+        const salonId = req.params.salonId
+        const response = await TargetsService.addNewDeliveryToSalon(salonId)
+
+        io.emit(`add-new-deliver-to-salon`)
+
+        res.send(sendResponse(response))
+
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
+// update salon need to deliver status
 router.post(`/updateDeliverStatus`, async (req, res) => {
     try {
         res.send(
             sendResponse(
-                await TargetsService.updateNeedToDeliverStatus(
-                    {salonId: `5efa2ed22e4e440d2463c900`, status: 'Delivered', deliverId: `5efa5f0881850944ac73553b`}
-                ),
+                await TargetsService
+                    .updateNeedToDeliverStatus({ status: 'Delivered', deliverId: `5efa5f0881850944ac73553b`}),
             )
         )
     } catch (error) {
@@ -152,10 +203,11 @@ router.post('*', (_, res) => {
 });
 router.put('*', (_, res) => {
     res.status(404);
-    res.send(sendResponse(undefined, false, 'path not match get requests'))
+    res.send(sendResponse(undefined, false, 'path not match put requests'))
 });
 router.delete('*', (_, res) => {
     res.status(404);
-    res.send(sendResponse(undefined, false, 'path not match post requests'))
+    res.send(sendResponse(undefined, false, 'path not match delete requests'))
 });
+
 module.exports = router;

@@ -111,5 +111,24 @@ router.get('/readByEmail/:email', (req, res) => {
   });
 });
 
+router.get('/readByEmail/:email',(req,res)=>{
+  Patient.getByEmail(req.params.email, (err, patient) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: '',
+        success: false,
+        msg: 'Failed to get the patient'
+      })
+    } else {
+      res.json({
+        data: patient,
+        success: true,
+        msg: 'got the patient',
+      })
+    }
+  })
+})
+
 
   module.exports = router;

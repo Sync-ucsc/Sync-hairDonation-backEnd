@@ -105,6 +105,12 @@ module.exports.getById = function (id, callback) {
     Patient.findById(id, callback);
 }
 
+//Patient get by id
+module.exports.getByEmail = function (email, callback) {
+
+    Patient.findOne({email:email}, callback);
+}
+
 //Patient salon
 module.exports.updatePatient = function (updatedPatient, callback) {
 
