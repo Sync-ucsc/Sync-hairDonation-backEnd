@@ -5,13 +5,17 @@ const NeedToDeliver = require('../models/NeedToDeliverSchema');
 const SharedService = require(`../services/shared.service`);
 const sharedService = new SharedService();
 
-
 module.exports = class targetService {
 
     constructor() {
 
     }
 
+    /**
+     * assign target for driver
+     * @param data
+     * @returns {Promise<any>}
+     */
     async addTargetToDriver(data) {
         try {
             const DriverSalonLocation = new targets(data);
@@ -21,6 +25,12 @@ module.exports = class targetService {
         }
     }
 
+    /**
+     * assign new salon for target
+     * @param targetData
+     * @param driverEmail
+     * @returns {Promise<*>}
+     */
     async addNewTargetToTargets(targetData, driverEmail) {
         try {
             const targetObject = new targetSalonLocations(targetData);
@@ -34,6 +44,12 @@ module.exports = class targetService {
         }
     }
 
+    /**
+     * change status of a target
+     * @param status
+     * @param targetId
+     * @returns {Promise<*>}
+     */
     async changeTargetStatus({status}, targetId) {
         try {
             return await targets.findByIdAndUpdate(
@@ -45,6 +61,14 @@ module.exports = class targetService {
         }
     }
 
+    /**
+     *  change salon deliver request status and targets document target array status
+         NeedToDeliverStatus =  NeedToDeliver | Delivered | Cancel
+         target.status = NOT_COMPLETED | COMPLETED,
+     * @param status
+     * @param requestId
+     * @returns {Promise<unknown[]>}
+     */
     async changeLocationStatus({status}, requestId) {
         try {
 
@@ -65,6 +89,12 @@ module.exports = class targetService {
         }
     }
 
+    /**
+     * get all targets of a driver by driverEmail
+     * @param driverEmail
+     * @param status NOT_COMPLETED | COMPLETED
+     * @returns {Promise<*>}
+     */
     async getAllTargetById(driverEmail, {status}) {
         try {
             if (!status) {
@@ -80,6 +110,12 @@ module.exports = class targetService {
         }
     }
 
+    /**
+     * get all targets of a driver by driverEmail and status
+     * @param driverEmail
+     * @param status
+     * @returns {Promise<*>}
+     */
     async getNotCompletedTargetById(driverEmail, {status}) {
         try {
             if (!status) {
@@ -96,6 +132,11 @@ module.exports = class targetService {
     }
 
     // Salon
+
+    /**
+     *  get All salons
+     * @returns {Promise<*>}
+     */
     async getAllSalon() {
         try {
             return await Salon.find()
@@ -104,6 +145,10 @@ module.exports = class targetService {
         }
     }
 
+    /**
+     * get all salon need to deliver status request
+     * @returns {Promise<*>}
+     */
     async getAllSalonNeedToDelivers() {
         try{
 
@@ -134,18 +179,48 @@ module.exports = class targetService {
         }
     }
 
-
+    /**
+     * get salon need to delivers
+     * @param salonId
+     * @return {Promise<*[]|
+     * {salonId: *,
+     * createdAt: {default, type: DateConstructor, required: boolean},
+     * address: *, lng: *, salonName: *, requestId: *, deliveryDate, salonEmail: *, lat: *,
+     * status: {default: string, type: StringConstructor, required: boolean}}[]>}
+     */
     async getSalonNeedToDelivers(salonId) {
         try{
 
-            return await Salon
+            const salon = await Salon
                 .findById(sharedService.castToObjectId(salonId))
+
+            if(salon.NeedToDeliverStatus.length === 0) return [];
+
+            return  salon.NeedToDeliverStatus.map( r => {
+                return {
+                    requestId: r._id,
+                    address: salon.address,
+                    salonId: salon._id,
+                    salonEmail: salon.email,
+                    salonName: salon.name,
+                    lat: salon.latitude,
+                    lng: salon.longitude,
+                    status: r.status,
+                    createdAt: r.createdAt,
+                    deliveryDate: r.deliveryDate
+                }
+            }).sort((a,b) => sharedService.sortByDate(a.createdAt,b.createdAt))
 
         }catch (error) {
             throw error
         }
     }
-    
+
+    /**
+     * add new delivery to salon
+     * @param salonId
+     * @returns {Promise<*>}
+     */
     async addNewDeliveryToSalon(salonId){
         try{
             const NeedToDeliverObject = new NeedToDeliver();
@@ -158,6 +233,11 @@ module.exports = class targetService {
         }
     }
 
+    /**
+     * update need to deliver status of salon
+     * @param data
+     * @returns {Promise<*>}
+     */
     async updateNeedToDeliverStatus(data) {
         try {
             return await Salon.update(
@@ -170,6 +250,7 @@ module.exports = class targetService {
     }
 
     // for testing
+
     async getAll() {
         try {
             return await targets.find();
