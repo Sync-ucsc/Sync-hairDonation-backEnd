@@ -6,6 +6,8 @@ const config = require('../config/database')
 const Notification = require('../models/notification');
 
 const {sendResponse} = require('../utils/response.utils');
+const webpush = require('web-push');
+
 
 
 //add notification
@@ -85,12 +87,13 @@ router.post('/add', (req, res) => {
 
 })
 
-router.post('/subcribe',(req,res) => {
-    let sub =res.body.sub;
+router.post('/subcribe',async (req,res) => {
+    let sub =req.body.sub;
+    
     const vapidKeys = {
-        "publicKey": "BDupwOpn5kof-nBfsXZIviPpMgKzdROwDd-cirX9bxHqE5FKV5_byVBeOnKkIY30iA0octk_V5OvlBFYBKlrabQ",
-        "privateKey": "KmZR5E-pUG9TevPS8HywZrcog_5zMFnhxz687IKmoeo"
-    };
+        publicKey: 'BE-J8ek0Xl6Mpgw5R6-B5M5BYISYVkQi6XVGmt8qymgz-u66hyrkEFcgZKJECL8bLHbPyPiVwgTaoH9EpP6VNlc',
+        privateKey: 'K2cXkx8quUdVzwF35KBX9NRXrGBiRNXRoE1WNz_StBM'
+    }
 
     webpush.setVapidDetails(
         'mailto:example@yourdomain.org',
@@ -98,7 +101,7 @@ router.post('/subcribe',(req,res) => {
         vapidKeys.privateKey
     );
 
-    const notificationPayload = {
+    const notificationPayload = JSON.stringify({
         "notification": {
             "title": "Angular News",
             "body": "Newsletter Available!",
@@ -113,23 +116,21 @@ router.post('/subcribe',(req,res) => {
                 "title": "Go to the site"
             }]
         }
-    };
-
-
-    Promise.all(webpush.sendNotification(
-            sub, JSON.stringify(notificationPayload)))
+    });
+   
+    Promise.resolve(webpush.sendNotification(sub,notificationPayload))
         .then(() => {
-            res.json({
-                data: notification,
+            res.status(200).json({
+                data: notificationPayload,
                 success: true,
                 msg: 'notification add',
             })
-            io.emit('add-notification');
+            
         })
         .catch(err => {
+            console.log(err)
             console.error("Error sending notification, reason: ", err);
-            res.status(500);
-            res.json({
+            res.status(500).json({
                 data: err,
                 success: false,
                 msg: 'Faild to add notification'
