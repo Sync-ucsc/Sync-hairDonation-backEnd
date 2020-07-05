@@ -5,9 +5,23 @@ const config = require('../config/database');
 // donor schema
 const DonorAppoitmentSchema = mongoose.Schema({
     salonEmail: {
-        type: String
+        type: String,
+        required: true
+    },
+    DonorRequest:{
+        type: Boolean,
+        required: true,
     },
     Donoremail: {
+        type: String
+    },
+    customerEmail: {
+        type: String
+    },
+    customerNumber: {
+        type: String
+    },
+    customerName: {
         type: String
     },
     systemRequestDate: {
@@ -27,6 +41,5 @@ const DonorAppoitmentSchema = mongoose.Schema({
     },
     canceled: {
         type: Boolean,
-        required: true
     }
 });
