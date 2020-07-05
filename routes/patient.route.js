@@ -70,6 +70,46 @@ router.delete('/delete/:id', (req, res) => {
   });
 
 })
+// Get a single patient
+router.get('/read/:id', (req, res) => {
+  const io = req.app.get('io');
+  Patient.getById(req.params.id, (err, patient) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: '',
+        success: false,
+        msg: 'Failed to get the patient'
+      })
+    } else {
+      res.json({
+        data: patient,
+        success: true,
+        msg: 'got the patient',
+      })
+    }
+  })
+})
+//Get patient by E-mail
+router.get('/readByEmail/:email', (req, res) => {
+  const io = req.app.get('io');
+  Patient.getPatientByEmail(req.params.email, (err, patient) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: '',
+        success: false,
+        msg: 'Failed to get the patient',
+      });
+    } else {
+      res.json({
+        data: patient,
+        success: true,
+        msg: 'got the patient',
+      });
+    }
+  });
+});
 
 
   module.exports = router;
