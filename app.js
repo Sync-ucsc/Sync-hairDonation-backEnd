@@ -40,6 +40,8 @@ const fingerprint = require('./routes/fingerprint')
 const targets = require('./routes/targets.route');
 const wigRequest = require('./routes/wigRequest.route');
 const sms = require('./routes/sms.route');
+const attendant = require ('./routes/attendant.route');
+const driver = require('./routes/driver.route');
 
 const port = process.env.PORT || 3000;
 
@@ -78,6 +80,8 @@ app.use('/fingerprint', fingerprint);
 app.use('/targets', targets);
 app.use('/wigRequest', wigRequest);
 app.use('/sms', sms);
+app.use('/attendant', attendant);
+app.use('/driver',driver);
 
 app.get('/', (req,res) => {
     res.send('hi');
