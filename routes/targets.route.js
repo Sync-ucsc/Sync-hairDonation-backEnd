@@ -59,6 +59,40 @@ router.put('/changeLocationStatus/:requestId', async (req, res) => {
     }
 })
 
+router.put(`/assignToDriver/:driverEmail`, async (req, res) =>{
+   try{
+
+       const driverEmail = req.params.driverEmail;
+       const requestId = req.body.requestId;
+
+       // find NOT_COMPLETED previous job doc is assign for driver
+       const driverTarget = await TargetsService.getAllTargetById(driverEmail, { status: 'NOT_COMPLETED'});
+
+        // if not found previous job doc
+       if(driverTarget.length === 0) {
+           // create new job for driver
+           await TargetsService.addTargetToDriver(req.body)
+           // assign new job to target array
+           await TargetsService.addNewTargetToTargets(req.body, driverEmail)
+           // change salon NeedToDeliver status
+           await TargetsService.changeSalonNeedToDeliverStatus('AssignToDriver', requestId)
+
+           return res.send(sendResponse())
+       }
+
+       // assign new job to target array
+       const  addNewTargetToDriver = await TargetsService.addNewTargetToTargets(req.body, driverEmail)
+       // change salon NeedToDeliver status
+       await TargetsService.changeSalonNeedToDeliverStatus('AssignToDriver', requestId)
+
+       res.send(sendResponse(addNewTargetToDriver))
+
+   }catch (error) {
+       console.log(error)
+       res.send(sendResponse(undefined, false, error.toString()))
+   }
+});
+
 // change target status
 router.put('/changeTargetStatus/:targetId', async (req, res) => {
     try {
@@ -178,6 +212,16 @@ router.post(`/updateDeliverStatus`, async (req, res) => {
         )
     } catch (error) {
         res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
+// get all drivers
+router.get(`/allDrivers`, async (req, res) => {
+    try{
+        const response = await TargetsService.getAllDrivers();
+        res.send(sendResponse(response))
+    }catch (error) {
+        res.send(sendResponse(undefined,false, error.toString()))
     }
 })
 
