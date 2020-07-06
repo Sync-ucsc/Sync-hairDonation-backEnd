@@ -126,3 +126,9 @@ module.exports.updatePatient = function (updatedPatient, callback) {
 module.exports.deletePatient = function (id, callback) {
     Patient.findByIdAndDelete(id, callback);
 }
+//Patient get by id
+module.exports.getById = function (id, callback) {
+
+    Patient.findById(id, callback);
+}
+
