@@ -2,9 +2,6 @@ const nodemailer = require("nodemailer");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const details = require("./details.json");
-
-
-
 module.exports = class EmailService {
 
     constructor() {}
