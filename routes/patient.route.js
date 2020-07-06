@@ -91,26 +91,6 @@ router.get('/read/:id', (req, res) => {
   })
 })
 //Get patient by E-mail
-router.get('/readByEmail/:email', (req, res) => {
-  const io = req.app.get('io');
-  Patient.getPatientByEmail(req.params.email, (err, patient) => {
-    if (err) {
-      res.status(500);
-      res.json({
-        data: '',
-        success: false,
-        msg: 'Failed to get the patient',
-      });
-    } else {
-      res.json({
-        data: patient,
-        success: true,
-        msg: 'got the patient',
-      });
-    }
-  });
-});
-
 router.get('/readByEmail/:email',(req,res)=>{
   Patient.getByEmail(req.params.email, (err, patient) => {
     if (err) {
