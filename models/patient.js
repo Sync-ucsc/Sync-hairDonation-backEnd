@@ -131,7 +131,4 @@ module.exports.getById = function (id, callback) {
 
     Patient.findById(id, callback);
 }
-module.exports.getPatientByEmail = function (email, callback) {
-  const query = {email: email};
-  User.findOne(query, callback);
-};
+
