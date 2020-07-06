@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-const donorAppointmentService = require('../services/donorAppointment.service');
-const donorAppointmentService = new donorAppointmentService();
 
 // Appointment model
 let DonorAppointment = require('../models/donorAppointment');
