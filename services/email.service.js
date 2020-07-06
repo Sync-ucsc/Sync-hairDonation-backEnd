@@ -21,6 +21,35 @@ module.exports = class EmailService {
     //     });
     // });
 
+    async sendContactUs(user) {
+        // create reusable transporter object using the default SMTP transport
+        console.log(`pass1`)
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: details.email,
+                pass: details.password
+            }
+        });
+        console.log(`pass2`)
+        let mailOptions = {
+            from: user.email, // sender address
+            to: "akavindula@gmail.com", // list of receivers
+            subject: `GetInTouch ${user.subject}`, // Subject line
+            html: `
+                 From: ${user.email}<br>
+                 Name: ${user.name}<br>
+                <p>${user.message}<p>`
+        };
+        console.log(`pass3`)
+        // send mail with defined transport object
+        return  await transporter.sendMail(mailOptions);
+
+    }
+
+
     async sendmailRegistation(user,token, callback) {
         console.log(user)
         // create reusable transporter object using the default SMTP transport
