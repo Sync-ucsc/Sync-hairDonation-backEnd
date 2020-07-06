@@ -10,7 +10,7 @@ let DonorAppointment = require('../models/donorAppointment');
 router.post('/create', (req, res, next) => {
     const io = req.app.get('io');
     let newDonorAppointment = new DonorAppointment({
-        SalonEmail: req.body.salonEmail,
+        salonEmail: req.body.SalonEmail,
         DonorRequest: req.body.DonorRequest,
         Donoremail: req.body.Donoremail,
         customerEmail: req.body.customerEmail,
