@@ -14,6 +14,10 @@ var ipapi = require('ipapi.co')
 const {sendResponse} = require('../utils/response.utils');
 const patient = require('../models/patient');
 
+const EmailService = require('../services/email.service');
+const emailService = new EmailService();
+
+
 //signup
 
 router.post('/signup', (req,res) => {
@@ -276,6 +280,7 @@ router.post('/signup', (req,res) => {
                                                             msg: 'Faild to register user'
                                                         })
                                                     } else {
+                                                        emailService.sendmailDonorRegistation(user, () => {});
                                                         res.json({
                                                             data: {
                                                                 user: user,
@@ -337,6 +342,7 @@ router.post('/signup', (req,res) => {
                                                                     msg: 'Faild to register user'
                                                                 })
                                                             } else {
+                                                                emailService.sendmailDonorRegistation(user, () => {});
                                                                 res.json({
                                                                     data: {
                                                                         user: user,
@@ -478,7 +484,6 @@ router.post('/authenticate', (req, res) => {
                     if (user.role == 'patient') {
                         return res.json({
                             data: {
-                                userToken: 'JWT' + userToken,
                                 user: {
                                     email: user.email,
                                     firstName: user.firstName,
@@ -492,7 +497,6 @@ router.post('/authenticate', (req, res) => {
                     } else if(user.role == 'donor'){
                         return res.json({
                             data: {
-                                userToken: 'JWT' + userToken,
                                 user: {
                                     email: user.email,
                                     firstName: user.firstName,
@@ -652,6 +656,55 @@ router.post('/request', (req, res) => {
     });
 })
 
+router.post('/donorActive', (req, res) => {
+    let id = req.body.id;
+    let email = req.body.email;
+    User.getUserBYEmail(email, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    return res.json({
+                        data: err,
+                        success: false,
+                        msg: 'user not found'
+                    });
+                } else {
+                    if(!user){
+                        res.status(500);
+                        return res.json({
+                            data: err,
+                            success: false,
+                            msg: 'user not found'
+                        });
+                    }
+                    else if(user._id == id && user.role == 'donor') {
+                        User.sUserActivate(user._id, (err, user) => {
+                            if (err) {
+                                res.status(500);
+                                res.json({
+                                    data: '',
+                                    success: false,
+                                    msg: 'Faild to active'
+                                })
+                            } else {
+                                res.json({
+                                    data: user,
+                                    success: true,
+                                    msg: 'user active',
+                                })
+                            }
+                        })
+
+                    } else {
+                        res.status(500);
+                        return res.json({
+                            data: err,
+                            success: false,
+                            msg: 'user not found'
+                        });
+                    }
+                }
+            })
+});
 
 
 router.get('/profile', passport.authenticate('jwt',{session:false}), (req, res) => {
@@ -719,6 +772,8 @@ router.get('/chanePassword', passport.authenticate('jwt', {
 router.get('/validate', (req, res) => {
     res.send('validate')
 })
+
+
 
 
 router.post('/profileChanePassword', passport.authenticate('jwt', {

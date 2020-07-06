@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const bcrpt = require('bcryptjs');
 const config = require('../config/database');
 
+const EmailService = require('../services/email.service');
+const emailService = new EmailService();
+
+
 // user schema
 const UserSchema = mongoose.Schema({
     firstName: {
@@ -90,8 +94,9 @@ module.exports.register = function(user,callback){
         active: false,
         password: randome,
     })
-
-    User.addUser(newUser, callback);
+    
+    emailService.sendmailRegistation(newUser, randome,()=> {});
+    User.addUser(newUser,callback); 
 }
 
 module.exports.activate = function(id,password,callback){
@@ -115,6 +120,17 @@ module.exports.activate = function(id,password,callback){
             })
         })
     })
+}
+
+module.exports.sUserActivate = function (id, callback) {
+     User.findByIdAndUpdate(id, {
+         $set: {
+             active: true
+         }
+     }, (err, res) => {
+         // console.log(res)
+         callback(null, null);
+     })
 }
 
 module.exports.deleteUserById = function (id, callback) {
