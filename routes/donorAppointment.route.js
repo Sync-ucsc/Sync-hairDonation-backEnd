@@ -29,13 +29,13 @@ router.route('/create').post((req, res, next) => {
 // Update Appointment
 router.post('/update/:id', (req, res) => {
     const io = req.app.get('io');
-    let updatedDonorAppointment = DonorAppointment({
+    let updatedAppointment = DonorAppointment({
       _id: req.params.id,
       name: req.body.name,
      // date:
       //time:
     })
-    Salon.updatedDonorAppointment(updatedDonorAppointment, (err, donorAppointment) => {
+    Salon.updatedAppointment(updatedAppointment, (err, donorAppointment) => {
         if (err) {
           res.status(500);
           res.json({
@@ -65,7 +65,7 @@ router.delete('/delete/:id', (req, res) => {
     const io = req.app.get('io');
     console.log(req.params.id)
   
-    DonorAppointment.deletedonorAppointment(req.params.id, (err, salon) => {
+    DonorAppointment.deleteAppointment(req.params.id, (err, salon) => {
       if (err) {
         res.status(500);
         res.json({

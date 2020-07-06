@@ -54,7 +54,7 @@ const DonorAppoitment = module.exports = mongoose.model('DonorAppointment', Dono
 
 
 //Appointment add
-module.exports.addDonorAppointment = function (newDonorAppointment, callback) {
+module.exports.createAppointment = function (newDonorAppointment, callback) {
     newDonorAppointment.save(callback);
 }
 
@@ -68,11 +68,11 @@ module.exports.getById = function (id, callback) {
 
 
 //update appointment
-module.exports.updateDonorAppointment = function (updatedDonorAppointment, callback) {
+module.exports.updateAppointment = function (updatedAppointment, callback) {
 
 
-    DonorAppoitment.findByIdAndUpdate(updatedDonorAppointment._id, {
-        $set: updatedDonorAppointment
+    DonorAppoitment.findByIdAndUpdate(updatedAppointment._id, {
+        $set: updatedAppointment
     }, {
         useFindAndModify: false
     },
@@ -80,7 +80,7 @@ module.exports.updateDonorAppointment = function (updatedDonorAppointment, callb
 }
 
 //Appointment delete
-module.exports.deleteDonateAppointmentById = function (id, callback) {
+module.exports.deleteAppointmentById = function (id, callback) {
     console.log('dx')
     DonorAppoitment.findByIdAndDelete(id,callback);
 }
