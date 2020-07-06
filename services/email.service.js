@@ -6,8 +6,6 @@ const details = {
     password: "aka-1234"
 };
 
-
-
 module.exports = class EmailService {
 
     constructor() {}
