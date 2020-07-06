@@ -5,21 +5,45 @@ const router = express.Router();
 // Appointment model
 let DonorAppointment = require('../models/donorAppointment');
 
-// Add a donorAppointment
+// Add a normal customerAppointment
 router.route('/create').post((req, res, next) => {
     const io = req.app.get('io');
     let newDonorAppointment = new DonorAppointment({
-      name: req.body.name,
-      telephone: req.body.telephone,
-      //time:
-      //date:
+      SalonEmail: req.body.salonEmail,
+      DonorRequest: req.body.DonorRequest,
+      Donoremail:req.body.Donoremail,
+      customerEmail:req.body.customerEmail,
+      customerNumber:req.body.customerNumber,
+      customerName:req.body.customerName,
+      systemRequestDate:req.body.systemRequestDate,
+      appointmentDate:req.body.appointmentDate,
+      appointmentTimeSlot:req.body.appointmentTimeSlot
     });
     console.log(new DonorAppointment);
-    let user = User({
-      firstName: req.body.name,
-      lastName: '',
-      role: 'donor',
-    })
+    DonorAppointment.createAppointment(DonorAppointment, (err,donor ) => {
+      if (err) {
+        res.status(500);
+        res.json({
+          data: err,
+          success: false,
+          msg: 'Failed to create the appointment'
+        })
+      } else {
+        res.json({
+          data: donor,
+          success: true,
+          msg: 'Create Appointment',
+        })
+        io.emit('Create Appointment');
+      }
+    });
+  
+
+    // let user = User({
+    //   firstName: req.body.name,
+    //   lastName: '',
+    //   role: 'donor',
+    // })
      
     
   });
