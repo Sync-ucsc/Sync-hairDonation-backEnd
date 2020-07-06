@@ -7,8 +7,24 @@ const  {sendResponse} = require('../utils/response.utils');
 const GetInTouch = require('../services/getInTouch.service');
 const getInTouch = new GetInTouch();
 
+const EmailService = require(`../services/email.service`)
+const emailService = new EmailService();
 
 router.use(bodyParser.urlencoded({ extended: false }));
+
+router.post('/sendEmail', async ( req , res ) => {
+    try {
+        const emailData = req.body;
+        const response = await emailService.sendContactUs(emailData)
+        console.log(`passM1`)
+        res.send(sendResponse(response))
+
+    }catch (error) {
+        console.log(`fail1`)
+        res.send(sendResponse(undefined))
+    }
+})
+
 
 router.post('/add', async ( req , res ) => {
     try {

@@ -1,11 +1,12 @@
 const {targets, targetSalonLocations} = require('../models/targets.model');
 const Salon = require('../models/salons');
 const NeedToDeliver = require('../models/NeedToDeliverSchema');
+const Driver = require('../models/driver')
 
 const SharedService = require(`../services/shared.service`);
 const sharedService = new SharedService();
 
-module.exports = class targetService {
+module.exports = class TargetService {
 
     constructor() {
 
@@ -61,10 +62,31 @@ module.exports = class targetService {
         }
     }
 
+
+    /**
+     * change need to deliver status of salon
+     * @param status
+     * @param requestId
+     * @return {Promise<*>}
+     */
+    async changeSalonNeedToDeliverStatus(status, requestId) {
+        try {
+            return await Salon.update(
+                {'NeedToDeliverStatus._id': requestId},
+                {'$set': {'NeedToDeliverStatus.$.status': status}}
+            )
+
+        } catch (error) {
+            console.log(error)
+            throw error
+        }
+    }
+
+
     /**
      *  change salon deliver request status and targets document target array status
-         NeedToDeliverStatus =  NeedToDeliver | Delivered | Cancel
-         target.status = NOT_COMPLETED | COMPLETED,
+     NeedToDeliverStatus =  NeedToDeliver | Delivered | Cancel
+     target.status = NOT_COMPLETED | COMPLETED,
      * @param status
      * @param requestId
      * @returns {Promise<unknown[]>}
@@ -77,10 +99,8 @@ module.exports = class targetService {
                 {'$set': {'targets.$.status': status}}
             )
 
-            const promise2 = await Salon.update(
-                {'NeedToDeliverStatus._id': requestId},
-                {'$set': {'NeedToDeliverStatus.$.status': status}}
-            )
+            const promise2 = await this
+                .changeSalonNeedToDeliverStatus(status, requestId)
 
             return await Promise.all([promise1, promise2]);
 
@@ -109,6 +129,7 @@ module.exports = class targetService {
             throw error
         }
     }
+
 
     /**
      * get all targets of a driver by driverEmail and status
@@ -150,7 +171,7 @@ module.exports = class targetService {
      * @returns {Promise<*>}
      */
     async getAllSalonNeedToDelivers() {
-        try{
+        try {
 
             const allSalons = await this.getAllSalon()
 
@@ -161,10 +182,12 @@ module.exports = class targetService {
 
                 const status = needToDeliver ? needToDeliver.status : `not-found`
                 const createdAt = needToDeliver ? needToDeliver.createdAt : null
+                const requestId = needToDeliver ? needToDeliver._id : null
 
                 return {
                     status,
                     createdAt,
+                    requestId,
                     address: r.address,
                     salonId: r._id,
                     salonEmail: r.email,
@@ -174,7 +197,7 @@ module.exports = class targetService {
                 }
 
             }).filter(r => r.status !== `not-found`)
-        }catch (error) {
+        } catch (error) {
             throw error
         }
     }
@@ -189,14 +212,14 @@ module.exports = class targetService {
      * status: {default: string, type: StringConstructor, required: boolean}}[]>}
      */
     async getSalonNeedToDelivers(salonId) {
-        try{
+        try {
 
             const salon = await Salon
                 .findById(sharedService.castToObjectId(salonId))
 
-            if(salon.NeedToDeliverStatus.length === 0) return [];
+            if (salon.NeedToDeliverStatus.length === 0) return [];
 
-            return  salon.NeedToDeliverStatus.map( r => {
+            return salon.NeedToDeliverStatus.map(r => {
                 return {
                     requestId: r._id,
                     address: salon.address,
@@ -209,9 +232,9 @@ module.exports = class targetService {
                     createdAt: r.createdAt,
                     deliveryDate: r.deliveryDate
                 }
-            }).sort((a,b) => sharedService.sortByDate(a.createdAt,b.createdAt))
+            }).sort((a, b) => sharedService.sortByDate(a.createdAt, b.createdAt))
 
-        }catch (error) {
+        } catch (error) {
             throw error
         }
     }
@@ -221,14 +244,14 @@ module.exports = class targetService {
      * @param salonId
      * @returns {Promise<*>}
      */
-    async addNewDeliveryToSalon(salonId){
-        try{
+    async addNewDeliveryToSalon(salonId) {
+        try {
             const NeedToDeliverObject = new NeedToDeliver();
             return await Salon.findOneAndUpdate(
                 {_id: salonId},
                 {$push: {NeedToDeliverStatus: NeedToDeliverObject}}
             )
-        }catch (error) {
+        } catch (error) {
             throw error
         }
     }
@@ -248,6 +271,21 @@ module.exports = class targetService {
             throw error
         }
     }
+
+    // driver
+
+    /**
+     * get all drivers
+     * @return {Promise<*>}
+     */
+    async getAllDrivers() {
+        try {
+            return await Driver.find()
+        } catch (error) {
+            throw error
+        }
+    }
+
 
     // for testing
 
