@@ -35,7 +35,7 @@ module.exports = class EmailService {
             from: '<akavindula@gmail.com>', // sender address
             to: user.email, // list of receivers
             subject: "registation for web app", // Subject line
-            html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
+            html: `<h1 style='text-align: center'>Welcome to Sync <br><br></h1>
                 < p > visit this link
                 for verification http://localhost:4200/register-password?email=${user.email}&token=${token}</>`
         };
@@ -62,7 +62,7 @@ module.exports = class EmailService {
             from: '<akavindula@gmail.com>', // sender address
             to: user.email, // list of receivers
             subject: "Donor verification for web app", // Subject line
-            html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
+            html: `<h1 style='text-align: center'>Welcome to Sync <br><br></h1>
                 < p > visit this link for verification http://localhost:4200/donor-active?id=${user._id}&email=${user.email}</>`
         };
 
@@ -88,7 +88,7 @@ module.exports = class EmailService {
             from: '<akavindula@gmail.com>', // sender address
             to: user.email, // list of receivers
             subject: "Driver verification for web app", // Subject line
-            html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
+            html: `<h1 style='text-align: center'>Welcome to Sync <br><br></h1>
                 <p>your token is ${token}</p>`
         };
 
@@ -124,7 +124,7 @@ module.exports = class EmailService {
             from: '"from Tea Truth "<teatruth@gmail.com>', // sender address
             to: user.email, // list of receivers
             subject: "registation for web app", // Subject line
-            html: `<h1 style='text-align: center'>Wellcome to Tea Truth <br><br> <img src='https://i.ibb.co/1v6XfQV/favicon.jpg' style='width: 20px; height: 20px; margin: 20 %; margin - top: 8 %;'/></h1>
+            html: `<h1 style='text-align: center'>Welcome to Tea Truth <br><br> <img src='https://i.ibb.co/1v6XfQV/favicon.jpg' style='width: 20px; height: 20px; margin: 20 %; margin - top: 8 %;'/></h1>
     <p>visit this link for resetpassword https://teatruth-8083d.web.app/registaition?Token=${user.token}</p>`
         };
 

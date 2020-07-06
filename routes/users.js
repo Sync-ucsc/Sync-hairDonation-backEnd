@@ -706,6 +706,114 @@ router.post('/donorActive', (req, res) => {
             })
 });
 
+router.post('/patientActivate', (req, res) => {
+    let email = req.body.email;
+    User.getUserBYEmail(email, (err, user) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'user not found'
+            });
+        } else {
+            if (!user) {
+                res.status(500);
+                return res.json({
+                    data: err,
+                    success: false,
+                    msg: 'user not found'
+                });
+            } else if ( user.role == 'patient') {
+                User.sUserActivate(user._id, (err, user) => {
+                    if (err) {
+                        res.status(500);
+                        res.json({
+                            data: '',
+                            success: false,
+                            msg: 'Faild to active'
+                        })
+                    } else {
+                        res.json({
+                            data: user,
+                            success: true,
+                            msg: 'user active',
+                        })
+                    }
+                })
+
+            } else {
+                res.status(500);
+                return res.json({
+                    data: err,
+                    success: false,
+                    msg: 'user not found'
+                });
+            }
+        }
+    })
+});
+
+router.post('/removePatient', (req, res) => {
+    let email = req.body.email;
+    User.getUserBYEmail(email, (err, user) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'user not found'
+            });
+        } else {
+            if (!user) {
+                res.status(500);
+                return res.json({
+                    data: err,
+                    success: false,
+                    msg: 'user not found'
+                });
+            } else if (user.role == 'patient') {
+                User.deleteUserById(user._id, (err, user) => {
+                    if (err) {
+                        res.status(500);
+                        res.json({
+                            data: '',
+                            success: false,
+                            msg: 'Faild to remove'
+                        })
+                    } else {
+                        Patient.deletePatientByEmail(user.email,(err, user) => {
+                            if (err) {
+                                res.status(500);
+                                res.json({
+                                    data: '',
+                                    success: false,
+                                    msg: 'Faild to remove'
+                                })
+                            } else {
+                                res.json({
+                                    data: user,
+                                    success: true,
+                                    msg: 'user remove',
+                                })
+                            }
+                        })
+                    }
+                })
+
+            } else {
+                res.status(500);
+                return res.json({
+                    data: err,
+                    success: false,
+                    msg: 'user not found'
+                });
+            }
+        }
+    })
+});
+
+
 
 router.get('/profile', passport.authenticate('jwt',{session:false}), (req, res) => {
     res.json({
