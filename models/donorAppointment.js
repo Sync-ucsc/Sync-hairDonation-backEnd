@@ -85,3 +85,9 @@ module.exports.deleteAppointmentById = function (id, callback) {
     DonorAppoitment.findByIdAndDelete(id,callback);
 }
 
+
+//Appointment get all
+module.exports.getAll = function (callback) {
+
+    DonorAppoitment.find(callback);
+}

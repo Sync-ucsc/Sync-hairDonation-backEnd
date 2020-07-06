@@ -59,6 +59,28 @@ router.post('/update/:id', (req, res) => {
     
     }) 
 
+router.get('/getAll', (req, res) => {
+  
+  DonorAppointment.getAll((err, donor) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: '',
+        success: false,
+        msg: 'Failed to get donors appointment'
+      })
+    } else {
+      res.json({
+        data: donor,
+        success: true,
+        msg: 'got donors appointment',
+      })
+    }
+  })
+
+
+})
+
 
 // Delete Appointment
 router.delete('/delete/:id', (req, res) => {
