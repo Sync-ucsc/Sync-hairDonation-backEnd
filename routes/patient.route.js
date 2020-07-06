@@ -31,6 +31,7 @@ router.get('/', (req, res) => {
                 firstName: p.firstName,
                 lastName: p.lastName,
                 id: p.id,
+                reportId: p.patientNumber
             })
         })
         // array.forEach(element => {

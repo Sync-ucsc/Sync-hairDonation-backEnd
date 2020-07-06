@@ -3,7 +3,7 @@ const bcrpt = require('bcryptjs');
 const config = require('../config/database');
 
 // donor schema
-const DonorAppoitmentSchema = mongoose.Schema({
+const DonorAppointmentSchema = mongoose.Schema({
     salonEmail: {
         type: String,
         required: true
