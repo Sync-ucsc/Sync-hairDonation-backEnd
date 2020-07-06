@@ -42,6 +42,7 @@ const wigRequest = require('./routes/wigRequest.route');
 const sms = require('./routes/sms.route');
 const attendant = require ('./routes/attendant.route');
 const driver = require('./routes/driver.route');
+const donorAppointment = require('./routes/donorAppointment.route');
 
 const port = process.env.PORT || 3000;
 
@@ -78,6 +79,7 @@ app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
 app.use('/fingerprint', fingerprint);
 app.use('/targets', targets);
+app.use('/donorAppointment', donorAppointment);
 app.use('/wigRequest', wigRequest);
 app.use('/sms', sms);
 app.use('/attendant', attendant);

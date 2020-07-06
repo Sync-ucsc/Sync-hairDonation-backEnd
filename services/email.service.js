@@ -119,7 +119,7 @@ module.exports = class EmailService {
         let mailOptions = {
             from: '<akavindula@gmail.com>', // sender address
             to: user.email, // list of receivers
-            subject: "Donor verification for web app", // Subject line
+            subject: "Driver verification for web app", // Subject line
             html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
                 <p>your token is ${token}</p>`
         };
