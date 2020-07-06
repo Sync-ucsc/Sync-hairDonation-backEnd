@@ -72,6 +72,32 @@ module.exports = class EmailService {
         callback(info);
     }
 
+    async sendmailDriverRegistation(user, token, callback) {
+        // create reusable transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: details.email,
+                pass: details.password
+            }
+        });
+
+        let mailOptions = {
+            from: '<akavindula@gmail.com>', // sender address
+            to: user.email, // list of receivers
+            subject: "Donor verification for web app", // Subject line
+            html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
+                <p>your token is ${token}</p>`
+        };
+
+        // send mail with defined transport object
+        let info = await transporter.sendMail(mailOptions);
+
+        callback(info);
+    }
+
 
     // app.post("/sendmailwebfrogetpassword", (req, res) => {
     //     console.log("request came");
