@@ -723,10 +723,10 @@ router.get('/profile', passport.authenticate('jwt',{session:false}), (req, res) 
     });
 })
 
-router.get('/chanePassword', passport.authenticate('jwt', {
+router.post('/changePassword', passport.authenticate('jwt', {
     session: false
 }), (req, res) => {
-    User.getUserBYEmail(email, (err, user) => {
+    User.getUserBYEmail(req.body.email, (err, user) => {
                 if (err) {
                     res.status(500);
                     return res.json({
@@ -753,20 +753,6 @@ router.get('/chanePassword', passport.authenticate('jwt', {
                       })
                 }
             });
-                
-    res.json({
-        data: {
-            "_id": req.user._id,
-            "role": req.user.role,
-            "banAction": req.user.banAction,
-            "firstName": req.user.firstName,
-            "lastName": req.user.lastName,
-            "active": req.user.active,
-            "email": req.user.email,
-        },
-        success: true,
-        msg: 'User profile',
-    });
 })
 
 router.get('/validate', (req, res) => {

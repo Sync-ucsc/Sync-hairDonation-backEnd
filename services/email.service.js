@@ -6,6 +6,8 @@ const details = {
     password: "aka-1234"
 };
 
+
+
 module.exports = class EmailService {
 
     constructor() {}
@@ -37,7 +39,8 @@ module.exports = class EmailService {
             to: user.email, // list of receivers
             subject: "registation for web app", // Subject line
             html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
-                <p>visit this link for registation https://teatruth-8083d.web.app/registation?Token=${token}</p>`
+                < p > visit this link
+                for verification http://localhost:4200/register-password?email=${user.email}&token=${token}</>`
         };
 
         // send mail with defined transport object
@@ -64,6 +67,32 @@ module.exports = class EmailService {
             subject: "Donor verification for web app", // Subject line
             html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
                 < p > visit this link for verification http://localhost:4200/donor-active?id=${user._id}&email=${user.email}</>`
+        };
+
+        // send mail with defined transport object
+        let info = await transporter.sendMail(mailOptions);
+
+        callback(info);
+    }
+
+    async sendmailDriverRegistation(user, token, callback) {
+        // create reusable transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: details.email,
+                pass: details.password
+            }
+        });
+
+        let mailOptions = {
+            from: '<akavindula@gmail.com>', // sender address
+            to: user.email, // list of receivers
+            subject: "Donor verification for web app", // Subject line
+            html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
+                <p>your token is ${token}</p>`
         };
 
         // send mail with defined transport object
