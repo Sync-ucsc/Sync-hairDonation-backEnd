@@ -43,7 +43,7 @@ const DonorAppointmentSchema = mongoose.Schema({
     canceled: {
         type: Boolean,
         default:false,
-        reqired:true
+        required:true
     }
 });
 
