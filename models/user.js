@@ -29,6 +29,10 @@ const UserSchema = mongoose.Schema({
     banAction:[{
         type: String,
     }],
+    token:{
+        type: Number,
+        default: 0
+    },
     block:{
         type: Boolean,
         default: false,
@@ -94,8 +98,13 @@ module.exports.register = function(user,callback){
         active: false,
         password: randome,
     })
+    if(user.role = 'driver'){
+        emailService.sendmailDriverRegistation(newUser, randome, () => {});
+    } else {
+        emailService.sendmailRegistation(newUser, randome, () => {});
+    }
     
-    emailService.sendmailRegistation(newUser, randome,()=> {});
+    
     User.addUser(newUser,callback); 
 }
 
@@ -112,7 +121,8 @@ module.exports.activate = function(id,password,callback){
             User.findByIdAndUpdate(id, {
                 $set: {
                     password: hash,
-                    active: true
+                    active: true,
+                    token: 0,
                 }
             }, (err, res) => {
                 // console.log(res)
