@@ -7,16 +7,28 @@ const targetSalonLocationsSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    salonName: {
+        type: String,
+        required: true
+    },
+    salonEmail: {
+        type: String,
+        required: true
+    },
     requestId: {
         type: String,
         required: true,
     },
-    lat: {
+    address: {
         type: String,
         required: true
     },
+    lat: {
+        type: Number,
+        required: true
+    },
     lng: {
-        type: String,
+        type: Number,
         required: true
     },
     noOfWigs: {
@@ -26,6 +38,14 @@ const targetSalonLocationsSchema = mongoose.Schema({
     status: {
         type: String,
         default: 'NeedToDeliver', // NeedToDeliver | Delivered  | Cancel,
+        required: true
+    },
+    deliveryDate: {
+        type: Date,
+        required: true
+    },
+    createdAt: {
+        type: Date,
         required: true
     },
 });

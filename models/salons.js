@@ -54,9 +54,7 @@ const SalonSchema = new Schema({
     });
 
 
-
 const Salon = module.exports = mongoose.model('Salon', SalonSchema);
-
 
 //salon add
 module.exports.addSalon = function (newSalon, callback) {

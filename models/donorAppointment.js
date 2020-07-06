@@ -5,9 +5,23 @@ const config = require('../config/database');
 // donor schema
 const DonorAppoitmentSchema = mongoose.Schema({
     salonEmail: {
-        type: String
+        type: String,
+        required: true
+    },
+    DonorRequest:{
+        type: Boolean,
+        required: true,
     },
     Donoremail: {
+        type: String
+    },
+    customerEmail: {
+        type: String
+    },
+    customerNumber: {
+        type: String
+    },
+    customerName: {
         type: String
     },
     systemRequestDate: {
@@ -22,11 +36,52 @@ const DonorAppoitmentSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    //1-donor accept 2-donor decline 3-salon accept 4-salon decline 5-?
     progress: {
         type: Number
     },
     canceled: {
         type: Boolean,
-        required: true
+        default:false,
+        reqired:true
     }
 });
+
+
+const DonorAppoitment = module.exports = mongoose.model('DonorAppointment', DonorAppointmentSchema)
+
+
+
+
+//Appointment add
+module.exports.createAppointment = function (newDonorAppointment, callback) {
+    newDonorAppointment.save(callback);
+}
+
+
+
+//Appointment get by id
+module.exports.getById = function (id, callback) {
+
+    DonorAppoitment.findById(id, callback);
+}
+
+
+//update appointment
+module.exports.updateAppointment = function (updatedAppointment, callback) {
+
+
+    DonorAppoitment.findByIdAndUpdate(updatedAppointment._id, {
+        $set: updatedAppointment
+    }, {
+        useFindAndModify: false
+    },
+        callback);
+}
+
+//Appointment delete
+module.exports.deleteAppointmentById = function (id, callback) {
+    console.log('dx')
+    DonorAppoitment.findByIdAndDelete(id,callback);
+}
+
