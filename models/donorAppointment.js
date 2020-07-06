@@ -36,7 +36,6 @@ const DonorAppoitmentSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-
     //1-donor accept 2-donor decline 3-salon accept 4-salon decline 5-?
     progress: {
         type: Number
@@ -85,3 +84,4 @@ module.exports.deleteDonateAppointmentById = function (id, callback) {
     console.log('dx')
     DonorAppoitment.findByIdAndDelete(id,callback);
 }
+

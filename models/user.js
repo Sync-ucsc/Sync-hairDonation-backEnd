@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const bcrpt = require('bcryptjs');
 const config = require('../config/database');
 
+const EmailService = require('../services/email.service');
+const emailService = new EmailService();
+
+
 // user schema
 const UserSchema = mongoose.Schema({
     firstName: {
@@ -12,7 +16,8 @@ const UserSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     role:{
         type: String,
@@ -24,6 +29,10 @@ const UserSchema = mongoose.Schema({
     banAction:[{
         type: String,
     }],
+    block:{
+        type: Boolean,
+        default: false,
+    },
     password: {
         type: String,
         required: true
@@ -34,6 +43,12 @@ const UserSchema = mongoose.Schema({
 });
 
 const User = module.exports = mongoose.model('User',UserSchema);
+
+//Get all users
+module.exports.getAll = function (callback) {
+
+    User.find(callback);
+}
 
 module.exports.getUserById = function(id, callback){
     User.findById(id,callback);
@@ -79,12 +94,12 @@ module.exports.register = function(user,callback){
         active: false,
         password: randome,
     })
-
-    User.addUser(newUser, callback);
+    
+    emailService.sendmailRegistation(newUser, randome,()=> {});
+    User.addUser(newUser,callback); 
 }
 
 module.exports.activate = function(id,password,callback){
-     console.log(id);
     bcrpt.genSalt(10, (err, salt) => {
         if (err) {
             throw err;
@@ -94,12 +109,6 @@ module.exports.activate = function(id,password,callback){
                 throw err;
             //password = hash;
            
-            console.log(password);
-            console.log(hash);
-            User.findById(id, (er,u)=>{
-                console.log(u);
-                console.log(er)
-            });
             User.findByIdAndUpdate(id, {
                 $set: {
                     password: hash,
@@ -111,4 +120,19 @@ module.exports.activate = function(id,password,callback){
             })
         })
     })
+}
+
+module.exports.sUserActivate = function (id, callback) {
+     User.findByIdAndUpdate(id, {
+         $set: {
+             active: true
+         }
+     }, (err, res) => {
+         // console.log(res)
+         callback(null, null);
+     })
+}
+
+module.exports.deleteUserById = function (id, callback) {
+    User.findByIdAndDelete(id, callback);
 }

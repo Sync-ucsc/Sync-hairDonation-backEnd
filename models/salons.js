@@ -3,12 +3,15 @@ const Schema = mongoose.Schema;
 
 
 // Define collection and schema
+
 const SalonSchema = new Schema({
         name: {
             type: String
         },
         email: {
-            type: String
+            type: String,
+            required: true,
+            unique: true
         },
         telephone: {
             type: Number
@@ -31,11 +34,27 @@ const SalonSchema = new Schema({
         longitude:{
             type:Number
         },
+        NeedToDeliverStatus: [{
+            status: {
+                type: String,
+                default: 'NeedToDeliver', // NeedToDeliver | Delivered  | Cancel
+                required: true
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now(),
+                required: true
+            },
+            deliveryDate: {
+                type: Date,
+                default: Date.now(),
+                required: true
+            }
+        }]
     });
 
 
-
-const Salon = module.exports = mongoose.model('Salon', SalonSchema)
+const Salon = module.exports = mongoose.model('Salon', SalonSchema);
 
 //salon add
 module.exports.addSalon = function (newSalon, callback) {

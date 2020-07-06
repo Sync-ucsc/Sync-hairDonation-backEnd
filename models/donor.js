@@ -12,10 +12,31 @@ const DonorSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     telePhone: {
         type: String,
+        required: true
+    },
+    nic: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    lat: {
+        type: Number,
+        required: true
+    },
+    lon: {
+        type: Number,
+        required: true
+    },
+    fingerprint: {
+        type: Number,
         required: true
     },
     nearSalon: {
@@ -24,7 +45,6 @@ const DonorSchema = mongoose.Schema({
         },
         id: {
             type: Number,
-            required: true
         },
         distance: Number
 
@@ -39,6 +59,15 @@ const DonorSchema = mongoose.Schema({
         },
         validDate: {
             type: Date
+        },
+        address: {
+            type: String
+        },
+        latitude:{
+            type:Number
+        },
+        longitude:{
+            type:Number
         },
         appoiment: [{
 
@@ -55,4 +84,51 @@ const DonorSchema = mongoose.Schema({
     }]
 });
 
-const User = module.exports = mongoose.model('Donor', DonorSchema);
+
+
+const Donor = module.exports = mongoose.model('Donor', DonorSchema);
+
+module.exports.addDonor = function (newDonor, callback) {
+    
+    newDonor.save(callback);
+}
+
+module.exports.addDonorRequest = function(email,req,callback){
+
+    const query =  { email: email};
+    Donor.findOneAndUpdate(query,{ $push: { request: req }},callback);
+}
+
+//Donor get all
+module.exports.getAll = function (callback) {
+
+    Donor.find(callback);
+}
+
+//Donor get by id
+module.exports.getById = function (id, callback) {
+
+    Donor.findById(id, callback);
+}
+
+//Donor get by email
+module.exports.getDonorByEmail = function (email, callback) {
+    const query =  { email: email};
+    Donor.findOne(query, callback);
+}
+
+//Donor salon
+module.exports.updateDonor = function (updatedDonor, callback) {
+
+
+    Donor.findByIdAndUpdate(updatedDonor._id, {
+        $set: updatedDonor
+    }, {
+        useFindAndModify: false
+    },
+        callback);
+}
+//Donor delete
+module.exports.deleteDonor = function (id, callback) {
+    Donor.findByIdAndDelete(id, callback);
+}
