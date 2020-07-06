@@ -34,7 +34,8 @@ module.exports = class EmailService {
             to: user.email, // list of receivers
             subject: "registation for web app", // Subject line
             html: `<h1 style='text-align: center'>Wellcome to Sync <br><br></h1>
-                <p>visit this link for registation https://teatruth-8083d.web.app/registation?Token=${token}</p>`
+                < p > visit this link
+                for verification http://localhost:4200/register-password?email=${user.email}&token=${token}</>`
         };
 
         // send mail with defined transport object
