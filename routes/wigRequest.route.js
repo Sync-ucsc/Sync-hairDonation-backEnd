@@ -9,26 +9,34 @@ const wigRequestService = new WigRequestService();
 
 router.use(bodyParser.urlencoded({extended: false}));
 
-router.put('/add/:patientId', async (req, res) => {
+router.put('/add/:patientEmail', async (req, res) => {
     try {
         const io = req.app.get('io');
 
-        const patientId = req.params.patientId;
-        const response = await wigRequestService.addWigRequest(req.body, patientId);
+        const patientEmail = req.params.patientEmail;
 
+        if(!patientEmail){
+           return res.send(sendResponse(undefined, false, `Patient email not found`));
+        }
+
+        const response = await wigRequestService.addWigRequest(req.body, patientEmail);
+        console.log(response)
+        console.log(`response`)
         io.emit('new-wig-request');
 
         res.send(sendResponse(response));
     } catch (error) {
+        console.log(error)
+        console.log(`response`)
         res.send(sendResponse(undefined, false, error.toString()));
     }
 });
 
-router.get('/lastRequestStatus/:patientId', async (req, res) => {
+router.get('/lastRequestStatus/:patientEmail', async (req, res) => {
     try {
 
-        const patientId = req.params.patientId;
-        const lastRequest = await wigRequestService.getLastRequestData(patientId);
+        const patientEmail = req.params.patientEmail;
+        const lastRequest = await wigRequestService.getLastRequestData(patientEmail);
 
         res.send(sendResponse(lastRequest));
 

@@ -10,13 +10,13 @@ module.exports = class wigRequestService {
     }
 
 
-    async addWigRequest(data, patientId) {
+    async addWigRequest(data, patientEmail) {
         try {
 
             const WigRequestObject = new WigRequest(data);
 
             return await Patient.findOneAndUpdate(
-                {_id: patientId},
+                {email: patientEmail},
                 {$push: {request: WigRequestObject}}
             )
 
@@ -59,15 +59,21 @@ module.exports = class wigRequestService {
         }
     }
 
-    async getLastRequestData(patientId) {
+    async getLastRequestData(patientEmail) {
         try {
-            const result = await Patient.findById(patientId);
+
+            const result = await Patient.findOne({email:patientEmail});
+
+            if(result.request && result.request.length  === 0)
+                return []
 
             return result.request
                 .sort((a, b) => sharedService.sortByDate(a.requestDay, b.requestDay))[0];
 
         } catch (error) {
+            console.log(error)
             throw error
+
         }
     }
 
