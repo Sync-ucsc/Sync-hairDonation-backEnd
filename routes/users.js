@@ -734,6 +734,7 @@ router.post('/patientActivate', (req, res) => {
                             msg: 'Faild to active'
                         })
                     } else {
+                        emailService.sendmailPatientVerification(newUser, randome, () => {});
                         res.json({
                             data: user,
                             success: true,
