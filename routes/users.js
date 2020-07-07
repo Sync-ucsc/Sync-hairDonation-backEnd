@@ -843,7 +843,7 @@ router.post('/changePassword', passport.authenticate('jwt', {
                         msg: 'err'
                     });
                 } else {
-                      User.activate(user._id, req.body.password, (err, user) => {
+                      User.activate(user._id, req.body.password, (err, nuser) => {
                           if (err) {
                               res.status(500);
                               res.json({
