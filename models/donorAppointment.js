@@ -33,7 +33,7 @@ const DonorAppointmentSchema = mongoose.Schema({
         required: true
     },
     appointmentTimeSlot: {
-        type: Number,
+        type: String,
         required: true
     },
     //1-donor accept 2-donor decline 3-salon accept 4-salon decline 5-?
@@ -43,7 +43,7 @@ const DonorAppointmentSchema = mongoose.Schema({
     canceled: {
         type: Boolean,
         default:false,
-        reqired:true
+        required:true
     }
 });
 

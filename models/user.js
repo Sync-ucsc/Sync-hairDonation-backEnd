@@ -98,7 +98,7 @@ module.exports.register = function(user,callback){
         active: false,
         password: randome,
     })
-    if(user.role = 'driver'){
+    if(user.role === 'driver'){
         emailService.sendmailDriverRegistation(newUser, randome, () => {});
     } else {
         emailService.sendmailRegistation(newUser, randome, () => {});

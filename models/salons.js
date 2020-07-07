@@ -14,7 +14,7 @@ const SalonSchema = new Schema({
             unique: true
         },
         telephone: {
-            type: Number
+            type: String
         },
         address: {
             type: String

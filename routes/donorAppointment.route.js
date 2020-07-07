@@ -10,7 +10,7 @@ let DonorAppointment = require('../models/donorAppointment');
 router.post('/create', (req, res, next) => {
     const io = req.app.get('io');
     let newDonorAppointment = new DonorAppointment({
-        SalonEmail: req.body.salonEmail,
+        salonEmail: req.body.SalonEmail,
         DonorRequest: req.body.DonorRequest,
         Donoremail: req.body.Donoremail,
         customerEmail: req.body.customerEmail,
@@ -22,7 +22,7 @@ router.post('/create', (req, res, next) => {
     });
 
 
-    DonorAppointment.createAppointment(newDonorAppointment, (err, donor) => {
+    DonorAppointment.createAppointment(newDonorAppointment, (err,appointment ) => {
         if (err) {
             res.status(500).json({
                 data: err,
@@ -31,7 +31,7 @@ router.post('/create', (req, res, next) => {
             })
         } else {
             res.json({
-                data: donor,
+                data: appointment,
                 success: true,
                 msg: 'Create Appointment',
             })
