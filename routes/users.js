@@ -725,7 +725,7 @@ router.post('/patientActivate', (req, res) => {
                     msg: 'user not found'
                 });
             } else if ( user.role == 'patient') {
-                User.sUserActivate(user._id, (err, user) => {
+                User.sUserActivate(user._id, (err, nuser) => {
                     if (err) {
                         res.status(500);
                         res.json({
