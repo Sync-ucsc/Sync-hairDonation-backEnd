@@ -725,7 +725,7 @@ router.post('/patientActivate', (req, res) => {
                     msg: 'user not found'
                 });
             } else if ( user.role == 'patient') {
-                User.sUserActivate(user._id, (err, user) => {
+                User.sUserActivate(user._id, (err, nuser) => {
                     if (err) {
                         res.status(500);
                         res.json({
@@ -734,7 +734,7 @@ router.post('/patientActivate', (req, res) => {
                             msg: 'Faild to active'
                         })
                     } else {
-                        emailService.sendmailPatientVerification(newUser, randome, () => {});
+                        emailService.sendmailPatientVerification(user, () => {});
                         res.json({
                             data: user,
                             success: true,
