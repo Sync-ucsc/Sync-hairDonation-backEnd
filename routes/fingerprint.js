@@ -40,6 +40,79 @@ router.get('/get/:fingerprint',(req,res) =>{
     })
 })
 
+router.get('/getAll', (req, res) => {
+
+
+
+    Fingerprint.getAllUnusalFingerprint((err, fingerprint) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Failed to get the fingreprint'
+            })
+        } else {
+            if (fingerprint !== null) {
+                res.json({
+                    data: fingerprint,
+                    success: true,
+                    msg: 'got the fingerprint',
+                })
+            } else {
+                res.json({
+                    data: '',
+                    success: true,
+                    msg: 'havent the fingerprint',
+                })
+            }
+
+
+        }
+    })
+})
+
+router.post('/check', (req, res) => {
+
+    if(req.body.val){
+        Fingerprint.checkFingerprint(req.body.Fingerprint, (err, fingerprint) => {
+            if (err) {
+                res.status(500);
+                res.json({
+                    data: '',
+                    success: false,
+                    msg: 'Failed to update the fingreprint'
+                })
+            } else {
+                res.json({
+                    data: fingerprint,
+                    success: true,
+                    msg: 'update the fingreprint',
+                })
+            }
+        })
+    } else {
+        Fingerprint.blockFingerprint(req.body.Fingerprint,(err, fingerprint) => {
+            if (err) {
+                res.status(500);
+                res.json({
+                    data: '',
+                    success: false,
+                    msg: 'Failed to update the fingreprint'
+                })
+            } else {
+                res.json({
+                    data: fingerprint,
+                    success: true,
+                    msg: 'update the fingreprint',
+                })
+            }
+        })
+    }
+
+    
+})
+
 // error routes
 router.get('*', (_, res) => {
     res.status(404);

@@ -20,7 +20,17 @@ const FingerprintSchema = mongoose.Schema({
         },
         userType: {
             type: String
-        }
+        },
+        temporyBan: {
+            type: Boolean,
+            default: false,
+        },
+        block: {
+            type: Boolean,
+            default: false,
+        },
+
+        
     }],
     block: {
         type: Boolean,

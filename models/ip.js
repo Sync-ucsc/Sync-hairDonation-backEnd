@@ -32,7 +32,15 @@ const Ipchema = mongoose.Schema({
         },
         userType: {
             type: String
-        }
+        },
+        temporyBan: {
+            type: Boolean,
+            default: false,
+        },
+        block: {
+            type: Boolean,
+            default: false,
+        },
     }]
 
 });
@@ -58,15 +66,26 @@ module.exports.addIp = function (newIp, user, role, callback) {
      });
 }
 
-module.exports.editFingerprint = function (fingerprint, user, role, callback) {
 
-    const query = {
-        Fingerprint: fingerprint
-    };
-    Fingerprint.findOneAndUpdate(query, {
-        $push: {
-            users: user,
-            userType: role
+
+module.exports.blockEmail = function(email,val,callback){
+    Ip.updateMany({'users.email': email},
+    {
+        '$set': {
+            'users.$.block': val
+        }},callback);
+}
+
+module.exports.temporyBan = function (email,val,callback) {
+    Ip.updateMany({
+        'users.email': email
+    }, {
+        '$set': {
+            'users.$.temporyBan': val
         }
     }, callback);
+}
+
+module.exports.get = function (callback) {
+    Ip.find(callback);
 }

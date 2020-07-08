@@ -958,7 +958,7 @@ router.post('/register', (req, res) => {
         role: req.body.role,
         email: req.body.email,
     })
-    User.register(user, (err, user) => {
+    User.register(user, nuser, (err, user) => {
         if (err) {
             res.status(500);
             res.json({
@@ -975,6 +975,82 @@ router.post('/register', (req, res) => {
         }
     })
 })
+
+//
+router.post('/getip/:email',(req,res)=>{
+    Ip.blockEmail(req.params.email, (err,ips)=>{
+        if(err){
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to get ips'
+            })
+        } else {
+            res.json({
+                data: ips,
+                success: true,
+                msg: 'got ips'
+            })
+        }
+    })
+})
+router.get('/get', (req, res) => {
+    Ip.get((err, ips) => {
+        if (err) {
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to get ips'
+            })
+        } else {
+            res.json({
+                data: ips,
+                success: true,
+                msg: 'got ips'
+            })
+        }
+    })
+})
+router.post('/addip', (req, res) => {
+    let ip = '112.135.56.6'
+    let nuser = {
+        email: 'syncdonor@gmail.com',
+        registerIp: ip,
+        userType: 'donor'
+    }
+    console.log(ip)
+
+    ipapi.location((data) => {
+                console.log(data)
+                let newIP = new Ip({
+                    ipv4: ip,
+                    fingerprint: 5405405887,
+                    city: data.city,
+                    region: data.region,
+                    country: data.country,
+                    userType: ['admin'],
+                    users: [nuser],
+                })
+                Ip.addIp(newIP, (err, ip) => {
+                    if (err) {
+                        res.json({
+                            data: err,
+                            success: false,
+                            msg: 'Faild to get ips'
+                        })
+                    } else {
+                        res.json({
+                            data: ip,
+                            success: true,
+                            msg: 'got ips'
+                        })
+                    }
+                })
+            },ip)
+
+    
+})
+
 
 
 
