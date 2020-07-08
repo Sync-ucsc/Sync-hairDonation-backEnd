@@ -28,9 +28,15 @@ router.get('/', (req, res) => {
             const lastRequest = p.request.sort((a, b) => sharedService.sortByDate(a.requestDay, b.requestDay))[0];
             wigrequest.push({
                 lastRequest,
+                id: p.id,
                 firstName: p.firstName,
                 lastName: p.lastName,
-                id: p.id,
+                email: p.email,
+                telePhone: p.telePhone,
+                address: p.address,
+                nic: p.nic,
+                // lat: p.lat,
+                // lon: p.lon,
                 reportId: p.patientNumber
             })
         })
@@ -109,6 +115,48 @@ router.get('/readByEmail/:email',(req,res)=>{
       })
     }
   })
+})
+
+// Update donor
+router.post('/update/:id', (req, res) => {
+  const io = req.app.get('io');
+  let updatedPatient = Patient({
+    _id: req.params.id,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    telePhone: req.body.telePhone,
+    address: req.body.address,
+    nic:req.body.nic,
+    // lat: req.body.lat,
+    // lon: req.body.lon,
+  //   checkSystem: req.body.checkSystem,
+  //   checkSms: req.body.checkSms,
+  //   checkEmail: req.body.checkEmail,
+  })
+
+  Patient.updatePatient(updatedPatient, (err, patient) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: err,
+        success: false,
+        msg: 'Failed to update patient'
+      })
+    } else {
+      res.json({
+        data: patient,
+        success: true,
+        msg: 'updated patient',
+      })
+      io.emit('update-patient');
+
+    }
+
+    
+  })
+
+
 })
 
 
