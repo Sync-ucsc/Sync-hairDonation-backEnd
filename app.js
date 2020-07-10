@@ -36,7 +36,8 @@ const chat = require('./routes/chat.route');
 const payment = require('./routes/payment');
 const getInTouch = require('./routes/getInTouch.route');
 const manager=require('./routes/manager.route')
-const fingerprint = require('./routes/fingerprint')
+const fingerprint = require('./routes/fingerprint');
+const ip = require('./routes/ip');
 const targets = require('./routes/targets.route');
 const wigRequest = require('./routes/wigRequest.route');
 const sms = require('./routes/sms.route');
@@ -78,6 +79,7 @@ app.use('/payment', chat);
 app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
 app.use('/fingerprint', fingerprint);
+app.use('/ip', ip);
 app.use('/targets', targets);
 app.use('/donorAppointment', donorAppointment);
 app.use('/wigRequest', wigRequest);

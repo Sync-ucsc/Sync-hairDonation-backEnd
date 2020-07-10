@@ -72,6 +72,7 @@ router.delete('/delete/:id', (req, res) => {
         success: true,
         msg: 'patient deleted',
       })
+      io.emit('check-user');
       io.emit('delete-patient');
     }
   });

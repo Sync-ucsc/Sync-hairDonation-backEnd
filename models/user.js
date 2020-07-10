@@ -19,9 +19,24 @@ const UserSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    telephone: {
+        type: String,
+        required: true,
+        unique: true
+    },
     role:{
         type: String,
         required: true
+    },
+    profilePic:{
+        type: String,
+        default: 'https://firebasestorage.googleapis.com/v0/b/sync-hairdonation.appspot.com/o/user.png?alt=media&token=819c4128-c241-4fcf-94c3-77af2653022c'
+    },
+    registerIP: {
+        type: String,
+    },
+    registerCity: {
+        type: String,
     },
     temporyBan:{
         type: Boolean,
@@ -30,8 +45,8 @@ const UserSchema = mongoose.Schema({
         type: String,
     }],
     token:{
-        type: Number,
-        default: 0
+        type: String,
+        default: '0'
     },
     block:{
         type: Boolean,
@@ -78,6 +93,8 @@ module.exports.addUser = function(newUser,callback){
 }
 
 module.exports.comparePassword = function(candidateToken,hash,callback){
+    console.log(candidateToken)
+    console.log(hash)
     bcrpt.compare(candidateToken,hash, (err,isMatch)=>{
         if( err){
             throw err;
@@ -97,7 +114,9 @@ module.exports.register = function(user,callback){
         temporyBan: false,
         active: false,
         password: randome,
+        telephone: user.telephone,
     })
+    console.log(newUser)
     if(user.role === 'driver'){
         emailService.sendmailDriverRegistation(newUser, randome, () => {});
     } else {
@@ -108,7 +127,35 @@ module.exports.register = function(user,callback){
     User.addUser(newUser,callback); 
 }
 
-module.exports.activate = function(id,password,callback){
+module.exports.reqestmail = function (email, callback) {
+    let randome = Math.floor(Math.random() * Math.floor(1000000))
+    console.log(randome)
+    emailService.sendmailwebfrogetpassword(email, randome, () => {});
+    bcrpt.genSalt(10, (err, salt) => {
+        if (err) {
+            throw err;
+        }
+        bcrpt.hash(randome.toString(), salt, (err, hash) => {
+            if (err)
+                throw err;
+            randome = hash;
+            User.findOneAndUpdate({
+                email: email
+            }, {
+                $set: {
+                    token: randome
+                }
+            }, (err, res) => {
+                // console.log(res)
+                callback(null, null);
+            })
+        })
+    })
+
+
+}
+
+module.exports.activate = function(id,password,ip,city,callback){
     bcrpt.genSalt(10, (err, salt) => {
         if (err) {
             throw err;
@@ -122,7 +169,9 @@ module.exports.activate = function(id,password,callback){
                 $set: {
                     password: hash,
                     active: true,
-                    token: 0,
+                    registerIP: ip,
+                    registerCity: city,
+                    token: '0',
                 }
             }, (err, res) => {
                 // console.log(res)
@@ -136,6 +185,17 @@ module.exports.sUserActivate = function (id, callback) {
      User.findByIdAndUpdate(id, {
          $set: {
              active: true
+         }
+     }, (err, res) => {
+         // console.log(res)
+         callback(null, null);
+     })
+}
+
+module.exports.temporyBan = function (email, x, callback) {
+     User.findOneAndUpdate({email:email}, {
+         $set: {
+             temporyBan: x
          }
      }, (err, res) => {
          // console.log(res)

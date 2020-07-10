@@ -28,6 +28,7 @@ router.route('/create').post((req, res, next) => {
     lastName: '',
     role: 'salon',
     email: req.body.email,
+    telephone: req.body.telephone,
   })
   
 
@@ -57,6 +58,7 @@ router.route('/create').post((req, res, next) => {
             success: true,
             msg: 'Salon Created',
           })
+          io.emit('check-user');
           io.emit('new-salon');
         }
       })
@@ -171,6 +173,7 @@ router.delete('/delete/:id', (req, res) => {
         success: true,
         msg: 'salon deleted',
       })
+      io.emit('check-user');
       io.emit('delete-salon');
     }
   });

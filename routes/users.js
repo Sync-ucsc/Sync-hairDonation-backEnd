@@ -18,118 +18,119 @@ const EmailService = require('../services/email.service');
 const emailService = new EmailService();
 
 
-//signup
-
+//signup donor and patient
 router.post('/signup', (req,res) => {
-
+    const io = req.app.get('io');
     var ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress
 
-    ip = '112.135.14.4'
+    z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
+    ip = z[Math.floor(Math.random() * z.length)]
 
 
-    
-
-    if (req.body.role == 'donor' || req.body.role == 'patient'){
-        let newUser = new User({
-            firstName: req.body.fname,
-            lastName: req.body.lname,
-            email: req.body.email,
-            role: req.body.role,
-            temporyBan: false,
-            active: false,
-            password: req.body.password
-        })
-
+    ipapi.location((ipdata) => {
         let nuser = {
             email: req.body.email,
             registerIp: ip,
-            userType: req.body.role
+            userType: req.body.role,
+            city: ipdata.city,
         }
-        let newDonor = new Donor({
+        let newIP = new Ip({
+            ipv4: ip,
+            fingerprint: req.body.fingerprint,
+            city: ipdata.city,
+            region: ipdata.region,
+            country: ipdata.country,
+            userType: [req.body.role],
+            users: [nuser],
+        })
+        if (req.body.role == 'donor' || req.body.role == 'patient') {
+            let newUser = new User({
+                firstName: req.body.fname,
+                lastName: req.body.lname,
+                email: req.body.email,
+                role: req.body.role,
+                registerIP: ip,
+                registerCity: ipdata.city,
+                telephone: req.body.phone,
+                temporyBan: false,
+                active: false,
+                password: req.body.password
+            })
+            let newDonor = new Donor({
                 firstName: req.body.fname,
                 lastName: req.body.lname,
                 email: req.body.email,
                 telePhone: req.body.phone,
-                nic:req.body.nic,
+                nic: req.body.nic,
                 address: req.body.address,
                 lat: req.body.lat,
                 lon: req.body.lon,
                 fingerprint: req.body.fingerprint
-                
+
             });
 
-        let newPatient = new Patient({
-            firstName: req.body.fname,
-            lastName: req.body.lname,
-            email: req.body.email,
-            telePhone: req.body.phone,
-            nic: req.body.nic,
-            address: req.body.address,
-            patientNumber: req.body.patientNumber,
-            patientReport: req.body.patientReport,
-            fingerprint: req.body.fingerprint
-        });
-        
-        
-        let fingerprint = new Fingerprint({
-            Fingerprint: req.body.fingerprint,
-            userType: [req.body.role],
-            users: [nuser],
-            block: false,
-            check: false
-        }) 
-        
-        
-        
-        
+            let newPatient = new Patient({
+                firstName: req.body.fname,
+                lastName: req.body.lname,
+                email: req.body.email,
+                telePhone: req.body.phone,
+                nic: req.body.nic,
+                address: req.body.address,
+                patientNumber: req.body.patientNumber,
+                patientReport: req.body.patientReport,
+                fingerprint: req.body.fingerprint
+            });
 
-        User.addUser(newUser, (err, user) => {
-            if (err) {
-                res.status(500);
-                res.json({
-                    data: err,
-                    success: false,
-                    msg: 'Faild to register user'
-                });
-            } else {
-                if (req.body.role == 'patient'){
-                    Patient.addPatient(newPatient, (err, patient) => {
-                        if (err) {
-                            res.status(500);
-                            User.deleteUserById(user._id, (err, dd) => {});
-                            res.json({
-                                data: err,
-                                success: false,
-                                msg: 'Faild to register user'
-                            })
 
-                        } else {
-                            if (req.body.fpcount == 0) {
-                                Fingerprint.addFingerprint(fingerprint, (err, fingerprint) => {
-                                    if (err) {
-                                        res.status(500);
-                                        User.deleteUserById(user._id, (err, dd) => {});
-                                        Patient.deletePatient(patient._id, (err, dd) => {});
-                                        res.json({
-                                            data: err,
-                                            success: false,
-                                            msg: 'Faild to register user'
-                                        })
-                                    } else {
-                                        ipapi.location((data) => {
-                                            let newIP = new Ip({
-                                                ipv4: ip,
-                                                fingerprint: req.body.fingerprint,
-                                                city: data.city,
-                                                region: data.region,
-                                                country: data.country,
-                                                userType: [req.body.role],
-                                                users: [nuser],
+            let fingerprint = new Fingerprint({
+                Fingerprint: req.body.fingerprint,
+                userType: [req.body.role],
+                users: [nuser],
+                block: false,
+                check: false
+            })
+
+
+
+
+
+            User.addUser(newUser, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    res.json({
+                        data: err,
+                        success: false,
+                        msg: 'Faild to register user'
+                    });
+                } else {
+                    if (req.body.role == 'patient') {
+                        Patient.addPatient(newPatient, (err, patient) => {
+                            if (err) {
+                                res.status(500);
+                                User.deleteUserById(user._id, (err, dd) => {});
+                                res.json({
+                                    data: err,
+                                    success: false,
+                                    msg: 'Faild to register user'
+                                })
+
+                            } else {
+                                if (req.body.fpcount == 0) {
+                                    Fingerprint.addFingerprint(fingerprint, (err, fingerprintpay) => {
+                                        if (err) {
+                                            res.status(500);
+                                            User.deleteUserById(user._id, (err, dd) => {});
+                                            Patient.deletePatient(patient._id, (err, dd) => {});
+                                            res.json({
+                                                data: err,
+                                                success: false,
+                                                msg: 'Faild to register user'
                                             })
-                                            Ip.addIp(newIP, nuser, 'patient', (err, fingerprint) => {
+                                        } else {
+                                            Ip.addIp(newIP, nuser, 'patient', (err, ippay) => {
                                                 if (err) {
                                                     res.status(500);
                                                     User.deleteUserById(user._id, (err, dd) => {});
@@ -145,53 +146,45 @@ router.post('/signup', (req,res) => {
                                                         data: {
                                                             user: user,
                                                             patient: patient,
-                                                            fingerprint: fingerprint
+                                                            fingerprint: fingerprintpay,
+                                                            ip: ippay
                                                         },
                                                         success: true,
                                                         msg: 'User registere',
                                                     })
+                                                    io.emit('check-user');
                                                 }
                                             });
-                                        }, ip)
 
 
 
-                                    }
-                                })
-                            } else if (req.body.fpcount == 1) {
-                                Fingerprint.editFingerprint(req.body.fingerprint, nuser, 'patient', (err, fingerprint) => {
-                                    if (err) {
-                                        res.status(500);
-                                        User.deleteUserById(user._id, (err, dd) => {});
-                                        Patient.deletePatient(patient._id, (err, dd) => {});
-                                        res.json({
-                                            data: err,
-                                            success: false,
-                                            msg: 'Faild to register user'
-                                        })
-                                    } else {
-                                        Fingerprint.blockFingerprint(req.body.fingerprint, (err, fingerprint) => {
-                                            if (err) {
-                                                res.status(500);
-                                                User.deleteUserById(user._id, (err, dd) => {});
-                                                Patient.deletePatient(patient._id, (err, dd) => {});
-                                                res.json({
-                                                    data: err,
-                                                    success: false,
-                                                    msg: 'Faild to register user'
-                                                })
-                                            } else {
-                                                ipapi.location((data) => {
-                                                    let newIP = new Ip({
-                                                        ipv4: ip,
-                                                        fingerprint: req.body.fingerprint,
-                                                        city: data.city,
-                                                        region: data.region,
-                                                        country: data.country,
-                                                        userType: [req.body.role],
-                                                        users: [nuser],
+
+                                        }
+                                    })
+                                } else if (req.body.fpcount == 1) {
+                                    Fingerprint.editFingerprint(req.body.fingerprint, nuser, 'patient', (err, fingerprintpay) => {
+                                        if (err) {
+                                            res.status(500);
+                                            User.deleteUserById(user._id, (err, dd) => {});
+                                            Patient.deletePatient(patient._id, (err, dd) => {});
+                                            res.json({
+                                                data: err,
+                                                success: false,
+                                                msg: 'Faild to register user'
+                                            })
+                                        } else {
+                                            Fingerprint.blockFingerprint(req.body.fingerprint, (err, fingerprintpay2) => {
+                                                if (err) {
+                                                    res.status(500);
+                                                    User.deleteUserById(user._id, (err, dd) => {});
+                                                    Patient.deletePatient(patient._id, (err, dd) => {});
+                                                    res.json({
+                                                        data: err,
+                                                        success: false,
+                                                        msg: 'Faild to register user'
                                                     })
-                                                    Ip.addIp(newIP, nuser, 'patient', (err, fingerprint) => {
+                                                } else {
+                                                    Ip.addIp(newIP, nuser, 'patient', (err, ippay) => {
                                                         if (err) {
                                                             res.status(500);
                                                             User.deleteUserById(user._id, (err, dd) => {});
@@ -206,48 +199,50 @@ router.post('/signup', (req,res) => {
                                                                 data: {
                                                                     user: user,
                                                                     patient: patient,
-                                                                    fingerprint: fingerprint
+                                                                    fingerprint: fingerprint,
+                                                                    ip:ippay
                                                                 },
                                                                 success: true,
                                                                 msg: 'User registere',
                                                             })
+                                                            io.emit('check-user');
                                                         }
                                                     });
-                                                }, ip)
+                                                }
 
 
-                                            }
-                                        })
 
-                                    }
-                                })
-                            } else {
+                                            })
+
+                                        }
+                                    })
+                                } else {
+                                    res.status(500);
+                                    User.deleteUserById(user._id, (err, dd) => {});
+                                    Patient.deletePatient(patient._id, (err, dd) => {});
+                                    res.json({
+                                        data: err,
+                                        success: false,
+                                        msg: 'Faild to register user'
+                                    })
+                                }
+
+                            }
+                        })
+                    } else {
+                        Donor.addDonor(newDonor, (err, donor) => {
+                            if (err) {
                                 res.status(500);
                                 User.deleteUserById(user._id, (err, dd) => {});
-                                Patient.deletePatient(patient._id, (err, dd) => {});
                                 res.json({
                                     data: err,
                                     success: false,
                                     msg: 'Faild to register user'
                                 })
-                            }
 
-                        }
-                    })
-                } else {
-                    Donor.addDonor(newDonor, (err, donor) => {
-                          if (err) {
-                            res.status(500);
-                            User.deleteUserById(user._id,(err,dd)=>{});
-                            res.json({
-                                data: err,
-                                success: false,
-                                msg: 'Faild to register user'
-                            })
-                            
-                          } else {
-                                if(req.body.fpcount == 0) {
-                                    Fingerprint.addFingerprint(fingerprint, (err, fingerprint) => {
+                            } else {
+                                if (req.body.fpcount == 0) {
+                                    Fingerprint.addFingerprint(fingerprint, (err, fingerprintpay) => {
                                         if (err) {
                                             res.status(500);
                                             User.deleteUserById(user._id, (err, dd) => {});
@@ -258,48 +253,40 @@ router.post('/signup', (req,res) => {
                                                 msg: 'Faild to register user'
                                             })
                                         } else {
-                                            ipapi.location((data)=>{
-                                                let newIP = new Ip({
-                                                    ipv4: ip,
-                                                    fingerprint: req.body.fingerprint,
-                                                    city: data.city,
-                                                    region: data.region,
-                                                    country: data.country,
-                                                    userType: [req.body.role],
-                                                    users: [nuser],
-                                                })
-                                                Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
-                                                    if (err) {
-                                                        res.status(500);
-                                                        User.deleteUserById(user._id, (err, dd) => {});
-                                                        Donor.deleteDonor(donor._id, (err, dd) => {});
-                                                        Fingerprint.deleteFingerprintById(user._id, (err, dd) => {});
-                                                        res.json({
-                                                            data: err,
-                                                            success: false,
-                                                            msg: 'Faild to register user'
-                                                        })
-                                                    } else {
-                                                        emailService.sendmailDonorRegistation(user, () => {});
-                                                        res.json({
-                                                            data: {
-                                                                user: user,
-                                                                donor: donor,
-                                                                fingerprint: fingerprint
-                                                            },
-                                                            success: true,
-                                                            msg: 'User registere',
-                                                        })
-                                                    }
-                                                });
-                                            }, ip)
-                                            
-                                            
-                                            
+                                            Ip.addIp(newIP, nuser, 'donor', (err, ippay) => {
+                                                if (err) {
+                                                    res.status(500);
+                                                    User.deleteUserById(user._id, (err, dd) => {});
+                                                    Donor.deleteDonor(donor._id, (err, dd) => {});
+                                                    Fingerprint.deleteFingerprintById(user._id, (err, dd) => {});
+                                                    res.json({
+                                                        data: err,
+                                                        success: false,
+                                                        msg: 'Faild to register user'
+                                                    })
+                                                } else {
+                                                    emailService.sendmailDonorRegistation(user, () => {});
+                                                    res.json({
+                                                        data: {
+                                                            user: user,
+                                                            donor: donor,
+                                                            fingerprint: fingerprintpay,
+                                                            ip: ippay
+                                                        },
+                                                        success: true,
+                                                        msg: 'User registere',
+                                                    })
+                                                    io.emit('check-user');
+                                                }
+                                            });
                                         }
+
+
+
+
                                     })
                                 } else if (req.body.fpcount == 1) {
-                                    Fingerprint.editFingerprint(req.body.fingerprint,nuser,'donor',(err,fingerprint) => {
+                                    Fingerprint.editFingerprint(req.body.fingerprint, nuser, 'donor', (err, fingerprintpay) => {
                                         if (err) {
                                             res.status(500);
                                             User.deleteUserById(user._id, (err, dd) => {});
@@ -310,7 +297,7 @@ router.post('/signup', (req,res) => {
                                                 msg: 'Faild to register user'
                                             })
                                         } else {
-                                            Fingerprint.blockFingerprint(req.body.fingerprint,(err,fingerprint)=>{
+                                            Fingerprint.blockFingerprint(req.body.fingerprint, (err, fingerprintpay1) => {
                                                 if (err) {
                                                     res.status(500);
                                                     User.deleteUserById(user._id, (err, dd) => {});
@@ -321,45 +308,38 @@ router.post('/signup', (req,res) => {
                                                         msg: 'Faild to register user'
                                                     })
                                                 } else {
-                                                    ipapi.location((data) => {
-                                                        let newIP = new Ip({
-                                                            ipv4: ip,
-                                                            fingerprint: req.body.fingerprint,
-                                                            city: data.city,
-                                                            region: data.region,
-                                                            country: data.country,
-                                                            userType: [req.body.role],
-                                                            users: [nuser],
-                                                        })
-                                                        Ip.addIp(newIP, nuser, 'donor', (err, fingerprint) => {
-                                                            if (err) {
-                                                                res.status(500);
-                                                                User.deleteUserById(user._id, (err, dd) => {});
-                                                                Donor.deleteDonor(donor._id, (err, dd) => {});
-                                                                res.json({
-                                                                    data: err,
-                                                                    success: false,
-                                                                    msg: 'Faild to register user'
-                                                                })
-                                                            } else {
-                                                                emailService.sendmailDonorRegistation(user, () => {});
-                                                                res.json({
-                                                                    data: {
-                                                                        user: user,
-                                                                        donor: donor,
-                                                                        fingerprint: fingerprint
-                                                                    },
-                                                                    success: true,
-                                                                    msg: 'User registere',
-                                                                })
-                                                            }
-                                                        });
-                                                    },ip)
-                                                    
-                                                    
+
+                                                    Ip.addIp(newIP, nuser, 'donor', (err, ippay) => {
+                                                        if (err) {
+                                                            res.status(500);
+                                                            User.deleteUserById(user._id, (err, dd) => {});
+                                                            Donor.deleteDonor(donor._id, (err, dd) => {});
+                                                            res.json({
+                                                                data: err,
+                                                                success: false,
+                                                                msg: 'Faild to register user'
+                                                            })
+                                                        } else {
+                                                            emailService.sendmailDonorRegistation(user, () => {});
+                                                            res.json({
+                                                                data: {
+                                                                    user: user,
+                                                                    donor: donor,
+                                                                    fingerprint: fingerprint,
+                                                                    ip:ippay
+                                                                },
+                                                                success: true,
+                                                                msg: 'User registere',
+                                                            })
+                                                            io.emit('check-user');
+                                                        }
+                                                    });
                                                 }
+
+
+
                                             })
-                                            
+
                                         }
                                     })
                                 } else {
@@ -372,28 +352,36 @@ router.post('/signup', (req,res) => {
                                         msg: 'Faild to register user'
                                     })
                                 }
-                            
-                          }
-                    })
-                }
-            }
-        })
 
-    } else {
-        res.status(500);
-        res.json({
-            data: err,
-            success: false,
-            msg: 'Faild to register user'
-        });
-    }
+                            }
+                        })
+                    }
+                }
+            })
+
+        } else {
+            res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to register user'
+            });
+        }
+    },ip)
 })
 
 router.post('/authenticate', (req, res) => {
     const email = req.body.email; 
     const password = req.body.password;
     var host = req.app.get('host');
-    
+    const io = req.app.get('io');
+
+    var ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress
+    z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
+    ip = z[Math.floor(Math.random() * z.length)]
    
     User.getUserBYEmail(email,(err,user)=>{
         if(err){
@@ -423,41 +411,70 @@ router.post('/authenticate', (req, res) => {
             }
             if(user.active){
                 if (isMatch) {
-
-                    if (user.temporyBan) {
-                        res.status(500);
-                        return res.json({
-                            data: '',
-                            success: false,
-                            msg: 'user ban by admin'
+                    ipapi.location((ipdata) => {
+                        let nuser = {
+                            email: user.email,
+                            registerIp: ip,
+                            userType: user.role,
+                            city: ipdata.city,
+                        }
+                        let newIP = new Ip({
+                            ipv4: ip,
+                            city: ipdata.city,
+                            region: ipdata.region,
+                            country: ipdata.country,
+                            userType: [user.role],
+                            users: [nuser],
                         })
-                    } else {
-                        const userToken = jwt.sign(({
-                            "_id": user._id,
-                            "role": user.role,
-                            "banAction": user.banAction,
-                            "firstName": user.firstName,
-                            "lastName": user.lastName,
-                            "email": user.email,
-                            "iss": host +'/user',
-                        }), config.secret, {
-                            expiresIn: 604500
-                        });
+                        Ip.addIp(newIP, nuser, user.role, (err, ippay) => {
+                            if (err) {
+                                res.status(500);
+                                res.json({
+                                    data: err,
+                                    success: false,
+                                    msg: 'Faild to register user'
+                                })
+                            } else {
+                                io.emit('check-user');
+                                if (user.temporyBan) {
+                                    res.status(500);
+                                    return res.json({
+                                        data: '',
+                                        success: false,
+                                        msg: 'user ban by admin'
+                                    })
+                                } else {
+                                    const userToken = jwt.sign(({
+                                        "_id": user._id,
+                                        "role": user.role,
+                                        "banAction": user.banAction,
+                                        "firstName": user.firstName,
+                                        "lastName": user.lastName,
+                                        "email": user.email,
+                                        "iss": host + '/user',
+                                    }), config.secret, {
+                                        expiresIn: 604500
+                                    });
 
-                        return res.json({
-                            data: {
-                                userToken: 'JWT' + userToken,
-                                user: {
-                                    email: user.email,
-                                    firstName: user.firstName,
-                                    lastName: user.lastName
+                                    return res.json({
+                                        data: {
+                                            userToken: 'JWT' + userToken,
+                                            user: {
+                                                email: user.email,
+                                                firstName: user.firstName,
+                                                lastName: user.lastName
+                                            }
+                                        },
+                                        success: true,
+                                        msg: 'sign in'
+
+                                    })
                                 }
-                            },
-                            success: true,
-                            msg: 'sign in'
-
+                            }
                         })
-                    }
+
+                    }, ip)
+                    
                 } else {
                     res.status(500);
                     return res.json({
@@ -468,60 +485,87 @@ router.post('/authenticate', (req, res) => {
                 }
             } else {
                 if (isMatch) {
-
-                    const userToken = jwt.sign(({
-                        "_id": user._id,
-                        "role": user.role,
-                        "banAction": user.banAction,
-                        "firstName": user.firstName,
-                        "lastName": user.lastName,
-                        "email": user.email,
-                        "iss": host + '/user',
-                    }), config.secret, {
-                        expiresIn: 604500
-                    });
-
-                    if (user.role == 'patient') {
-                        return res.json({
-                            data: {
-                                user: {
-                                    email: user.email,
-                                    firstName: user.firstName,
-                                    lastName: user.lastName
-                                }
-                            },
-                            success: true,
-                            msg: 'wait for attendant'
-
+                    ipapi.location((ipdata) => {
+                        let nuser = {
+                            email: user.email,
+                            registerIp: ip,
+                            userType: user.role,
+                            city: ipdata.city,
+                        }
+                        let newIP = new Ip({
+                            ipv4: ip,
+                            city: ipdata.city,
+                            region: ipdata.region,
+                            country: ipdata.country,
+                            userType: [user.role],
+                            users: [nuser],
                         })
-                    } else if(user.role == 'donor'){
-                        return res.json({
-                            data: {
-                                user: {
-                                    email: user.email,
-                                    firstName: user.firstName,
-                                    lastName: user.lastName
-                                }
-                            },
-                            success: true,
-                            msg: 'email verification'
+                         Ip.addIp(newIP, nuser, user.role, (err, ippay) => {
+                             if (err) {
+                                 res.status(500);
+                                 res.json({
+                                     data: err,
+                                     success: false,
+                                     msg: 'Faild to register user'
+                                 })
+                             } else {
+                                 io.emit('check-user');
+                                 const userToken = jwt.sign(({
+                                     "_id": user._id,
+                                     "role": user.role,
+                                     "banAction": user.banAction,
+                                     "firstName": user.firstName,
+                                     "lastName": user.lastName,
+                                     "email": user.email,
+                                     "iss": host + '/user',
+                                 }), config.secret, {
+                                     expiresIn: 604500
+                                 });
+                                 if (user.role == 'patient') {
+                                     return res.json({
+                                         data: {
+                                             user: {
+                                                 email: user.email,
+                                                 firstName: user.firstName,
+                                                 lastName: user.lastName
+                                             }
+                                         },
+                                         success: true,
+                                         msg: 'wait for attendant'
 
-                        })
-                    } else {
-                        return res.json({
-                            data: {
-                                userToken: 'JWT' + userToken,
-                                user: {
-                                    email: user.email,
-                                    firstName: user.firstName,
-                                    lastName: user.lastName
-                                }
-                            },
-                            success: true,
-                            msg: 'password change'
+                                     })
+                                 } else if (user.role == 'donor') {
+                                     return res.json({
+                                         data: {
+                                             user: {
+                                                 email: user.email,
+                                                 firstName: user.firstName,
+                                                 lastName: user.lastName
+                                             }
+                                         },
+                                         success: true,
+                                         msg: 'email verification'
 
-                        })
-                    }
+                                     })
+                                 } else {
+                                     return res.json({
+                                         data: {
+                                             userToken: 'JWT' + userToken,
+                                             user: {
+                                                 email: user.email,
+                                                 firstName: user.firstName,
+                                                 lastName: user.lastName
+                                             }
+                                         },
+                                         success: true,
+                                         msg: 'password change'
+
+                                     })
+                                 }
+                             }
+                         });
+                    }, ip)
+                   
 
                     
                 } else {
@@ -538,14 +582,36 @@ router.post('/authenticate', (req, res) => {
     });
 })
 
+router.post('/emairequest',(req, res) => {
+    User.reqestmail(req.body.email, (err, user) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        } else {
+            return res.json({
+                data: user,
+                success: true,
+                msg: 'email send'
+
+            })
+
+        }
+    })
+})
+
 router.post('/request', (req, res) => {
     const email = req.body.email;
     const token = req.body.token;
     var host = req.app.get('host');
-
+    console.log(token)
 
     User.getUserBYEmail(email, (err, user) => {
         if (err) {
+
             res.status(500);
             return res.json({
                 data: err,
@@ -561,9 +627,11 @@ router.post('/request', (req, res) => {
                 msg: 'User not found'
             });
         }
-        if(user.token){
-            User.comparePassword(token, user.token, (err, isMatch) => {
+        if(user.token != '0'){
+            console.log(user)
+            User.comparePassword(token, user.token.toString(), (err, isMatch) => {
                 if (err) {
+                    console.log(err)
                     res.status(500);
                     return res.json({
                         data: err,
@@ -657,6 +725,7 @@ router.post('/request', (req, res) => {
 })
 
 router.post('/donorActive', (req, res) => {
+    const io = req.app.get('io');
     let id = req.body.id;
     let email = req.body.email;
     User.getUserBYEmail(email, (err, user) => {
@@ -691,6 +760,7 @@ router.post('/donorActive', (req, res) => {
                                     success: true,
                                     msg: 'user active',
                                 })
+                                io.emit('check-user');
                             }
                         })
 
@@ -707,6 +777,7 @@ router.post('/donorActive', (req, res) => {
 });
 
 router.post('/patientActivate', (req, res) => {
+    const io = req.app.get('io');
     let email = req.body.email;
     User.getUserBYEmail(email, (err, user) => {
         if (err) {
@@ -740,6 +811,7 @@ router.post('/patientActivate', (req, res) => {
                             success: true,
                             msg: 'user active',
                         })
+                        io.emit('check-user');
                     }
                 })
 
@@ -756,6 +828,7 @@ router.post('/patientActivate', (req, res) => {
 });
 
 router.post('/removePatient', (req, res) => {
+    const io = req.app.get('io');
     let email = req.body.email;
     User.getUserBYEmail(email, (err, user) => {
         if (err) {
@@ -797,6 +870,7 @@ router.post('/removePatient', (req, res) => {
                                     success: true,
                                     msg: 'user remove',
                                 })
+                                io.emit('check-user');
                             }
                         })
                     }
@@ -835,6 +909,15 @@ router.get('/profile', passport.authenticate('jwt',{session:false}), (req, res) 
 router.post('/changePassword', passport.authenticate('jwt', {
     session: false
 }), (req, res) => {
+    const io = req.app.get('io');
+    var ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress
+
+    z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
+    ip = z[Math.floor(Math.random() * z.length)]
+
     User.getUserBYEmail(req.body.email, (err, user) => {
                 if (err) {
                     res.status(500);
@@ -844,22 +927,25 @@ router.post('/changePassword', passport.authenticate('jwt', {
                         msg: 'err'
                     });
                 } else {
-                      User.activate(user._id, req.body.password, (err, user) => {
-                          if (err) {
-                              res.status(500);
-                              res.json({
-                                  data: '',
-                                  success: false,
-                                  msg: 'Faild to Password change'
-                              })
-                          } else {
-                              res.json({
-                                  data: user,
-                                  success: true,
-                                  msg: 'Password change',
-                              })
-                          }
-                      })
+                    ipapi.location((data) => {
+                        User.activate(user._id, req.body.password,ip , data.city, (err, user) => {
+                            if (err) {
+                                res.status(500);
+                                res.json({
+                                    data: '',
+                                    success: false,
+                                    msg: 'Faild to Password change'
+                                })
+                            } else {
+                                res.json({
+                                    data: user,
+                                    success: true,
+                                    msg: 'Password change',
+                                })
+                                io.emit('check-user');
+                            }
+                        })
+                    },ip)
                 }
             });
 })
@@ -905,6 +991,36 @@ router.post('/profileChanePassword', passport.authenticate('jwt', {
      });
 })
 
+router.post('/temporarydisable', (req, res) => {
+    const io = req.app.get('io');
+    User.temporyBan(req.body.email,req.body.val, (err,user) => {
+        if(err){
+            res.json({
+                data: err,
+                success: false,
+                msg: 'failed update the email',
+            })
+        } else {
+            Ip.temporyBan(req.body.email, req.body.val, (err, ip) => {
+                if(err){
+                    res.json({
+                        data: err,
+                        success: false,
+                        msg: 'failed update the email',
+                    })
+                } else {
+                    res.json({
+                        data: user,
+                        success: true,
+                        msg: 'update the email',
+                    })
+                    io.emit('check-user');
+                }
+            })
+        }
+    })
+})
+
 // Get All Users
 router.route('/').get((req, res) => {
   const io = req.app.get('io');
@@ -945,6 +1061,7 @@ router.delete('/delete/:id', (req, res) => {
         success: true,
         msg: 'user deleted',
       });
+      io.emit('check-user');
       io.emit('delete-user');
     }
   });
@@ -952,6 +1069,7 @@ router.delete('/delete/:id', (req, res) => {
 
 //example
 router.post('/register', (req, res) => {
+    const io = req.app.get('io');
     let user = User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -972,6 +1090,7 @@ router.post('/register', (req, res) => {
                 success: true,
                 msg: 'User registere',
             })
+            io.emit('check-user');
         }
     })
 })
@@ -1011,45 +1130,45 @@ router.get('/get', (req, res) => {
         }
     })
 })
-router.post('/addip', (req, res) => {
-    let ip = '112.135.56.6'
-    let nuser = {
-        email: 'syncdonor@gmail.com',
-        registerIp: ip,
-        userType: 'donor'
-    }
-    console.log(ip)
+// router.post('/addip', (req, res) => {
+//     let ip = '112.135.56.6'
+//     let nuser = {
+//         email: 'syncdonor@gmail.com',
+//         registerIp: ip,
+//         userType: 'donor'
+//     }
+//     console.log(ip)
 
-    ipapi.location((data) => {
-                console.log(data)
-                let newIP = new Ip({
-                    ipv4: ip,
-                    fingerprint: 5405405887,
-                    city: data.city,
-                    region: data.region,
-                    country: data.country,
-                    userType: ['admin'],
-                    users: [nuser],
-                })
-                Ip.addIp(newIP, (err, ip) => {
-                    if (err) {
-                        res.json({
-                            data: err,
-                            success: false,
-                            msg: 'Faild to get ips'
-                        })
-                    } else {
-                        res.json({
-                            data: ip,
-                            success: true,
-                            msg: 'got ips'
-                        })
-                    }
-                })
-            },ip)
+//     ipapi.location((data) => {
+//                 console.log(data)
+//                 let newIP = new Ip({
+//                     ipv4: ip,
+//                     fingerprint: 5405405887,
+//                     city: data.city,
+//                     region: data.region,
+//                     country: data.country,
+//                     userType: ['admin'],
+//                     users: [nuser],
+//                 })
+//                 Ip.addIp(newIP, (err, ip) => {
+//                     if (err) {
+//                         res.json({
+//                             data: err,
+//                             success: false,
+//                             msg: 'Faild to get ips'
+//                         })
+//                     } else {
+//                         res.json({
+//                             data: ip,
+//                             success: true,
+//                             msg: 'got ips'
+//                         })
+//                     }
+//                 })
+//             },ip)
 
     
-})
+// })
 
 
 

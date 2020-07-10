@@ -18,17 +18,16 @@ const FingerprintSchema = mongoose.Schema({
         registerIp: {
             type: String
         },
+        city: {
+            type: String
+        },
         userType: {
             type: String
         },
         temporyBan: {
             type: Boolean,
             default: false,
-        },
-        block: {
-            type: Boolean,
-            default: false,
-        },
+        }
 
         
     }],
@@ -85,16 +84,16 @@ module.exports.blockFingerprint = function (fingerprint,callback) {
 
 }
 
-module.exports.checkFingerprint = function (Fingerprint,callback){
+module.exports.checkFingerprint = function (fingerprint,callback){
 
-     const query =  { Fingerprint: Fingerprint};
+     const query =  { Fingerprint: fingerprint};
     Fingerprint.findOneAndUpdate(query,{check : true},callback);
 
 }
 
-module.exports.unblockFingerprint = function (Fingerprint,callback){
+module.exports.unblockFingerprint = function (fingerprint,callback){
     
-    const query =  { Fingerprint: Fingerprint};
+    const query =  { Fingerprint: fingerprint};
     Fingerprint.findOneAndUpdate(query,{block : false},callback);
 
 }
