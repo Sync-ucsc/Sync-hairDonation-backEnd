@@ -88,11 +88,13 @@ const DonorSchema = mongoose.Schema({
 
 const Donor = module.exports = mongoose.model('Donor', DonorSchema);
 
+//Donor add
 module.exports.addDonor = function (newDonor, callback) {
     
     newDonor.save(callback);
 }
 
+//Donation request add
 module.exports.addDonorRequest = function(email,req,callback){
 
     const query =  { email: email};
@@ -117,7 +119,7 @@ module.exports.getDonorByEmail = function (email, callback) {
     Donor.findOne(query, callback);
 }
 
-//Donor salon
+//Donor update
 module.exports.updateDonor = function (updatedDonor, callback) {
 
 

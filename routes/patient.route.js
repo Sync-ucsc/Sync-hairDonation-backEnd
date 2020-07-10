@@ -9,6 +9,7 @@ const {sendResponse} = require('../utils/response.utils');
 
 const SharedService = require('../services/shared.service')
 const sharedService = new SharedService();
+
 // Get All Patients
 router.get('/', (req, res) => {
     const io = req.app.get('io');
@@ -23,7 +24,7 @@ router.get('/', (req, res) => {
         })
       } else {
         const wigrequest = [];
-
+        //get the last wig request of the patient
         patient.forEach( p => {
             const lastRequest = p.request.sort((a, b) => sharedService.sortByDate(a.requestDay, b.requestDay))[0];
             wigrequest.push({
@@ -40,10 +41,6 @@ router.get('/', (req, res) => {
                 reportId: p.patientNumber
             })
         })
-        // array.forEach(element => {
-        //     element.request.sort((a, b) => sharedService.sortByDate(a.requestDay, b.requestDay))[0];
-
-        // });
         res.json({
           data: wigrequest,
           success: true,
@@ -98,6 +95,7 @@ router.get('/read/:id', (req, res) => {
     }
   })
 })
+
 //Get patient by E-mail
 router.get('/readByEmail/:email',(req,res)=>{
   Patient.getByEmail(req.params.email, (err, patient) => {
@@ -118,7 +116,7 @@ router.get('/readByEmail/:email',(req,res)=>{
   })
 })
 
-// Update donor
+// Update patient
 router.post('/update/:id', (req, res) => {
   const io = req.app.get('io');
   let updatedPatient = Patient({
@@ -160,5 +158,29 @@ router.post('/update/:id', (req, res) => {
 
 })
 
+// Delete patient
+router.delete('/delete/:id', (req, res) => {
+  const io = req.app.get('io');
+  console.log(req.params.id)
 
-  module.exports = router;
+  Patient.deletePatient(req.params.id, (err, patient) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: err,
+        success: false,
+        msg: 'Failed to delete the patient'
+      })
+    } else {
+      res.json({
+        data: patient,
+        success: true,
+        msg: 'patient deleted',
+      })
+      io.emit('delete-patient');
+    }
+  });
+
+})
+
+module.exports = router;

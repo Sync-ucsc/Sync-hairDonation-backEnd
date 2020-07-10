@@ -1,5 +1,6 @@
 const mongoose = require(`mongoose`);
 
+//Wigrequest schema
 const wigRequestSchema = mongoose.Schema({
     requestId: {
         type: Number,

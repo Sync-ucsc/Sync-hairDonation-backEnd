@@ -76,11 +76,13 @@ const PatientSchema = mongoose.Schema({
 
 const Patient = module.exports = mongoose.model('Patient', PatientSchema);
 
+//add patient
 module.exports.addPatient = function (newPatient, callback) {
 
     newPatient.save(callback);
 }
 
+//add patient wig request
 module.exports.addPatientRequest = function (email, req, callback) {
 
     const query = {
@@ -105,13 +107,13 @@ module.exports.getById = function (id, callback) {
     Patient.findById(id, callback);
 }
 
-//Patient get by id
+//Patient get by email
 module.exports.getByEmail = function (email, callback) {
 
     Patient.findOne({email:email}, callback);
 }
 
-//Patient salon
+//Patient update
 module.exports.updatePatient = function (updatedPatient, callback) {
 
 
@@ -128,15 +130,10 @@ module.exports.deletePatient = function (id, callback) {
 }
 
 
-//Patient delete
+//Patient delete by email
 module.exports.deletePatientByEmail = function (email, callback) {
     Patient.findOneAndDelete({emai: email}, callback);
 }
 
-//Patient get by id
-module.exports.getById = function (id, callback) {
-
-    Patient.findById(id, callback);
-}
 
 
