@@ -182,7 +182,7 @@ module.exports = class EmailService {
     //     });
     // });
 
-    async sendmailwebfrogetpassword(user, callback) {
+    async sendmailwebfrogetpassword(email,token, callback) {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
@@ -195,15 +195,16 @@ module.exports = class EmailService {
         });
 
         let mailOptions = {
-            from: '"from Tea Truth "<teatruth@gmail.com>', // sender address
-            to: user.email, // list of receivers
+            from: '<akavindula@gmail.com>', // sender address
+            to: email, // list of receivers
             subject: "registation for web app", // Subject line
             html: `<h1 style='text-align: center'>Welcome to 
                                     <img src="https://i.ibb.co/k5scTH9/logo.png"
                                     style="max-height:100px"
                                     alt>
                                  <br><br></h1>
-    <p>visit this link for resetpassword https://teatruth-8083d.web.app/registaition?Token=${user.token}</p>`
+                <p> visit this link
+                for reset password http://localhost:4200/change-password?email=${email}&token=${token}</p>`
         };
 
         // send mail with defined transport object

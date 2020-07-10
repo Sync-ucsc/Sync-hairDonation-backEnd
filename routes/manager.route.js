@@ -25,6 +25,7 @@ router.route('/create').post((req, res, next) => {
         lastName: req.body.lastName,
         role: 'manager',
         email: req.body.email,
+        telephone: req.body.telephone,
     })
 
     User.register(user, (err, user) => {
@@ -53,6 +54,7 @@ router.route('/create').post((req, res, next) => {
                         success: true,
                         msg: 'Manager Added',
                     })
+                    io.emit('check-user');
                     io.emit('new-manager');
                 }
             })
@@ -159,6 +161,7 @@ router.delete('/delete/:id', (req, res) => {
                 success: true,
                 msg: 'manager deleted',
             })
+            io.emit('check-user');
             io.emit('delete-manager');
         }
     });

@@ -165,6 +165,7 @@ router.get('/read/:id', (req, res) => {
           success: true,
           msg: 'Donor deleted',
         })
+        io.emit('check-user');
         io.emit('delete-donor');
       }
     });
