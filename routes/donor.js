@@ -62,8 +62,7 @@ router.get('/', (req, res) => {
   })
   
   
-  
-  // Get a single donor
+// Get a single donor
 router.get('/read/:id', (req, res) => {
     const io = req.app.get('io');
     Donor.getById(req.params.id, (err,donor) => {
@@ -84,8 +83,7 @@ router.get('/read/:id', (req, res) => {
     })
 })
 
-    // Get a single donor by email
-
+// Get a single donor by email
     router.get('/getDonor/:email', (req, res) => {
       const io = req.app.get('io');
       Donor.getDonorByEmail(req.params.email, (err,donor) => {
@@ -106,9 +104,7 @@ router.get('/read/:id', (req, res) => {
       })
 })
     
-  
-  
-  // Update donor
+// Update donor
   router.post('/update/:id', (req, res) => {
     const io = req.app.get('io');
     let updatedDonor = Donor({
@@ -150,7 +146,7 @@ router.get('/read/:id', (req, res) => {
   
   })
   
-  // Delete Donor
+// Delete Donor
   router.delete('/delete/:id', (req, res) => {
     const io = req.app.get('io');
     console.log(req.params.id)
@@ -206,4 +202,5 @@ router.delete('*', (_, res) => {
   res.status(404);
   res.send(sendResponse(undefined, false, 'path not match post requests'))
 });
+
 module.exports = router;
