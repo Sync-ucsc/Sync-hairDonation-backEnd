@@ -9,7 +9,7 @@ module.exports = class wigRequestService {
     constructor() {
     }
 
-
+    //add wigreuest
     async addWigRequest(data, patientEmail) {
         try {
 
@@ -25,6 +25,7 @@ module.exports = class wigRequestService {
         }
     }
 
+    //update wig request status
     async updateWigRequestStatus(data, requestId) {
         try {
             console.log("uhfjbfj");
@@ -58,7 +59,7 @@ module.exports = class wigRequestService {
             throw error
         }
     }
-
+    //get the last wig request
     async getLastRequestData(patientEmail) {
         try {
 
@@ -80,7 +81,7 @@ module.exports = class wigRequestService {
     // for testing
 
 
-    // Patient
+    //Get all patients
     async getAllPatients() {
         try {
             return await Patient.find()
