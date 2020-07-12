@@ -21,7 +21,7 @@ router.post('/create', (req, res, next) => {
         appointmentTimeSlot: req.body.appointmentTimeSlot
     });
 
-
+//Create Appointment
     DonorAppointment.createAppointment(newDonorAppointment, (err,appointment ) => {
         if (err) {
             res.status(500).json({
