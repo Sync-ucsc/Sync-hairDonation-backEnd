@@ -181,6 +181,29 @@ module.exports.activate = function(id,password,ip,city,callback){
     })
 }
 
+module.exports.activate2 = function (id, password, callback) {
+    bcrpt.genSalt(10, (err, salt) => {
+        if (err) {
+            throw err;
+        }
+        bcrpt.hash(password, salt, (err, hash) => {
+            if (err)
+                throw err;
+            //password = hash;
+
+            User.findByIdAndUpdate(id, {
+                $set: {
+                    password: hash,
+                    token: '0',
+                }
+            }, (err, res) => {
+                // console.log(res)
+                callback(null, null);
+            })
+        })
+    })
+}
+
 module.exports.sUserActivate = function (id, callback) {
      User.findByIdAndUpdate(id, {
          $set: {

@@ -108,6 +108,28 @@ router.get('/read/:id', (req, res) => {
     })
 })
 
+// Get a single Attendant by email
+router.get('/getAttendant/:email', (req, res) => {
+    const io = req.app.get('io');
+    Attendant.getAttendantByEmail(req.params.email, (err, attendant) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: 'err',
+                success: false,
+                msg: 'Failed to get the attendant'
+            })
+        } else {
+            res.json({
+                data: attendant,
+                success: true,
+                msg: 'got the attendant',
+            })
+        }
+    })
+})
+
+
 
 // Update Attendant
 router.post('/update/:id', (req, res) => {

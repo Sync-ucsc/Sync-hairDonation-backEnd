@@ -17,8 +17,7 @@ router.post('/add', (req, res) => {
     const io = req.app.get('io');
     let newNotification = new Notification({
         massage: req.body.massage,
-        notificationType: req.body.notificationType,
-        groupID: req.body.groupID,
+        title: req.body.title,
         role: req.body.role,
         validDate: req.body.validDate
     });
