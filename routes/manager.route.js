@@ -106,6 +106,27 @@ router.get('/read/:id', (req, res) => {
     })
 })
 
+// Get a single donor by email
+router.get('/getManger/:email', (req, res) => {
+    const io = req.app.get('io');
+    Manager.getMangerByEmail(req.params.email, (err, manager) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: 'err',
+                success: false,
+                msg: 'Failed to get the manger'
+            })
+        } else {
+            res.json({
+                data: manger,
+                success: true,
+                msg: 'got the manager',
+            })
+        }
+    })
+})
+
 
 // Update manager
 router.post('/update/:id', (req, res) => {

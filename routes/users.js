@@ -452,6 +452,8 @@ router.post('/authenticate', (req, res) => {
                                         "firstName": user.firstName,
                                         "lastName": user.lastName,
                                         "email": user.email,
+                                        "profilePic": user.profilePic,
+                                        "telephone": user.telephone,
                                         "iss": host + '/user',
                                     }), config.secret, {
                                         expiresIn: 604500
@@ -518,6 +520,8 @@ router.post('/authenticate', (req, res) => {
                                      "firstName": user.firstName,
                                      "lastName": user.lastName,
                                      "email": user.email,
+                                     "profilePic": user.profilePic,
+                                    "telephone": user.telephone,
                                      "iss": host + '/user',
                                  }), config.secret, {
                                      expiresIn: 604500
@@ -648,6 +652,8 @@ router.post('/request', (req, res) => {
                             "firstName": user.firstName,
                             "lastName": user.lastName,
                             "email": user.email,
+                            "profilePic": user.profilePic,
+                            "telephone": user.telephone,
                             "iss": host + '/user',
                         }), config.secret, {
                             expiresIn: 604500
@@ -694,6 +700,8 @@ router.post('/request', (req, res) => {
                             "firstName": user.firstName,
                             "lastName": user.lastName,
                             "email": user.email,
+                            "profilePic": user.profilePic,
+                            "telephone": user.telephone,
                             "iss": host + '/user',
                         }), config.secret, {
                             expiresIn: 604500
@@ -962,7 +970,7 @@ router.get('/validate', (req, res) => {
 router.post('/profileChanePassword', passport.authenticate('jwt', {
             session: false
         }), (req, res) => {
-     User.getUserBYEmail(email, (err, user) => {
+     User.getUserBYEmail(req.body.email, (err, user) => {
          if (err) {
              res.status(500);
              return res.json({
@@ -971,24 +979,34 @@ router.post('/profileChanePassword', passport.authenticate('jwt', {
                  msg: 'err'
              });
          } else {
-             if(user.password == req.body.oldPassword){
-                 User.activate(user._id, req.body.password, (err, user) => {
-                     if (err) {
-                         res.status(500);
-                         res.json({
-                             data: '',
-                             success: false,
-                             msg: 'Faild to Password change'
-                         })
-                     } else {
-                         res.json({
-                             data: user,
-                             success: true,
-                             msg: 'Password change',
-                         })
-                     }
-                 })
-             }
+             User.comparePassword(req.body.oldPassword, user.password, (err, isMatch) => {
+                 if(isMatch){
+                    User.activate2(user._id, req.body.password, (err, user) => {
+                        if (err) {
+                            res.status(500);
+                            res.json({
+                                data: '',
+                                success: false,
+                                msg: 'Faild to Password change'
+                            })
+                        } else {
+                            res.json({
+                                data: user,
+                                success: true,
+                                msg: 'Password change',
+                            })
+                        }
+                    })
+                 } else {
+                    res.status(500);
+                    res.json({
+                        data: '',
+                        success: false,
+                        msg: 'old Password not match'
+                    })
+                 }
+             })
+             
          }
      });
 })
@@ -1115,6 +1133,7 @@ router.post('/getip/:email',(req,res)=>{
         }
     })
 })
+
 router.get('/get', (req, res) => {
     Ip.get((err, ips) => {
         if (err) {
@@ -1132,6 +1151,8 @@ router.get('/get', (req, res) => {
         }
     })
 })
+
+
 // router.post('/addip', (req, res) => {
 //     let ip = '112.135.56.6'
 //     let nuser = {

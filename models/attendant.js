@@ -46,6 +46,14 @@ module.exports.getById = function (id, callback) {
     Attendant.findById(id, callback);
 }
 
+//salon get by email
+module.exports.getAttendantByEmail = function (email, callback) {
+    const query = {
+        email: email
+    };
+    Attendant.findOne(query, callback);
+}
+
 //update Attendant
 module.exports.updateAttendant = function (updatedAttendant, callback) {
 

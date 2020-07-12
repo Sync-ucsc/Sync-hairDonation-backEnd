@@ -130,6 +130,22 @@ module.exports.updateDonor = function (updatedDonor, callback) {
     },
         callback);
 }
+
+//Donor Location cahnge
+module.exports.changeLocation = function (lat,lon,email, callback) {
+
+
+    Donor.findOneAndUpdate({email:email}, {
+            $set: {
+                lat: lat,
+                lon: lon
+            }
+            }, (err, res) => {
+                // console.log(res)
+                callback(null, null);
+            });
+}
+
 //Donor delete
 module.exports.deleteDonor = function (id, callback) {
     Donor.findByIdAndDelete(id, callback);

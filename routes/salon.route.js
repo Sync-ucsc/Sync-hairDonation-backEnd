@@ -113,6 +113,28 @@ router.get('/read/:id', (req, res) => {
   })
 })
 
+// Get a single salon by email
+router.get('/getSalon/:email', (req, res) => {
+  const io = req.app.get('io');
+  Salon.getSalonByEmail(req.params.email, (err, salon) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: 'err',
+        success: false,
+        msg: 'Failed to get the salon'
+      })
+    } else {
+      res.json({
+        data: salon,
+        success: true,
+        msg: 'got the salon',
+      })
+    }
+  })
+})
+
+
 
 // Update salon
 router.post('/update/:id', (req, res) => {
@@ -179,6 +201,28 @@ router.delete('/delete/:id', (req, res) => {
   });
 
 })
+
+// change location
+router.post('/changeLocation', (req, res) => {
+  Salon.changeLocation(req.body.lat, req.body.lon, req.body.email, (err, salon) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: err,
+        success: false,
+        msg: 'Faild to change location'
+      })
+    } else {
+      res.json({
+        data: salon,
+        success: true,
+        msg: 'Salon location change',
+      })
+
+    }
+  })
+})
+
 
 
 

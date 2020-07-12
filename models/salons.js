@@ -74,6 +74,31 @@ module.exports.getById = function (id, callback) {
     Salon.findById(id, callback);
 }
 
+//salon Location cahnge
+module.exports.changeLocation = function (lat, lon, email, callback) {
+
+
+    Salon.findOneAndUpdate({
+        email: email
+    }, {
+        $set: {
+            lat: lat,
+            lon: lon
+        }
+    }, (err, res) => {
+        // console.log(res)
+        callback(null, null);
+    });
+}
+
+//salon get by email
+module.exports.getSalonByEmail = function (email, callback) {
+    const query = {
+        email: email
+    };
+    Donor.findOne(query, callback);
+}
+
 //update salon
 module.exports.updateSalon = function (updatedSalon, callback) {
 
