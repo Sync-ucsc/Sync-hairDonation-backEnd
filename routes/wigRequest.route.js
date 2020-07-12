@@ -49,7 +49,7 @@ router.get('/lastRequestStatus/:patientEmail', async (req, res) => {
 })
 
 //Cancel wigrequest
-router.get('/cancelRequest/:requestId', async (req, res) => {
+router.get('/cancelWigrequest/:requestId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
@@ -65,7 +65,7 @@ router.get('/cancelRequest/:requestId', async (req, res) => {
 });
 
 //Finish wig request
-router.get('/finishRequest/:requestId', async (req, res) => {
+router.get('/finishWigrequest/:requestId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
