@@ -25,11 +25,13 @@ router.route('/create').post((req, res, next) => {
         lastName: req.body.lastName,
         role: 'attendant',
         email: req.body.email,
+        telephone: req.body.telephone,
     })
 
     User.register(user, (err, user) => {
         if (err) {
             res.status(500);
+            console.log(err)
             res.json({
                 data: '',
                 success: false,
@@ -45,6 +47,7 @@ router.route('/create').post((req, res, next) => {
                         msg: 'Failed to add attendant'
                     })
                 } else {
+                    
                     res.json({
                         data: {
                             user: user,
@@ -53,6 +56,7 @@ router.route('/create').post((req, res, next) => {
                         success: true,
                         msg: 'Attendant Added',
                     })
+                    io.emit('check-user');
                     io.emit('new-attendant');
                 }
             })
@@ -103,6 +107,28 @@ router.get('/read/:id', (req, res) => {
         }
     })
 })
+
+// Get a single Attendant by email
+router.get('/getAttendant/:email', (req, res) => {
+    const io = req.app.get('io');
+    Attendant.getAttendantByEmail(req.params.email, (err, attendant) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: 'err',
+                success: false,
+                msg: 'Failed to get the attendant'
+            })
+        } else {
+            res.json({
+                data: attendant,
+                success: true,
+                msg: 'got the attendant',
+            })
+        }
+    })
+})
+
 
 
 // Update Attendant
@@ -159,6 +185,7 @@ router.delete('/delete/:id', (req, res) => {
                 success: true,
                 msg: 'Attendant deleted',
             })
+            io.emit('check-user');
             io.emit('delete-attendant');
         }
     });

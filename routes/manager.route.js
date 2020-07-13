@@ -25,6 +25,7 @@ router.route('/create').post((req, res, next) => {
         lastName: req.body.lastName,
         role: 'manager',
         email: req.body.email,
+        telephone: req.body.telephone,
     })
 
     User.register(user, (err, user) => {
@@ -53,6 +54,7 @@ router.route('/create').post((req, res, next) => {
                         success: true,
                         msg: 'Manager Added',
                     })
+                    io.emit('check-user');
                     io.emit('new-manager');
                 }
             })
@@ -97,6 +99,27 @@ router.get('/read/:id', (req, res) => {
         } else {
             res.json({
                 data: manager,
+                success: true,
+                msg: 'got the manager',
+            })
+        }
+    })
+})
+
+// Get a single donor by email
+router.get('/getManger/:email', (req, res) => {
+    const io = req.app.get('io');
+    Manager.getMangerByEmail(req.params.email, (err, manager) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: 'err',
+                success: false,
+                msg: 'Failed to get the manger'
+            })
+        } else {
+            res.json({
+                data: manger,
                 success: true,
                 msg: 'got the manager',
             })
@@ -159,6 +182,7 @@ router.delete('/delete/:id', (req, res) => {
                 success: true,
                 msg: 'manager deleted',
             })
+            io.emit('check-user');
             io.emit('delete-manager');
         }
     });

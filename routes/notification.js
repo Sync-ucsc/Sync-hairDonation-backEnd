@@ -4,9 +4,11 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database')
 const Notification = require('../models/notification');
+const Subcribe = require('../models/subcribe');
 
 const {sendResponse} = require('../utils/response.utils');
 const webpush = require('web-push');
+const subcribe = require('../models/subcribe');
 
 
 
@@ -15,8 +17,7 @@ router.post('/add', (req, res) => {
     const io = req.app.get('io');
     let newNotification = new Notification({
         massage: req.body.massage,
-        notificationType: req.body.notificationType,
-        groupID: req.body.groupID,
+        title: req.body.title,
         role: req.body.role,
         validDate: req.body.validDate
     });
@@ -94,6 +95,38 @@ router.post('/subcribe',async (req,res) => {
         publicKey: 'BE-J8ek0Xl6Mpgw5R6-B5M5BYISYVkQi6XVGmt8qymgz-u66hyrkEFcgZKJECL8bLHbPyPiVwgTaoH9EpP6VNlc',
         privateKey: 'K2cXkx8quUdVzwF35KBX9NRXrGBiRNXRoE1WNz_StBM'
     }
+    let newsub = new Subcribe({
+        sub: sub,
+        role: req.body.role
+    });
+
+    Subcribe.addSubcribe(newsub,(err, asub) => {
+            if (err) {
+                res.status(500);
+                res.json({
+                    data: '',
+                    success: false,
+                    msg: 'Faild to add subcriber'
+                })
+                console.log(err)
+            } else {
+                console.log(asub)
+                res.json({
+                    data: sub,
+                    success: true,
+                    msg: 'subcriber add',
+                })
+            }
+        }
+    )
+
+})
+
+router.post('/send', async (req, res) => {
+    const vapidKeys = {
+        publicKey: 'BE-J8ek0Xl6Mpgw5R6-B5M5BYISYVkQi6XVGmt8qymgz-u66hyrkEFcgZKJECL8bLHbPyPiVwgTaoH9EpP6VNlc',
+        privateKey: 'K2cXkx8quUdVzwF35KBX9NRXrGBiRNXRoE1WNz_StBM'
+    }
 
     webpush.setVapidDetails(
         'mailto:example@yourdomain.org',
@@ -103,9 +136,9 @@ router.post('/subcribe',async (req,res) => {
 
     const notificationPayload = JSON.stringify({
         "notification": {
-            "title": "Angular News",
+            "title": "Check Notification",
             "body": "Newsletter Available!",
-            "icon": "assets/main-page-logo-small-hat.png",
+            "icon": "https://i.ibb.co/k5scTH9/logo.png",
             "vibrate": [100, 50, 100, 50],
             "data": {
                 "dateOfArrival": Date.now(),
@@ -117,15 +150,22 @@ router.post('/subcribe',async (req,res) => {
             }]
         }
     });
-   
-    Promise.resolve(webpush.sendNotification(sub,notificationPayload))
+
+    Promise.resolve(Subcribe.getAll((err,subs)=> {
+        if(err){
+            console.log(err)
+        } else {
+            console.log(subs)
+            subs.map(sub => webpush.sendNotification(sub.sub, notificationPayload))
+        }
+    }))
         .then(() => {
             res.status(200).json({
                 data: notificationPayload,
                 success: true,
                 msg: 'notification add',
             })
-            
+
         })
         .catch(err => {
             console.log(err)

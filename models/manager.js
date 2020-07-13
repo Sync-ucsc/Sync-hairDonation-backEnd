@@ -46,6 +46,13 @@ module.exports.getById = function (id, callback) {
     Manager.findById(id, callback);
 }
 
+//Manager get by email
+module.exports.getManagerByEmail = function (email, callback) {
+    const query = {
+        email: email
+    };
+    Manager.findOne(query, callback);
+} 
 //update Manager
 module.exports.updateManager = function (updatedManager, callback) {
 

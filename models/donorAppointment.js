@@ -62,15 +62,12 @@ module.exports.createAppointment = function (newDonorAppointment, callback) {
 
 //Appointment get by id
 module.exports.getById = function (id, callback) {
-
     DonorAppoitment.findById(id, callback);
 }
 
 
 //update appointment
 module.exports.updateAppointment = function (updatedAppointment, callback) {
-
-
     DonorAppoitment.findByIdAndUpdate(updatedAppointment._id, {
         $set: updatedAppointment
     }, {
@@ -79,15 +76,15 @@ module.exports.updateAppointment = function (updatedAppointment, callback) {
         callback);
 }
 
+
 //Appointment delete
 module.exports.deleteAppointmentById = function (id, callback) {
-    console.log('dx')
+    // console.log('dx')
     DonorAppoitment.findByIdAndDelete(id,callback);
 }
 
 
 //Appointment get all
 module.exports.getAll = function (callback) {
-
     DonorAppoitment.find(callback);
 }

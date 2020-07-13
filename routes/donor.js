@@ -40,6 +40,27 @@ router.post('/addDonorRequest', (req, res) => {
     })
 })
 
+// change location
+router.post('/changeLocation', (req, res) => {
+  Donor.changeLocation(req.body.lat,req.body.lon,req.body.email,(err,donor)=>{
+        if (err) {
+          res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to change location'
+            })
+        } else {
+            res.json({
+                data: donor,
+                success: true,
+                msg: 'Donor location change',
+            })
+
+        }
+    })
+})
+
 // Get All Donors
 router.get('/', (req, res) => {
     const io = req.app.get('io');
@@ -58,12 +79,11 @@ router.get('/', (req, res) => {
           msg: 'got donors',
         })
       }
-    })
   })
+})
   
   
-  
-  // Get a single donor
+// Get a single donor
 router.get('/read/:id', (req, res) => {
     const io = req.app.get('io');
     Donor.getById(req.params.id, (err,donor) => {
@@ -84,9 +104,8 @@ router.get('/read/:id', (req, res) => {
     })
 })
 
-    // Get a single donor by email
-
-    router.get('/getDonor/:email', (req, res) => {
+// Get a single donor by email
+  router.get('/getDonor/:email', (req, res) => {
       const io = req.app.get('io');
       Donor.getDonorByEmail(req.params.email, (err,donor) => {
         if (err) {
@@ -106,9 +125,7 @@ router.get('/read/:id', (req, res) => {
       })
 })
     
-  
-  
-  // Update donor
+// Update donor
   router.post('/update/:id', (req, res) => {
     const io = req.app.get('io');
     let updatedDonor = Donor({
@@ -150,7 +167,7 @@ router.get('/read/:id', (req, res) => {
   
   })
   
-  // Delete Donor
+// Delete Donor
   router.delete('/delete/:id', (req, res) => {
     const io = req.app.get('io');
     console.log(req.params.id)
@@ -169,6 +186,7 @@ router.get('/read/:id', (req, res) => {
           success: true,
           msg: 'Donor deleted',
         })
+        io.emit('check-user');
         io.emit('delete-donor');
       }
     });
@@ -206,4 +224,5 @@ router.delete('*', (_, res) => {
   res.status(404);
   res.send(sendResponse(undefined, false, 'path not match post requests'))
 });
+
 module.exports = router;

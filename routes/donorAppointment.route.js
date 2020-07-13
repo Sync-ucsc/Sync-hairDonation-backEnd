@@ -21,7 +21,7 @@ router.post('/create', (req, res, next) => {
         appointmentTimeSlot: req.body.appointmentTimeSlot
     });
 
-
+//Create Appointment
     DonorAppointment.createAppointment(newDonorAppointment, (err,appointment ) => {
         if (err) {
             res.status(500).json({
@@ -45,11 +45,17 @@ router.post('/update/:id', (req, res) => {
     const io = req.app.get('io');
     let updatedAppointment = DonorAppointment({
         _id: req.params.id,
-        name: req.body.name,
-        // date:
-        //time:
+        salonEmail: req.body.SalonEmail,
+        DonorRequest: req.body.DonorRequest,
+        Donoremail: req.body.Donoremail,
+        customerEmail: req.body.customerEmail,
+        customerNumber: req.body.customerNumber,
+        customerName: req.body.customerName,
+        systemRequestDate: req.body.systemRequestDate,
+        appointmentDate: req.body.appointmentDate,
+        appointmentTimeSlot: req.body.appointmentTimeSlot
     })
-    Salon.updatedAppointment(updatedAppointment, (err, donorAppointment) => {
+    DonorAppointment.updateAppointment(updatedAppointment, (err, appointment) => {
         if (err) {
             res.status(500);
             res.json({
@@ -59,7 +65,7 @@ router.post('/update/:id', (req, res) => {
             })
         } else {
             res.json({
-                data: salon,
+                data: appointment,
                 success: true,
                 msg: 'updated appointment',
             })
@@ -101,7 +107,7 @@ router.delete('/delete/:id', (req, res) => {
     const io = req.app.get('io');
     console.log(req.params.id)
 
-    DonorAppointment.deleteAppointment(req.params.id, (err, salon) => {
+    DonorAppointment.deleteAppointment(req.params.id, (err, appointment) => {
         if (err) {
             res.status(500);
             res.json({
@@ -111,7 +117,7 @@ router.delete('/delete/:id', (req, res) => {
             })
         } else {
             res.json({
-                data: salon,
+                data: appointment,
                 success: true,
                 msg: 'Appointment deleted',
             })

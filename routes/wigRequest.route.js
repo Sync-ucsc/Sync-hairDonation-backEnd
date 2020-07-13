@@ -9,6 +9,7 @@ const wigRequestService = new WigRequestService();
 
 router.use(bodyParser.urlencoded({extended: false}));
 
+//adding new patient wigrequest
 router.put('/add/:patientEmail', async (req, res) => {
     try {
         const io = req.app.get('io');
@@ -32,6 +33,7 @@ router.put('/add/:patientEmail', async (req, res) => {
     }
 });
 
+//Getting the last wig request of the patient
 router.get('/lastRequestStatus/:patientEmail', async (req, res) => {
     try {
 
@@ -46,7 +48,8 @@ router.get('/lastRequestStatus/:patientEmail', async (req, res) => {
 
 })
 
-router.get('/cancelRequest/:requestId', async (req, res) => {
+//Cancel wigrequest
+router.get('/cancelWigrequest/:requestId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
@@ -61,7 +64,8 @@ router.get('/cancelRequest/:requestId', async (req, res) => {
     }
 });
 
-router.get('/finishRequest/:requestId', async (req, res) => {
+//Finish wig request
+router.get('/finishWigrequest/:requestId', async (req, res) => {
     try {
         const io = req.app.get('io');
 
@@ -109,7 +113,7 @@ router.get('/declineWigrequest/:requestId', async (req, res) => {
     }
 });
 
-
+//get all patient
 router.get('/allPatient', async (_, res) => {
     res.send(sendResponse(await wigRequestService.getAllPatients()));
 });

@@ -28,6 +28,7 @@ router.route('/create').post((req, res, next) => {
     lastName: '',
     role: 'salon',
     email: req.body.email,
+    telephone: req.body.telephone,
   })
   
 
@@ -57,6 +58,7 @@ router.route('/create').post((req, res, next) => {
             success: true,
             msg: 'Salon Created',
           })
+          io.emit('check-user');
           io.emit('new-salon');
         }
       })
@@ -110,6 +112,28 @@ router.get('/read/:id', (req, res) => {
     }
   })
 })
+
+// Get a single salon by email
+router.get('/getSalon/:email', (req, res) => {
+  const io = req.app.get('io');
+  Salon.getSalonByEmail(req.params.email, (err, salon) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: 'err',
+        success: false,
+        msg: 'Failed to get the salon'
+      })
+    } else {
+      res.json({
+        data: salon,
+        success: true,
+        msg: 'got the salon',
+      })
+    }
+  })
+})
+
 
 
 // Update salon
@@ -171,11 +195,34 @@ router.delete('/delete/:id', (req, res) => {
         success: true,
         msg: 'salon deleted',
       })
+      io.emit('check-user');
       io.emit('delete-salon');
     }
   });
 
 })
+
+// change location
+router.post('/changeLocation', (req, res) => {
+  Salon.changeLocation(req.body.lat, req.body.lon, req.body.email, (err, salon) => {
+    if (err) {
+      res.status(500);
+      res.json({
+        data: err,
+        success: false,
+        msg: 'Faild to change location'
+      })
+    } else {
+      res.json({
+        data: salon,
+        success: true,
+        msg: 'Salon location change',
+      })
+
+    }
+  })
+})
+
 
 
 
