@@ -40,6 +40,10 @@ const targetSalonLocationsSchema = mongoose.Schema({
         default: 'NeedToDeliver', // NeedToDeliver | Delivered  | Cancel,
         required: true
     },
+    notification: {
+        type: String,
+        default: ''
+    },
     deliveryDate: {
         type: Date,
         required: true
@@ -70,6 +74,10 @@ const targetsSchema = mongoose.Schema({
         default: 'NOT_COMPLETED',
         required: true
     },
+    notification: {
+        type: String,
+        default: ''
+    }
 });
 
 const targetSalonLocations = mongoose.model('location', targetSalonLocationsSchema)

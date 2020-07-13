@@ -89,15 +89,27 @@ module.exports = class TargetService {
      target.status = NOT_COMPLETED | COMPLETED,
      * @param status
      * @param requestId
+     * @param notification
      * @returns {Promise<unknown[]>}
      */
-    async changeLocationStatus({status}, requestId) {
+    async changeSalonStatus({status, notification} , requestId) {
         try {
+            let promise1;
 
-            const promise1 = await targets.update(
-                {'targets.requestId': requestId},
-                {'$set': {'targets.$.status': status}}
-            )
+            if(!notification){
+                promise1 = await targets.update(
+                    {'targets.requestId': requestId},
+                    {'$set': {'targets.$.status': status}}
+                )
+            }else {
+                promise1 = await targets.update(
+                    {'targets.requestId': requestId},
+                    {'$set': {
+                        'targets.$.status': status,
+                        'targets.$.notification': notification
+                    }}
+                )
+            }
 
             const promise2 = await this
                 .changeSalonNeedToDeliverStatus(status, requestId)
