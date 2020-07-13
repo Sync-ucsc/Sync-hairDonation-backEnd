@@ -26,9 +26,9 @@ router.post('/signup', (req,res) => {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress
 
-    z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
-    // ip = z[Math.floor(Math.random() * z.length)]
-    ip = '112.134.56.6'
+    // z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
+    // // ip = z[Math.floor(Math.random() * z.length)]
+    // ip = '112.134.56.6'
 
     ipapi.location((ipdata) => {
         let nuser = {
@@ -380,9 +380,9 @@ router.post('/authenticate', (req, res) => {
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress
-    z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
-    // ip = z[Math.floor(Math.random() * z.length)]
-    ip = '112.134.56.6'
+    // z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
+    // // ip = z[Math.floor(Math.random() * z.length)]
+    // ip = '112.134.56.6'
    
     User.getUserBYEmail(email,(err,user)=>{
         if(err){
@@ -924,9 +924,9 @@ router.post('/changePassword', passport.authenticate('jwt', {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress
 
-    z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
-    // ip = z[Math.floor(Math.random() * z.length)]
-        ip = '112.134.56.6'
+    // z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
+    // // ip = z[Math.floor(Math.random() * z.length)]
+    //     ip = '112.134.56.6'
 
     User.getUserBYEmail(req.body.email, (err, user) => {
                 if (err) {
