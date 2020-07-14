@@ -82,6 +82,24 @@ module.exports = class TargetService {
         }
     }
 
+    /**
+     * add new notification message to salon need to deliver
+     * @param notification
+     * @param requestId
+     * @return {Promise<*>}
+     */
+    async addNewNotificationToSalon(notification, requestId) {
+        try {
+            return await Salon.update(
+                {'NeedToDeliverStatus._id': requestId},
+                {'$set': {'NeedToDeliverStatus.$.notification': notification}}
+            )
+        } catch (error) {
+            console.log(error)
+            throw error
+        }
+    }
+
 
     /**
      *  change salon deliver request status and targets document target array status
@@ -89,20 +107,53 @@ module.exports = class TargetService {
      target.status = NOT_COMPLETED | COMPLETED,
      * @param status
      * @param requestId
+     * @param notification
      * @returns {Promise<unknown[]>}
      */
-    async changeLocationStatus({status}, requestId) {
+    async changeSalonStatus({status, notification}, requestId) {
         try {
 
-            const promise1 = await targets.update(
-                {'targets.requestId': requestId},
-                {'$set': {'targets.$.status': status}}
-            )
+            let promise1;
+            let promise2;
 
-            const promise2 = await this
+            if (!status) {
+                promise1 = await targets.update(
+                    {'targets.requestId': requestId},
+                    {
+                        '$set': {
+                            'targets.$.notification': notification
+                        }
+                    }
+                )
+
+                promise2 = await this.addNewNotificationToSalon(notification, requestId);
+
+                return await Promise.all([promise1, promise2]);
+            }
+
+            if (!notification) {
+                promise1 = await targets.update(
+                    {'targets.requestId': requestId},
+                    {'$set': {'targets.$.status': status}}
+                )
+            } else {
+                promise1 = await targets.update(
+                    {'targets.requestId': requestId},
+                    {
+                        '$set': {
+                            'targets.$.status': status,
+                            'targets.$.notification': notification
+                        }
+                    }
+                )
+
+                promise2 = await this.addNewNotificationToSalon(notification, requestId);
+            }
+
+            const promise3 = await this
                 .changeSalonNeedToDeliverStatus(status, requestId)
 
-            return await Promise.all([promise1, promise2]);
+            return await Promise.all([promise1, promise2, promise3]);
 
         } catch (error) {
             throw error
