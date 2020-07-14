@@ -41,14 +41,14 @@ router.put('/addNewTargetToTarget/:driverEmail', async (req, res) => {
 });
 
 // change location status in both target.targets and salon.NeedToDeliver
-router.put('/changeSalonStatus/:requestId', async (req, res) => {
+router.post('/changeSalonStatus', async (req, res) => {
     try {
         const io = req.app.get('io');
 
-        const status = req.body;
-        const requestId = req.params.requestId
+        const data = req.body;
+        const requestId = req.body.requestId
 
-        const response = await TargetsService.changeSalonStatus(status, requestId);
+        const response = await TargetsService.changeSalonStatus(data, requestId);
 
         io.emit('update-target');
 
@@ -94,12 +94,12 @@ router.put(`/assignToDriver/:driverEmail`, async (req, res) =>{
 });
 
 // change target status
-router.put('/changeTargetStatus/:targetId', async (req, res) => {
+router.post('/changeTargetStatus', async (req, res) => {
     try {
         const io = req.app.get('io');
 
         const status = req.body;
-        const targetId = req.params.targetId
+        const targetId = req.body.targetId
 
         const response = await TargetsService.changeTargetStatus(status, targetId);
 

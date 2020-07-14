@@ -104,7 +104,6 @@ module.exports = class TargetService {
     /**
      *  change salon deliver request status and targets document target array status
      NeedToDeliverStatus =  NeedToDeliver | Delivered | Cancel
-     target.status = NOT_COMPLETED | COMPLETED,
      * @param status
      * @param requestId
      * @param notification
@@ -116,8 +115,16 @@ module.exports = class TargetService {
             let promise1;
             let promise2;
 
+            // if notification or status not provided
+            if (!status && !notification) {
+                throw new Error('notification or status not provided')
+            }
+
+            // if status not provided  only update notification
             if (!status) {
-                promise1 = await targets.update(
+
+                // updater notification on targets collection
+                promise1 = targets.update(
                     {'targets.requestId': requestId},
                     {
                         '$set': {
@@ -125,19 +132,25 @@ module.exports = class TargetService {
                         }
                     }
                 )
+                // updater notification on salon collection
+                promise2 = this.addNewNotificationToSalon(notification, requestId);
 
-                promise2 = await this.addNewNotificationToSalon(notification, requestId);
-
+                // resolve both promises
                 return await Promise.all([promise1, promise2]);
             }
 
+            // if notification not provided  only update status
             if (!notification) {
-                promise1 = await targets.update(
+
+                // updater status on targets collection
+                promise1 = targets.update(
                     {'targets.requestId': requestId},
                     {'$set': {'targets.$.status': status}}
                 )
+
             } else {
-                promise1 = await targets.update(
+                // if both notification and status provided update target collection
+                promise1 = targets.update(
                     {'targets.requestId': requestId},
                     {
                         '$set': {
@@ -147,12 +160,15 @@ module.exports = class TargetService {
                     }
                 )
 
-                promise2 = await this.addNewNotificationToSalon(notification, requestId);
+                // update notification on salon collection
+                promise2 = this.addNewNotificationToSalon(notification, requestId);
             }
 
-            const promise3 = await this
+            // update salon need to deliver status
+            const promise3 = this
                 .changeSalonNeedToDeliverStatus(status, requestId)
 
+            // resolve all promises
             return await Promise.all([promise1, promise2, promise3]);
 
         } catch (error) {
@@ -224,13 +240,22 @@ module.exports = class TargetService {
     async getAllSalonNeedToDelivers() {
         try {
 
+            // get all salonDetails
             const allSalons = await this.getAllSalon()
 
             return allSalons.map(r => {
 
+                /**
+                 * check salon contain NeedToDeliverStatus if it not contain return null
+                 *  if contain then only get latest NeedToDelivers
+                 */
                 const needToDeliver = r.NeedToDeliverStatus.length > 0 ?
                     r.NeedToDeliverStatus.filter(target => target.status.toString() === `NeedToDeliver`)[0] : null
 
+                /**
+                 * check whether need to deliver null or not and assign value
+                 * if needToDeliver is null then set status to `not-found`
+                 */
                 const status = needToDeliver ? needToDeliver.status : `not-found`
                 const createdAt = needToDeliver ? needToDeliver.createdAt : null
                 const requestId = needToDeliver ? needToDeliver._id : null
@@ -246,7 +271,7 @@ module.exports = class TargetService {
                     lat: r.latitude,
                     lng: r.longitude,
                 }
-
+                // if not found need to delivers, then those salon will be filter out
             }).filter(r => r.status !== `not-found`)
         } catch (error) {
             throw error
@@ -265,23 +290,36 @@ module.exports = class TargetService {
     async getSalonNeedToDelivers(salonId) {
         try {
 
+            /**
+             * get one salonDetails by salonId
+             * cast salonId to mongoose ObjectId
+             * {@link castToObjectId}
+             */
             const salon = await Salon
                 .findById(sharedService.castToObjectId(salonId))
 
+            // if not found need to delivers then return empty array
             if (salon.NeedToDeliverStatus.length === 0) return [];
 
+            /**
+             * map and organize need to deliver object and
+             * sort by Date {@link sortByDate}
+             */
             return salon.NeedToDeliverStatus.map(r => {
                 return {
-                    requestId: r._id,
+
                     address: salon.address,
                     salonId: salon._id,
                     salonEmail: salon.email,
                     salonName: salon.name,
                     lat: salon.latitude,
                     lng: salon.longitude,
+
+                    requestId: r._id,
                     status: r.status,
                     createdAt: r.createdAt,
                     deliveryDate: r.deliveryDate
+
                 }
             }).sort((a, b) => sharedService.sortByDate(a.createdAt, b.createdAt))
 
