@@ -9,6 +9,7 @@ const Fingerprint = require('../models/fingerprint')
 const Ip = require('../models/ip')
 const Patient = require('../models/patient')
 var ipapi = require('ipapi.co')
+var os = require("os");
 
 
 const {sendResponse} = require('../utils/response.utils');
