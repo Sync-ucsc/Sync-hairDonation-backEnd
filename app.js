@@ -96,7 +96,7 @@ app.get('/', (req,res) => {
 // });
 
 const server = app.listen(port ,() =>{
-    var host = 'http://' + /*server.address().address*/ '127.0.0.1' + ':' + server.address().port;
+    var host = 'http://' + server.address().address ;
     app.set('host', host);
     console.log("server start on "+port);
     console.log(app.get('env'));
