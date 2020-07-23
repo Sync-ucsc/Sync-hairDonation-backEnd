@@ -374,6 +374,7 @@ router.post('/authenticate', (req, res) => {
     const email = req.body.email; 
     const password = req.body.password;
     var host = req.app.get('host');
+    // var host = 'https://syncucsc.herokuapp.com';
     const io = req.app.get('io');
 
     var ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() ||
@@ -612,6 +613,7 @@ router.post('/request', (req, res) => {
     const email = req.body.email;
     const token = req.body.token;
     var host = req.app.get('host');
+    // var host = 'https://syncucsc.herokuapp.com';
     console.log(token)
 
     User.getUserBYEmail(email, (err, user) => {
