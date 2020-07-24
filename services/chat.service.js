@@ -43,26 +43,29 @@ module.exports = class ChatService {
 
         // when user disconnect leave from chat room
         socket.on('disconnect', () => {
+            console.log("here disconnect");
             socket.leave(previousChatRoomId)
         })
 
         //  when user need to connect to chat room
         socket.on('join_to_room', data => {
+            console.log("here join_to_room");
             safeJoin(data.roomId)
         })
 
         // send message
         socket.on('send_message', message => {
-
             // chat id of receiver
             const receiverId = message.receiverId
-
+            const senderId = message.senderId
             // add message to database
             this.addNewMessage(message)
+                .then(() => console.log(`add message to db`))
                 .catch(error => console.log(error))
 
             // send message to receiver chat room
             socket.in(receiverId).emit('receive_message', message)
+            socket.in(senderId).emit('receive_message', message)
         })
     }
 
@@ -111,6 +114,15 @@ module.exports = class ChatService {
         }
     }
 
+    /**
+     * get list of users on chat room
+     * @param io
+     * @param roomId
+     * @return {*}
+     */
+    isOnRoom(io, roomId){
+        return io.sockets.adapter.rooms[roomId]
+    }
 
     /**
      * get previous chat user list
@@ -162,6 +174,26 @@ module.exports = class ChatService {
             })
 
         } catch (error) {
+            throw error
+        }
+    }
+
+    /**
+     * get user fullName and user profile pic
+     * @param userId
+     * @return {Promise<{fullName: string, dp}>}
+     */
+    async getUserDetail(userId){
+        try {
+            return await userModel.findOne({_id: userId})
+                .then( user => {
+                    return {
+                        fullName: sharedService.getFullUserName(user),
+                        dp: user.profilePic
+                    }
+                })
+
+        }catch (error) {
             throw error
         }
     }

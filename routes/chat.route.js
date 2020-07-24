@@ -31,6 +31,23 @@ router.get('/getMyAllMessages/:receiverId', async (req, res) => {
 })
 
 /**
+ * get user full name and profile picture
+ */
+router.get('/userDetails/:userId', async (req, res) => {
+    try {
+
+        const userId = req.params.userId;
+
+        const userDetails = await chatService.getUserDetail(userId);
+
+        res.send(sendResponse(userDetails))
+
+    }catch (error) {
+        res.send(sendResponse(undefined, false,error.toString()))
+    }
+})
+
+/**
  * get specific chat of two parties
  * @param req.body.senderId {String} user id of message sender
  * @param req.body.receiverId {String} user id of message receiver
@@ -72,6 +89,7 @@ router.post('/getMyChatList', async (req, res) => {
         res.send(sendResponse(undefined, false, error.toString()))
     }
 })
+
 
 //test routes
 router.get('/ping', (_, res) => res.send(sendResponse('Chat Route')));
