@@ -1,6 +1,6 @@
 const mongoose = require(`mongoose`)
 
-module.exports = class sharedService {
+module.exports = class SharedService {
 
     constructor() {
     }
@@ -26,9 +26,23 @@ module.exports = class sharedService {
     }
 
     /**
+     * this will cast id to Object id
      * @param id
      */
     castToObjectId(id){
         return mongoose.Types.ObjectId(id, undefined)
     }
+
+
+    /**
+     * return full name of a user by concatenating firstName and lastName
+     * @param userDetails user document
+     * @return {string}
+     */
+    getFullUserName(userDetails){
+        return userDetails.firstName.toString()
+            .concat(" ")
+            .concat(userDetails.lastName.toString());
+    }
+
 };
