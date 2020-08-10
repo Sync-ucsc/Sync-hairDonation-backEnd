@@ -8,6 +8,7 @@
     "start": "node app"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "bcryptjs": "*",
     "body-parser": "^1.19.0",
     "core-util-is": "^1.0.2",
@@ -19,6 +20,7 @@
     "md5": "^2.2.1",
     "mongoose": "^5.9.16",
     "morgan": "^1.10.0",
+    "node-dijkstra": "^2.5.0",
     "nodemailer": "^6.4.8",
     "os": "^0.1.1",
     "passport": "*",
