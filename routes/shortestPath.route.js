@@ -28,7 +28,7 @@ router.get('/sendDriverID/:email', async (req, res) => {
       }
       
     });
-    console.log(locationArray);
+    // console.log(locationArray);
     shortestPath.calculateShortestPath(locationArray);
 
   } catch (err) {

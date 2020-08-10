@@ -1,5 +1,6 @@
 const Graph = require('node-dijkstra');
 const axios=require('axios');
+const request = require('request');
 const { compareSync } = require('bcryptjs');
 
 
@@ -9,8 +10,8 @@ constructor() {}
 
 
 
-calculateShortestPath(locations){
-console.log(locations);
+    async calculateShortestPath(locations) {
+// console.log(locations);
 
     const API_KEY = 'AIzaSyAkGlhRjMfmotb0UBMf8EAcmkTB6v3WEVM';
     const a = {
@@ -22,34 +23,60 @@ console.log(locations);
         "lng": 79.856985,
     }
 
-    
-
     let distances = [];
 
-    for (let index = 0; index < locations.length; index++) {
+    locations.forEach(element1 => {
         let insideArr = []
-         locations.forEach((element) => {
-           const distance = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${locations[index].lat},${locations[index].lng}&destinations=${element.lat}%2C${element.lng}&key=${API_KEY}`;
-           axios.get(distance).then((data) => {
+        locations.forEach((element) => {
+            const distance = `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${element1.lat},${element1.lng}&destinations=${element.lat}%2C${element.lng}&key=${API_KEY}`;
+            axios.get(distance).then((data) => {
                 insideArr.push({
                     "id": element.salonId,
-                    "distance":data.data.rows[0].elements[0].distance
+                    "distance": data.data.rows[0].elements[0].distance.value
                 });
-             console.log(data.data.rows[0].elements[0].distance);
-           });
-         });
-        distances.push({"in":insideArr});
-        console.log(insideArr);
-    }
-    console.log(distances)
-
+                // console.log(data.data.rows[0].elements[0].distance);
+                // console.log(insideArr);
+                // console.log(distances);
+            });
+            // request(distance, {
+            //     json: true
+            // }, (err, res, body) => {
+            //     if (err) {
+            //         return console.log(err);
+            //     }
+            //     insideArr.push({
+            //         "id": element.salonId,
+            //         "distance": body.rows[0].elements[0].distance.value
+            //     });
+            //     console.log(body.rows[0].elements[0].distance.value);
+            //     // console.log(distances);
+                
+            // });
+        });
+        // console.log('gg');
+        distances.push({
+            "id": element1.salonId,
+            "in": insideArr
+        });
+        // console.log(insideArr);
+        // console.log('g3');
+        
+    });
+    
+    
    
 
 
 const route = new Graph();
-
+// console.log(distances);
 for (let index = 0; index < locations.length; index++) {
-    const element = array[index];
+    let nodeMap = new Map()
+    distances.forEach(element => {
+        nodeMap[element.id] = element.distance
+    });
+    console.log(nodeMap);
+    route.addNode(
+        distances[index].id,nodeMap);
     
 }
 
