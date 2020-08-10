@@ -49,7 +49,8 @@ module.exports = class ChatService {
 
         //  when user need to connect to chat room
         socket.on('join_to_room', data => {
-            console.log("here join_to_room");
+            console.log(`here join_to_room`);
+            console.log(data);
             safeJoin(data.roomId)
         })
 
