@@ -34,6 +34,9 @@ const SalonSchema = new Schema({
         longitude:{
             type:Number
         },
+        district: {
+            type: String
+        },
         NeedToDeliverStatus: [{
             status: {
                 type: String,
