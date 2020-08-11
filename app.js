@@ -44,6 +44,7 @@ const sms = require('./routes/sms.route');
 const attendant = require ('./routes/attendant.route');
 const driver = require('./routes/driver.route');
 const donorAppointment = require('./routes/donorAppointment.route');
+const shortestPath=require('./routes/shortestPath.route');
 
 const port = process.env.PORT || 3000;
 
@@ -86,6 +87,7 @@ app.use('/wigRequest', wigRequest);
 app.use('/sms', sms);
 app.use('/attendant', attendant);
 app.use('/driver',driver);
+app.use('/shortestPath', shortestPath);
 
 app.get('/', (req,res) => {
     res.send('hi');
