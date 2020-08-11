@@ -39,6 +39,9 @@ const DonorSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    district:{
+        type: String
+    },
     nearSalon: {
         salon: {
             type: String,
@@ -95,10 +98,16 @@ module.exports.addDonor = function (newDonor, callback) {
 }
 
 //Donation request add
-module.exports.addDonorRequest = function(email,req,callback){
+module.exports.addDonorRequest = function(email,requests,selectedSalon,district,callback){
 
     const query =  { email: email};
-    Donor.findOneAndUpdate(query,{ $push: { request: req }},callback);
+    
+    Donor.findOneAndUpdate(query,{ 
+        district: district,
+        $push: { request: requests },
+        $push: { selectedSalon: selectedSalon }
+    },callback);
+
 }
 
 //Donor get all

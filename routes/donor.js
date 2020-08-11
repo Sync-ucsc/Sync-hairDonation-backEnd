@@ -11,6 +11,7 @@ const {sendResponse} = require('../utils/response.utils');
 
 // Donor request
 router.post('/addDonorRequest', (req, res) => {
+    
     let request = {
         requestDay: req.body.requestDay,
         validDate : req.body.validDate,
@@ -20,8 +21,12 @@ router.post('/addDonorRequest', (req, res) => {
         finished: false,
         canceled: false
     }
-    Donor.addDonorRequest(req.body.email,request,(err,donor)=>{
+
+  
+    Donor.addDonorRequest(req.body.email,request, req.body.selectedSalon, req.body.district,(err,donor)=>{
         if (err) {
+          console.log(err)
+          console.log(`error`)
           res.status(500);
             res.json({
                 data: err,
@@ -30,6 +35,7 @@ router.post('/addDonorRequest', (req, res) => {
             })
         } else {
             console.log(donor)
+            console.log(`success`)
             res.json({
                 data: donor,
                 success: true,
