@@ -35,7 +35,9 @@ module.exports = class TargetService {
     async addNewTargetToTargets(targetData, driverEmail) {
         try {
             const targetObject = new targetSalonLocations(targetData);
+
             console.log(targetObject)
+
             return await targets.findOneAndUpdate(
                 {driverEmail: driverEmail},
                 {$push: {targets: targetObject}}
