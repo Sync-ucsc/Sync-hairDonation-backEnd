@@ -32,5 +32,13 @@
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^2.0.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sync-ucsc/Sync-hairDonation-backEnd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sync-ucsc/Sync-hairDonation-backEnd/issues"
+  },
+  "homepage": "https://github.com/Sync-ucsc/Sync-hairDonation-backEnd#readme"
 }
