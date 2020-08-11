@@ -150,6 +150,7 @@ router.post('/update/:id', (req, res) => {
     checkEmail: req.body.checkEmail,
     latitude: req.body.latitude,
     longitude: req.body.longitude,
+    district:req.body.district,
   })
 
   Salon.updateSalon(updatedSalon, (err, salon) => {
