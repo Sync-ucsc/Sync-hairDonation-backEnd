@@ -62,25 +62,97 @@ router.post('/add', (req, res) => {
             };
 
 
-            Promise.all(webpush.map(sub => webpush.sendNotification(
-                    sub, JSON.stringify(notificationPayload))))
-                .then(() => {
-                     res.json({
-                         data: notification,
-                         success: true,
-                         msg: 'notification add',
-                     })
-                     io.emit('add-notification');
-                })
-                .catch(err => {
-                    console.error("Error sending notification, reason: ", err);
-                    res.status(500);
-                    res.json({
-                        data: err,
-                        success: false,
-                        msg: 'Faild to add notification'
+            if (req.body.role === 'all' ){
+                Promise.all(
+                    Subcribe.getAll((err, subs) => {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            console.log(subs)
+                            subs.map(sub => webpush.sendNotification(sub.sub, notificationPayload))
+                        }
                     })
-                });
+
+                )
+                    .then(() => {
+                        res.json({
+                            data: notification,
+                            success: true,
+                            msg: 'notification add',
+                        })
+                        io.emit('add-notification');
+                    })
+                    .catch(err => {
+                        console.error("Error sending notification, reason: ", err);
+                        res.status(500);
+                        res.json({
+                            data: err,
+                            success: false,
+                            msg: 'Faild to add notification'
+                        })
+                    });
+
+            } else if (req.body.role === 'donor') {
+                Promise.all(
+                    Subcribe.getAll((err, subs) => {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            console.log(subs)
+                            subs.map(sub => webpush.sendNotification(sub.sub, notificationPayload))
+                        }
+                    })
+
+                )
+                    .then(() => {
+                        res.json({
+                            data: notification,
+                            success: true,
+                            msg: 'notification add',
+                        })
+                        io.emit('add-notification');
+                    })
+                    .catch(err => {
+                        console.error("Error sending notification, reason: ", err);
+                        res.status(500);
+                        res.json({
+                            data: err,
+                            success: false,
+                            msg: 'Faild to add notification'
+                        })
+                    });
+
+            } else if (req.body.role === 'patient') {
+                Promise.all(
+                    Subcribe.getAll((err, subs) => {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            console.log(subs)
+                            subs.map(sub => webpush.sendNotification(sub.sub, notificationPayload))
+                        }
+                    })
+
+                )
+                    .then(() => {
+                        res.json({
+                            data: notification,
+                            success: true,
+                            msg: 'notification add',
+                        })
+                        io.emit('add-notification');
+                    })
+                    .catch(err => {
+                        console.error("Error sending notification, reason: ", err);
+                        res.status(500);
+                        res.json({
+                            data: err,
+                            success: false,
+                            msg: 'Faild to add notification'
+                        })
+                    });
+
+            }
            
         }
     })
@@ -151,7 +223,9 @@ router.post('/send', async (req, res) => {
         }
     });
 
-    Promise.resolve(Subcribe.getAll((err,subs)=> {
+    Promise.resolve(
+
+        Subcribe.getAll((err,subs)=> {
         if(err){
             console.log(err)
         } else {
