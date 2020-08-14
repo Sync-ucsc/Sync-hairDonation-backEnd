@@ -154,8 +154,6 @@ module.exports.changeLocation = function (lat,lon,email, callback) {
 
 module.exports.changeNearSalon = function (selectedSalon,email, callback) {
 
-    console.log(selectedSalon)
-    console.log(email)
     Donor.findOneAndUpdate({email:email}, {
             $set: {
                 nearSalon: selectedSalon
