@@ -22,7 +22,7 @@ router.post('/addDonorRequest', (req, res) => {
         canceled: false
     }
 
-  
+    
     Donor.addDonorRequest(req.body.email,request, req.body.selectedSalon, req.body.district,(err,donor)=>{
         if (err) {
           console.log(err)
@@ -34,7 +34,6 @@ router.post('/addDonorRequest', (req, res) => {
                 msg: 'Faild to add donor requset'
             })
         } else {
-            console.log(donor)
             console.log(`success`)
             res.json({
                 data: donor,
@@ -49,6 +48,27 @@ router.post('/addDonorRequest', (req, res) => {
 // change location
 router.post('/changeLocation', (req, res) => {
   Donor.changeLocation(req.body.lat,req.body.lon,req.body.email,(err,donor)=>{
+        if (err) {
+          res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to change location'
+            })
+        } else {
+            res.json({
+                data: donor,
+                success: true,
+                msg: 'Donor location change',
+            })
+
+        }
+    })
+})
+
+// change near salon
+router.post('/changeNearSalon', (req, res) => {
+  Donor.changeNearSalon(req.body.selectedSalon,req.body.email,(err,donor)=>{
         if (err) {
           res.status(500);
             res.json({
