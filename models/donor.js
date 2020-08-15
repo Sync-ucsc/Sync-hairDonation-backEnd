@@ -39,16 +39,15 @@ const DonorSchema = mongoose.Schema({
         type: Number,
         required: true
     },
-    nearSalon: {
-        salon: {
-            type: String,
-        },
-        id: {
-            type: Number,
-        },
-        distance: Number
-
+    district:{
+        type: String
     },
+    nearSalon: [
+        {
+
+        }
+
+    ],
     request: [{
         requestId: {
             type: Number,
@@ -95,10 +94,17 @@ module.exports.addDonor = function (newDonor, callback) {
 }
 
 //Donation request add
-module.exports.addDonorRequest = function(email,req,callback){
+module.exports.addDonorRequest = function(email,request,selectedSalon,district,callback){
 
     const query =  { email: email};
-    Donor.findOneAndUpdate(query,{ $push: { request: req }},callback);
+    
+    Donor.findOneAndUpdate(query,{ 
+        district: district,
+        $push: { request: request }
+        // ,
+        // $push: { nearSalon: selectedSalon }
+    },callback);
+
 }
 
 //Donor get all
@@ -139,6 +145,18 @@ module.exports.changeLocation = function (lat,lon,email, callback) {
             $set: {
                 lat: lat,
                 lon: lon
+            }
+            }, (err, res) => {
+                // console.log(res)
+                callback(null, null);
+            });
+}
+
+module.exports.changeNearSalon = function (selectedSalon,email, callback) {
+
+    Donor.findOneAndUpdate({email:email}, {
+            $set: {
+                nearSalon: selectedSalon
             }
             }, (err, res) => {
                 // console.log(res)
