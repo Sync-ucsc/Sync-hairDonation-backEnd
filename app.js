@@ -77,7 +77,7 @@ app.use('/salon',salon);
 app.use('/patient',patient);
 app.use('/notification', notification);
 app.use('/chat', chat);
-app.use('/payment', chat);
+app.use('/payment', payment);
 app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
 app.use('/fingerprint', fingerprint);

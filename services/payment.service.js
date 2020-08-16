@@ -62,7 +62,6 @@ module.exports = class PaymentService {
         try{
 
             const donation = new DonationSchema(donationData);
-
             return await donation.save();
 
         }catch (error) {
