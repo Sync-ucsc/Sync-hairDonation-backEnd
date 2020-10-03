@@ -579,7 +579,7 @@ router.post('/authenticate', (req, res) => {
                     return res.json({
                         data: '',
                         success: false,
-                        msg: 'token is invalid'
+                        msg: 'Register token is invalid'
                     })
                 }
             }

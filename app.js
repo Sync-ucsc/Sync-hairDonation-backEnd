@@ -15,9 +15,12 @@ const ChatService =  require('./services/chat.service');
 
 
 // conect database
-mongoose.connect(config.database);
+mongoose.connect(config.database, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+});
 
-mongoose.connection.on('connected', () =>{
+mongoose.connection.on('connected',() => {
     console.log('connected to database'+ config.database);
 })
 
