@@ -99,7 +99,7 @@ module.exports.getSalonByEmail = function (email, callback) {
     const query = {
         email: email
     };
-    Donor.findOne(query, callback);
+    Salon.findOne(query, callback);
 }
 
 //update salon
@@ -116,4 +116,17 @@ module.exports.updateSalon = function (updatedSalon, callback) {
 //salon delete
 module.exports.deleteSalon = function (id, callback) {
     Salon.findByIdAndDelete(id, callback);
+}
+
+module.exports.profileChange = function (email, firstName, lastName, phone, img, address, callback) {
+    Salon.findOneAndUpdate({ email: email }, {
+        $set: {
+            name: firstName,
+            telephone: phone,
+            address: address
+        }
+    }, (err, res) => {
+        console.log(res)
+        callback(err, res);
+    })
 }

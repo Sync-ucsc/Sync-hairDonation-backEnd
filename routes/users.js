@@ -5,9 +5,13 @@ const jwt = require('jsonwebtoken');
 const config =require('../config/database')
 const User = require('../models/user')
 const Donor = require('../models/donor')
+const Salon = require('../models/salons')
 const Fingerprint = require('../models/fingerprint')
 const Ip = require('../models/ip')
+const Attendant = require('../models/attendant')
 const Patient = require('../models/patient')
+const Manager = require('../models/manager')
+
 var ipapi = require('ipapi.co')
 
 
@@ -579,7 +583,7 @@ router.post('/authenticate', (req, res) => {
                     return res.json({
                         data: '',
                         success: false,
-                        msg: 'token is invalid'
+                        msg: 'Register token is invalid'
                     })
                 }
             }
@@ -614,7 +618,6 @@ router.post('/request', (req, res) => {
     const token = req.body.token;
     var host = req.app.get('host');
     // var host = 'https://syncucsc.herokuapp.com';
-    console.log(token)
 
     User.getUserBYEmail(email, (err, user) => {
         if (err) {
@@ -635,10 +638,8 @@ router.post('/request', (req, res) => {
             });
         }
         if(user.token != '0'){
-            console.log(user)
             User.comparePassword(token, user.token.toString(), (err, isMatch) => {
                 if (err) {
-                    console.log(err)
                     res.status(500);
                     return res.json({
                         data: err,
@@ -917,6 +918,8 @@ router.get('/profile', passport.authenticate('jwt',{session:false}), (req, res) 
     });
 })
 
+
+
 router.post('/changePassword', passport.authenticate('jwt', {
     session: false
 }), (req, res) => {
@@ -1013,6 +1016,375 @@ router.post('/profileChanePassword', passport.authenticate('jwt', {
      });
 })
 
+router.post('/adminprofileChange', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    var host = req.app.get('host');
+    User.getUserBYEmail(req.body.email, (err, user1) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        } else if(user1.role == 'admin') {
+            User.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    res.json({
+                        data: '',
+                        success: false,
+                        msg: 'Faild to profile change'
+                    })
+                } else {
+                    const userToken = jwt.sign(({
+                        "_id": user._id,
+                        "role": user.role,
+                        "banAction": user.banAction,
+                        "firstName": req.body.firstName,
+                        "lastName": req.body.lastName,
+                        "email": user.email,
+                        "profilePic": req.body.img,
+                        "telephone": req.body.phone,
+                        "iss": host + '/user',
+                    }), config.secret, {
+                        expiresIn: 604500
+                    });
+                    res.json({
+                        data: {
+                            userToken: 'JWT' + userToken,
+                            user: {
+                                email: user.email,
+                                firstName: user.firstName,
+                                lastName: user.lastName
+                            }
+                        },
+                        success: true,
+                        msg: 'profile change',
+                    })
+                }
+            })
+
+        } else {
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Faild to Password change'
+            })
+        }
+    });
+})
+
+router.post('/patientprofileChange', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    var host = req.app.get('host');
+    User.getUserBYEmail(req.body.email, (err, user1) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        } else if(user1.role == 'patient') {
+            User.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    res.json({
+                        data: '',
+                        success: false,
+                        msg: 'Faild to profile change'
+                    })
+                } else {
+                    Patient.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, req.body.address, (err, user) => {})
+                    const userToken = jwt.sign(({
+                        "_id": user._id,
+                        "role": user.role,
+                        "banAction": user.banAction,
+                        "firstName": req.body.firstName,
+                        "lastName": req.body.lastName,
+                        "email": user.email,
+                        "profilePic": req.body.img,
+                        "telephone": req.body.phone,
+                        "iss": host + '/user',
+                    }), config.secret, {
+                        expiresIn: 604500
+                    });
+                    res.json({
+                        data: {
+                            userToken: 'JWT' + userToken,
+                            user: {
+                                email: user.email,
+                                firstName: user.firstName,
+                                lastName: user.lastName
+                            }
+                        },
+                        success: true,
+                        msg: 'profile change',
+                    })
+                }
+            })
+
+        } else {
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Faild to Password change'
+            })
+        }
+    });
+})
+
+router.post('/salonProfileChange', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    var host = req.app.get('host');
+    User.getUserBYEmail(req.body.email, (err, user1) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        } else if(user1.role == 'salon') {
+            User.profileChange(req.body.email, req.body.firstName, ' ', req.body.phone, req.body.img, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    res.json({
+                        data: '',
+                        success: false,
+                        msg: 'Faild to profile change'
+                    })
+                } else {
+                    Salon.profileChange(req.body.email, req.body.firstName, '', req.body.phone, req.body.img, req.body.address, (err, user) => {})
+                    const userToken = jwt.sign(({
+                        "_id": user._id,
+                        "role": user.role,
+                        "banAction": user.banAction,
+                        "firstName": req.body.firstName,
+                        "lastName": ' ',
+                        "email": user.email,
+                        "profilePic": req.body.img,
+                        "telephone": req.body.phone,
+                        "iss": host + '/user',
+                    }), config.secret, {
+                        expiresIn: 604500
+                    });
+                    res.json({
+                        data: {
+                            userToken: 'JWT' + userToken,
+                            user: {
+                                email: user.email,
+                                firstName: user.firstName,
+                                lastName: user.lastName
+                            }
+                        },
+                        success: true,
+                        msg: 'profile change',
+                    })
+                }
+            })
+
+        } else {
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Faild to Password change'
+            })
+        }
+    });
+})
+
+router.post('/attendantProfileChange', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    var host = req.app.get('host');
+    User.getUserBYEmail(req.body.email, (err, user1) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        } else if(user1.role == 'attendant') {
+            User.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    res.json({
+                        data: '',
+                        success: false,
+                        msg: 'Faild to profile change'
+                    })
+                } else {
+                    Attendant.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, req.body.address, (err, user) => {})
+                    const userToken = jwt.sign(({
+                        "_id": user._id,
+                        "role": user.role,
+                        "banAction": user.banAction,
+                        "firstName": req.body.firstName,
+                        "lastName": req.body.lastName,
+                        "email": user.email,
+                        "profilePic": req.body.img,
+                        "telephone": req.body.phone,
+                        "iss": host + '/user',
+                    }), config.secret, {
+                        expiresIn: 604500
+                    });
+                    res.json({
+                        data: {
+                            userToken: 'JWT' + userToken,
+                            user: {
+                                email: user.email,
+                                firstName: user.firstName,
+                                lastName: user.lastName
+                            }
+                        },
+                        success: true,
+                        msg: 'profile change',
+                    })
+                }
+            })
+
+        } else {
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Faild to Password change'
+            })
+        }
+    });
+})
+
+
+router.post('/mangerProfileChange', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    var host = req.app.get('host');
+    User.getUserBYEmail(req.body.email, (err, user1) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        } else if (user1.role == 'manager') {
+            User.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    res.json({
+                        data: '',
+                        success: false,
+                        msg: 'Faild to profile change'
+                    })
+                } else {
+                    Manager.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, req.body.address, (err, user) => { })
+                    const userToken = jwt.sign(({
+                        "_id": user._id,
+                        "role": user.role,
+                        "banAction": user.banAction,
+                        "firstName": req.body.firstName,
+                        "lastName": req.body.lastName,
+                        "email": user.email,
+                        "profilePic": req.body.img,
+                        "telephone": req.body.phone,
+                        "iss": host + '/user',
+                    }), config.secret, {
+                        expiresIn: 604500
+                    });
+                    res.json({
+                        data: {
+                            userToken: 'JWT' + userToken,
+                            user: {
+                                email: user.email,
+                                firstName: user.firstName,
+                                lastName: user.lastName
+                            }
+                        },
+                        success: true,
+                        msg: 'profile change',
+                    })
+                }
+            })
+
+        } else {
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Faild to Password change'
+            })
+        }
+    });
+})
+
+router.post('/donorProfileChange', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    var host = req.app.get('host');
+    User.getUserBYEmail(req.body.email, (err, user1) => {
+        if (err) {
+            res.status(500);
+            return res.json({
+                data: err,
+                success: false,
+                msg: 'err'
+            });
+        } else if (user1.role == 'donor') {
+            User.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, (err, user) => {
+                if (err) {
+                    res.status(500);
+                    res.json({
+                        data: '',
+                        success: false,
+                        msg: 'Faild to profile change'
+                    })
+                } else {
+                    Donor.profileChange(req.body.email, req.body.firstName, req.body.lastName, req.body.phone, req.body.img, req.body.address, (err, user) => { })
+                    const userToken = jwt.sign(({
+                        "_id": user._id,
+                        "role": user.role,
+                        "banAction": user.banAction,
+                        "firstName": req.body.firstName,
+                        "lastName": req.body.lastName,
+                        "email": user.email,
+                        "profilePic": req.body.img,
+                        "telephone": req.body.phone,
+                        "iss": host + '/user',
+                    }), config.secret, {
+                        expiresIn: 604500
+                    });
+                    res.json({
+                        data: {
+                            userToken: 'JWT' + userToken,
+                            user: {
+                                email: user.email,
+                                firstName: user.firstName,
+                                lastName: user.lastName
+                            }
+                        },
+                        success: true,
+                        msg: 'profile change',
+                    })
+                }
+            })
+
+        } else {
+            res.json({
+                data: '',
+                success: false,
+                msg: 'Faild to Password change'
+            })
+        }
+    });
+})
+
+
+
+
 router.post('/temporarydisable', (req, res) => {
     const io = req.app.get('io');
     User.temporyBan(req.body.email,req.body.val, (err,user) => {
@@ -1067,7 +1439,6 @@ router.route('/').get((req, res) => {
 //Delete a User
 router.delete('/delete/:id', (req, res) => {
   const io = req.app.get('io');
-  console.log(req.params.id);
 
   Salon.deleteUserById(req.params.id, (err, salon) => {
     if (err) {

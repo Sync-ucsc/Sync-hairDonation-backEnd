@@ -1,7 +1,7 @@
 {
-  "name": "azeiya",
+  "name": "sync",
   "version": "1.0.0",
-  "description": "online food order",
+  "description": "online hair donation",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

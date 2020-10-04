@@ -71,3 +71,17 @@ module.exports.deleteAttendant = function (id, callback) {
     console.log('deleted an attendant')
     Attendant.findByIdAndDelete(id, callback);
 }
+
+module.exports.profileChange = function (email, firstName, lastName, phone, img, address, callback) {
+    Attendant.findOneAndUpdate({ email: email }, {
+        $set: {
+            firstName: firstName,
+            lastName: lastName,
+            telephone: phone,
+            address: address
+        }
+    }, (err, res) => {
+        console.log(res)
+        callback(err, res);
+    })
+}
