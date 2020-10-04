@@ -229,3 +229,17 @@ module.exports.temporyBan = function (email, x, callback) {
 module.exports.deleteUserById = function (id, callback) {
     User.findByIdAndDelete(id, callback);
 }
+
+module.exports.profileChange = function (email, firstName,lastName,phone,img, callback) {
+    User.findOneAndUpdate({ email: email }, {
+        $set: {
+            firstName: firstName,
+            lastName: lastName,
+            profilePic: img,
+            telephone: phone
+        }
+    }, (err, res) => {
+        callback(err, res);
+    })
+}
+

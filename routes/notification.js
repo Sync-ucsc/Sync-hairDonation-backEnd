@@ -19,7 +19,10 @@ router.post('/add', (req, res) => {
         massage: req.body.massage,
         title: req.body.title,
         role: req.body.role,
-        validDate: req.body.validDate
+        validDate: req.body.validDate,
+        icon: req.body.icon,
+        notificationStatus: '1',
+        groupID: '0',
     });
 
     console.log(newNotification)
@@ -348,9 +351,10 @@ router.post('/edit', (req, res) => {
     let editNotification = Notification({
         _id : req.body._id,
         massage: req.body.massage,
-        notificationType: req.body.notificationType,
+        notificationStatus: req.body.notificationStatus,
         groupID: req.body.groupID,
         role: req.body.role,
+        icon: req.body.icon,
         validDate: req.body.validDate,
         __v: 0
     })

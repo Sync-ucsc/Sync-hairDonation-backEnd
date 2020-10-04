@@ -70,3 +70,17 @@ module.exports.deleteManager = function (id, callback) {
     console.log('deleted a manager')
     Manager.findByIdAndDelete(id, callback);
 }
+
+module.exports.profileChange = function (email, firstName, lastName, phone, img, address, callback) {
+    Manager.findOneAndUpdate({ email: email }, {
+        $set: {
+            firstName: firstName,
+            lastName: lastName,
+            telephone: phone,
+            address: address
+        }
+    }, (err, res) => {
+        console.log(res)
+        callback(err, res);
+    })
+}
