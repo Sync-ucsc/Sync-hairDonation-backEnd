@@ -37,6 +37,9 @@ const SalonSchema = new Schema({
         district: {
             type: String
         },
+        wigCount: {
+            type: Number
+        },
         NeedToDeliverStatus: [{
             status: {
                 type: String,
