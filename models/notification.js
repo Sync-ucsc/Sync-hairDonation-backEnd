@@ -56,6 +56,10 @@ module.exports.editNotification = function (newNotification, callback) {
 module.exports.getById = function (id, callback) {
 
     Notification.findById(id, callback);
+    const query = {
+        _id: id
+    };
+    Notification.findOne(query, callback);
 }
 
 //notification get all
@@ -72,5 +76,5 @@ module.exports.deleteNotificationAll = function (callback) {
 
 //Notification delete
 module.exports.deleteNotificationById = function (id, callback) {
-    Notification.findByIdAndUpdate(id, { notificationStatus: '0'},callback);
+    Notification.findByIdAndUpdate(id, { notificationStatus: '2'},callback);
 }
