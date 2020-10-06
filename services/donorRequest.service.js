@@ -1,5 +1,5 @@
 const Donor = require(`../models/donor`);
-const donorRequest = require(`../models/donorRequest.model`)
+const DonorRequest = require(`../models/donorRequest.model`)
 
 const SharedService = require(`../services/shared.service`);
 const sharedService = new SharedService();
