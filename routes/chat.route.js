@@ -32,13 +32,14 @@ router.get('/getMyAllMessages/:receiverId', async (req, res) => {
 
 /**
  * get user full name and profile picture
+ * @param userId user id
  */
 router.get('/userDetails/:userId', async (req, res) => {
     try {
 
         const userId = req.params.userId;
 
-        const userDetails = await chatService.getUserDetail(userId);
+        const userDetails = await chatService.getUserDetailById(userId);
 
         res.send(sendResponse(userDetails))
 
@@ -46,6 +47,24 @@ router.get('/userDetails/:userId', async (req, res) => {
         res.send(sendResponse(undefined, false,error.toString()))
     }
 })
+
+/**
+ * get user full name and profile picture
+ */
+router.get('/getUserDetailsByRole/:role', async (req, res) => {
+    try {
+
+        const userId = req.params.userId;
+
+        const userDetails = await chatService.getUserDetailsByRole(userId, req.params.role);
+
+        res.send(sendResponse(userDetails))
+
+    }catch (error) {
+        res.send(sendResponse(undefined, false,error.toString()))
+    }
+})
+
 
 /**
  * get specific chat of two parties
