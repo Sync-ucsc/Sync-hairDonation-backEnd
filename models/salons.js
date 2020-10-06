@@ -37,9 +37,6 @@ const SalonSchema = new Schema({
         district: {
             type: String
         },
-        wigCount: {
-            type: Number
-        },
         NeedToDeliverStatus: [{
             status: {
                 type: String,
@@ -49,6 +46,10 @@ const SalonSchema = new Schema({
             createdAt: {
                 type: Date,
                 default: Date.now(),
+                required: true
+            },
+            wigCount: {
+                type: Number,
                 required: true
             },
             deliveryDate: {
