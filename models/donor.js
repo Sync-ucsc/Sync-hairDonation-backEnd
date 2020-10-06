@@ -72,10 +72,14 @@ const DonorSchema = mongoose.Schema({
 
         }],
         finished: {
-            type: Boolean
+            type: Boolean,
+            default: false,
+            required: true
         },
         canceled: {
-            type: Boolean
+            type: Boolean,
+            default: false,
+            required: true
         },
 
 
