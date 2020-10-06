@@ -88,3 +88,13 @@ module.exports.deleteAppointmentById = function (id, callback) {
 module.exports.getAll = function (callback) {
     DonorAppoitment.find(callback);
 }
+
+module.exports.updateTime = function (id ,time,callback) {
+    DonorAppoitment.findOneAndUpdate({ _id: id }, {
+        $set: {
+            appointmentTimeSlot: time
+        }
+    }, (err, res) => {
+        callback(err, res);
+    })
+}
