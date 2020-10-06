@@ -48,6 +48,8 @@ router.post('/changeSalonStatus', async (req, res) => {
         const data = req.body;
         const requestId = req.body.requestId
 
+        console.log(req.body)
+
         const response = await TargetsService.changeSalonStatus(data, requestId);
 
         io.emit('update-target');

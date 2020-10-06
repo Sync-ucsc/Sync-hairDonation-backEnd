@@ -117,13 +117,15 @@ module.exports = class TargetService {
             let promise1;
             let promise2;
 
+            console.log(status)
+
             // if notification or status not provided
             if (!status && !notification) {
                 throw new Error('notification or status not provided')
             }
 
             // if status not provided  only update notification
-            if (!status) {
+            if (notification) {
 
                 // updater notification on targets collection
                 promise1 = targets.update(
@@ -142,7 +144,7 @@ module.exports = class TargetService {
             }
 
             // if notification not provided  only update status
-            if (!notification) {
+            if (status) {
 
                 // updater status on targets collection
                 promise1 = targets.update(
@@ -150,7 +152,9 @@ module.exports = class TargetService {
                     {'$set': {'targets.$.status': status}}
                 )
 
-            } else {
+            }
+
+            if(notification && status){
                 // if both notification and status provided update target collection
                 promise1 = targets.update(
                     {'targets.requestId': requestId},
@@ -261,11 +265,13 @@ module.exports = class TargetService {
                 const status = needToDeliver ? needToDeliver.status : `not-found`
                 const createdAt = needToDeliver ? needToDeliver.createdAt : null
                 const requestId = needToDeliver ? needToDeliver._id : null
+                const wigCount = needToDeliver ? needToDeliver.wigCount : null
 
                 return {
                     status,
                     createdAt,
                     requestId,
+                    wigCount,
                     address: r.address,
                     salonId: r._id,
                     salonEmail: r.email,

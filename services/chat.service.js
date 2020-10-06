@@ -49,7 +49,7 @@ module.exports = class ChatService {
 
         //  when user need to connect to chat room
         socket.on('join_to_room', data => {
-            console.log(`here join_to_room`);
+            console.log(`here join_to_room ${data.roomId}`);
             safeJoin(data.roomId)
         })
 
@@ -212,6 +212,7 @@ module.exports = class ChatService {
                         .filter(user => user.role === role)
                         .map(user => {
                             return {
+                                id: user._id,
                                 fullName: sharedService.getFullUserName(user),
                                 dp: user.profilePic
                             }
