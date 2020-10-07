@@ -50,6 +50,7 @@ const SalonSchema = new Schema({
             },
             wigCount: {
                 type: Number,
+                default: 1,
                 required: true
             },
             deliveryDate: {

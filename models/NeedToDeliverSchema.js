@@ -11,6 +11,11 @@ const NeedToDeliverSchema = module.exports  = new mongoose.Schema({
         default: Date.now(),
         required: true
     },
+    wigCount: {
+        type: Number,
+        default: 1,
+        required: true
+    },
     deliveryDate: {
         type: Date,
         default: Date.now(),
