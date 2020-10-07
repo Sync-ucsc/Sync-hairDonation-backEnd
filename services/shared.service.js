@@ -25,6 +25,21 @@ module.exports = class SharedService {
 
     }
 
+        /**
+     * @param status
+     * @returns {number}
+     */
+    filterByStatus(status){
+
+
+        if (status=="NeedToDeliver") {
+            return 1
+        } else {
+            return 0
+        }
+
+    }
+
     /**
      * this will cast id to Object id
      * @param id

@@ -100,7 +100,7 @@ router.get('/', (req, res) => {
         })
       } else {
         const donorrequest = [];
-        //get the last wig request of the patient
+        //get the last wig request of the donor
         donor.forEach( p => {
             const lastRequest = p.request.sort((a, b) => sharedService.sortByDate(a.requestDay, b.requestDay))[0];
             donorrequest.push({
