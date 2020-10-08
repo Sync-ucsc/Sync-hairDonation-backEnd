@@ -34,14 +34,36 @@ module.exports = class TargetService {
      */
     async addNewTargetToTargets(targetData, driverEmail) {
         try {
+
             const targetObject = new targetSalonLocations(targetData);
 
-            console.log(targetObject)
+            const previousUnfinished = await targets.findOne({
+                    $and : [
+                        {'targets.salonId': targetData.salonId},
+                        {'targets.status': 'NeedToDeliver'},
+                        {'driverEmail': driverEmail},
+                        {'status': 'NOT_COMPLETED'}
+                    ]})
 
-            return await targets.findOneAndUpdate(
-                {driverEmail: driverEmail},
-                {$push: {targets: targetObject}}
-            )
+            if(previousUnfinished){
+
+                return  await targets.findOneAndUpdate({
+                    $and : [
+                        {'targets.salonId': targetData.salonId},
+                        {'targets.status': 'NeedToDeliver'},
+                        {'driverEmail': driverEmail},
+                        {'status': 'NOT_COMPLETED'}
+                    ]}, {$inc: {'targets.$.noOfWigs':  targetData.noOfWigs}})
+
+            }else {
+
+                return await targets.findOneAndUpdate(
+                    {driverEmail: driverEmail},
+                    {$push: {targets: targetObject}}
+                )
+
+            }
+
         } catch (error) {
             throw error
         }
