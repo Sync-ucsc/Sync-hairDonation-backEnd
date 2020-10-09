@@ -134,6 +134,93 @@ module.exports = class EmailService {
         callback(info);
     }
 
+    async sendmailDonorCertificate(user, callback) {
+        // create reusable transporter object using the default SMTP transport
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: details.email,
+                pass: details.password
+            }
+        });
+
+        let mailOptions = {
+            from: '<akavindula@gmail.com>', // sender address
+            to: user.email, // list of receivers
+            subject: "Certificate of Donation", // Subject line
+            html: `<html>
+            <head>
+                <style type='text/css'>
+                    body, html {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    body {
+                        color: black;
+                        display: table;
+                        font-family: Georgia, serif;
+                        font-size: 24px;
+                        text-align: center;
+                    }
+                    .container {
+                        border: 20px solid #a51d97;
+                        width: 750px;
+                        height: 563px;
+                        display: table-cell;
+                        vertical-align: middle;
+                    }
+                    
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    
+                    <h3 style="color: #a51d97">
+                        Sync UCSC
+                    </h3>
+        
+                    <h1 style=" color: #811676;
+                        font-size: 48px;
+                        margin: 20px">
+                        Certificate of Appriciation
+                    </h1>
+        
+                    <p style="margin: 20px">
+                        This certificate is presented to
+                    </p>
+        
+                    <p style="border-bottom: 2px solid black;
+                        font-size: 32px;
+                        font-style: italic;
+                        margin: 20px auto;
+                        width: 400px">
+                        ${user.firstName + user.lastName}
+                    </p>
+        
+                    <p style="margin: 20px">
+                        For Donating Hair for the cancer patients of<br/>
+                        <b>Apeksha Hospital</b>
+                    </p>
+                    
+                    <p><i>ON</i><br>
+                      set (${dt} = ${DateFormatter.getappointmentDate($grade.getDate(), "MMMM dd, yyyy")})
+                      <p style="font-size:30px;
+                        font-style: bold"> ${dt}</p>
+                      </p>
+                    
+                </div>
+            </body>
+        </html>`
+        };
+
+        // send mail with defined transport object
+        let info = await transporter.sendMail(mailOptions);
+
+        callback(info);
+    }
+
     async sendmailDriverRegistation(user, token, callback) {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
