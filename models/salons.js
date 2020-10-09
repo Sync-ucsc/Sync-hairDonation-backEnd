@@ -48,6 +48,11 @@ const SalonSchema = new Schema({
                 default: Date.now(),
                 required: true
             },
+            wigCount: {
+                type: Number,
+                default: 1,
+                required: true
+            },
             deliveryDate: {
                 type: Date,
                 default: Date.now(),
@@ -77,7 +82,7 @@ module.exports.getById = function (id, callback) {
     Salon.findById(id, callback);
 }
 
-//salon Location cahnge
+//salon Location change
 module.exports.changeLocation = function (lat, lon, email, callback) {
 
 
@@ -99,7 +104,7 @@ module.exports.getSalonByEmail = function (email, callback) {
     const query = {
         email: email
     };
-    Donor.findOne(query, callback);
+    Salon.findOne(query, callback);
 }
 
 //update salon
@@ -116,4 +121,17 @@ module.exports.updateSalon = function (updatedSalon, callback) {
 //salon delete
 module.exports.deleteSalon = function (id, callback) {
     Salon.findByIdAndDelete(id, callback);
+}
+
+module.exports.profileChange = function (email, firstName, lastName, phone, img, address, callback) {
+    Salon.findOneAndUpdate({ email: email }, {
+        $set: {
+            name: firstName,
+            telephone: phone,
+            address: address
+        }
+    }, (err, res) => {
+        console.log(res)
+        callback(err, res);
+    })
 }

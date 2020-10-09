@@ -40,9 +40,35 @@ router.post('/create', (req, res, next) => {
     });
 });
 
+
+// Appointment time ubdate
+router.post('/updateTime', (req, res) => {
+    DonorAppointment.updateTime(req.body.id,req.body.time,(err, appointment) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Failed to update appointment'
+            })
+        } else {
+            res.json({
+                data: appointment,
+                success: true,
+                msg: 'updated appointment',
+            })
+
+        }
+
+
+    })
+
+})
+
 // Update Appointment
 router.post('/update/:id', (req, res) => {
     const io = req.app.get('io');
+    console.log(req.body)
     let updatedAppointment = DonorAppointment({
         _id: req.params.id,
         salonEmail: req.body.SalonEmail,
@@ -107,7 +133,7 @@ router.delete('/delete/:id', (req, res) => {
     const io = req.app.get('io');
     console.log(req.params.id)
 
-    DonorAppointment.deleteAppointment(req.params.id, (err, appointment) => {
+    DonorAppointment.deleteAppointmentById(req.params.id, (err, appointment) => {
         if (err) {
             res.status(500);
             res.json({

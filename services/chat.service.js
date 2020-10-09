@@ -49,8 +49,7 @@ module.exports = class ChatService {
 
         //  when user need to connect to chat room
         socket.on('join_to_room', data => {
-            console.log(`here join_to_room`);
-            console.log(data);
+            console.log(`here join_to_room ${data.roomId}`);
             safeJoin(data.roomId)
         })
 
@@ -184,7 +183,7 @@ module.exports = class ChatService {
      * @param userId
      * @return {Promise<{fullName: string, dp}>}
      */
-    async getUserDetail(userId){
+    async getUserDetailById(userId){
         try {
             return await userModel.findOne({_id: userId})
                 .then( user => {
@@ -194,6 +193,31 @@ module.exports = class ChatService {
                     }
                 })
 
+        }catch (error) {
+            throw error
+        }
+    }
+
+    /**
+     * get user fullName and user profile pic
+     * @param userId
+     * @param role user role
+     * @return {Promise<{fullName: string, dp}>}
+     */
+    async getUserDetailsByRole(userId , role){
+        try {
+            return await userModel.find({})
+                .then( users => {
+                    return users
+                        .filter(user => user.role === role)
+                        .map(user => {
+                            return {
+                                id: user._id,
+                                fullName: sharedService.getFullUserName(user),
+                                dp: user.profilePic
+                            }
+                        })
+                })
         }catch (error) {
             throw error
         }

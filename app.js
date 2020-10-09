@@ -15,9 +15,12 @@ const ChatService =  require('./services/chat.service');
 
 
 // conect database
-mongoose.connect(config.database);
+mongoose.connect(config.database, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+});
 
-mongoose.connection.on('connected', () =>{
+mongoose.connection.on('connected',() => {
     console.log('connected to database'+ config.database);
 })
 
@@ -40,12 +43,14 @@ const fingerprint = require('./routes/fingerprint');
 const ip = require('./routes/ip');
 const targets = require('./routes/targets.route');
 const wigRequest = require('./routes/wigRequest.route');
+const donorRequest = require('./routes/donorRequest.route');
 const sms = require('./routes/sms.route');
 const attendant = require ('./routes/attendant.route');
 const driver = require('./routes/driver.route');
 const donorAppointment = require('./routes/donorAppointment.route');
 const shortestPath=require('./routes/shortestPath.route');
-const selectedDonor = require('./routes/selectedDonor')
+const selectedDonor = require('./routes/selectedDonor');
+const NeedToDeliver = require('./routes/NeedToDeliver.route')
 
 const port = process.env.PORT || 3000;
 
@@ -77,7 +82,7 @@ app.use('/salon',salon);
 app.use('/patient',patient);
 app.use('/notification', notification);
 app.use('/chat', chat);
-app.use('/payment', chat);
+app.use('/payment', payment);
 app.use('/getInTouch', getInTouch);
 app.use('/manager',manager);
 app.use('/fingerprint', fingerprint);
@@ -85,11 +90,13 @@ app.use('/ip', ip);
 app.use('/targets', targets);
 app.use('/donorAppointment', donorAppointment);
 app.use('/wigRequest', wigRequest);
+app.use('/donorRequest', donorRequest);
 app.use('/sms', sms);
 app.use('/attendant', attendant);
 app.use('/driver',driver);
 app.use('/shortestPath', shortestPath);
 app.use('/selectedDonor', selectedDonor);
+app.use('/NeedToDeliver', NeedToDeliver);
 
 app.get('/', (req,res) => {
     res.send('hi');

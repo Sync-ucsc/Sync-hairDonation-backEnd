@@ -7,11 +7,17 @@ const NotificationSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    notificationType: {
+    notificationStatus: {
         type: String,
         required: true
     },
     groupID: {
+        type: String,
+    },
+    title: {
+        type: String,
+    },
+    icon: {
         type: String,
     },
     role: {
@@ -50,6 +56,10 @@ module.exports.editNotification = function (newNotification, callback) {
 module.exports.getById = function (id, callback) {
 
     Notification.findById(id, callback);
+    const query = {
+        _id: id
+    };
+    Notification.findOne(query, callback);
 }
 
 //notification get all
@@ -66,5 +76,5 @@ module.exports.deleteNotificationAll = function (callback) {
 
 //Notification delete
 module.exports.deleteNotificationById = function (id, callback) {
-    Notification.findByIdAndDelete(id,callback);
+    Notification.findByIdAndUpdate(id, { notificationStatus: '2'},callback);
 }

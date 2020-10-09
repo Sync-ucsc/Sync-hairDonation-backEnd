@@ -72,10 +72,14 @@ const DonorSchema = mongoose.Schema({
 
         }],
         finished: {
-            type: Boolean
+            type: Boolean,
+            default: false,
+            required: true
         },
         canceled: {
-            type: Boolean
+            type: Boolean,
+            default: false,
+            required: true
         },
 
 
@@ -167,4 +171,17 @@ module.exports.changeNearSalon = function (selectedSalon,email, callback) {
 //Donor delete
 module.exports.deleteDonor = function (id, callback) {
     Donor.findByIdAndDelete(id, callback);
+}
+
+module.exports.profileChange = function (email, firstName, lastName, phone, img, address, callback) {
+    Donor.findOneAndUpdate({ email: email }, {
+        $set: {
+            firstName: firstName,
+            lastName: lastName,
+            telephone: phone,
+            address: address
+        }
+    }, (err, res) => {
+        callback(err, res);
+    })
 }

@@ -77,3 +77,7 @@ module.exports.getAttendant = function (callback) {
     Subcribe.find({role:'attendant'},callback);
 }
 
+module.exports.getDriver = function (callback) {
+
+    Subcribe.find({ role: 'driver' }, callback);
+}

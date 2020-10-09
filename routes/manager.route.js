@@ -107,9 +107,9 @@ router.get('/read/:id', (req, res) => {
 })
 
 // Get a single donor by email
-router.get('/getManger/:email', (req, res) => {
+router.get('/getManager/:email', (req, res) => {
     const io = req.app.get('io');
-    Manager.getMangerByEmail(req.params.email, (err, manager) => {
+    Manager.getManagerByEmail(req.params.email, (err, manager) => {
         if (err) {
             res.status(500);
             res.json({
@@ -119,7 +119,7 @@ router.get('/getManger/:email', (req, res) => {
             })
         } else {
             res.json({
-                data: manger,
+                data: manager,
                 success: true,
                 msg: 'got the manager',
             })
