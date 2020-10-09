@@ -81,7 +81,7 @@ module.exports.getById = function (id, callback) {
     Salon.findById(id, callback);
 }
 
-//salon Location cahnge
+//salon Location change
 module.exports.changeLocation = function (lat, lon, email, callback) {
 
 
