@@ -214,6 +214,63 @@ router.delete('/delete/:id', (req, res) => {
 })
 
 
+//Cancel donorrequest
+router.get('/cancelDonorrequest/:requestId', async (req, res) => {
+    const io = req.app.get('io');
+    const requestId = req.params.requestId;
+    DonorAppointment.canceleRequest(requestId, (err, appointment) => {
+        if (err) {
+            res.status(500);
+            io.emit('update-donor-request');
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Failed to update appointment'
+            })
+        } else {
+            io.emit('update-donor-request');
+            res.json({
+                data: appointment,
+                success: true,
+                msg: 'updated appointment',
+            })
+
+        }
+
+
+    })
+
+});
+
+//Finish donor request
+router.get('/finishDonorrequest/:requestId', async (req, res) => {
+    const io = req.app.get('io');
+    const requestId = req.params.requestId;
+    DonorAppointment.finishRequest(requestId, (err, appointment) => {
+        if (err) {
+            res.status(500);
+            io.emit('update-donor-request');
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Failed to update appointment'
+            })
+        } else {
+            io.emit('update-donor-request');
+            res.json({
+                data: appointment,
+                success: true,
+                msg: 'updated appointment',
+            })
+
+        }
+
+
+    })
+
+});
+
+
 // error routes
 router.get('*', (_, res) => {
     res.status(404);

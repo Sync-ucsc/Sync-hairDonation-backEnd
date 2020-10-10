@@ -108,6 +108,27 @@ module.exports.updateTime = function (id ,time,callback) {
     })
 }
 
+module.exports.canceleRequest = function (id, callback) {
+    DonorAppoitment.findOneAndUpdate({ _id: id }, {
+        $set: {
+            canceled: true
+        }
+    }, (err, res) => {
+        console.log(res)
+        callback(err, res);
+    })
+}
+
+module.exports.finishRequest = function (id, callback) {
+    DonorAppoitment.findOneAndUpdate({ _id: id }, {
+        $set: {
+            complete: true
+        }
+    }, (err, res) => {
+        callback(err, res);
+    })
+}
+
 module.exports.updateCloseTime = function (id, startTime, endTime, callback) {
     DonorAppoitment.findOneAndUpdate({ _id: id }, {
         $set: {
