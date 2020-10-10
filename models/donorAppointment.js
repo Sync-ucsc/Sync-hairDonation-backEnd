@@ -44,6 +44,15 @@ const DonorAppointmentSchema = mongoose.Schema({
         type: Boolean,
         default:false,
         required:true
+    },
+    endTime: {
+        type: String,
+        default:'',
+    },
+    complete: {
+        type: Boolean,
+        default: false,
+        required: true
     }
 });
 
@@ -93,6 +102,17 @@ module.exports.updateTime = function (id ,time,callback) {
     DonorAppoitment.findOneAndUpdate({ _id: id }, {
         $set: {
             appointmentTimeSlot: time
+        }
+    }, (err, res) => {
+        callback(err, res);
+    })
+}
+
+module.exports.updateCloseTime = function (id, startTime, endTime, callback) {
+    DonorAppoitment.findOneAndUpdate({ _id: id }, {
+        $set: {
+            appointmentTimeSlot: startTime,
+            endTime: endTime
         }
     }, (err, res) => {
         callback(err, res);
