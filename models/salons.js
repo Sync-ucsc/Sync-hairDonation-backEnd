@@ -107,6 +107,13 @@ module.exports.getSalonByEmail = function (email, callback) {
     Salon.findOne(query, callback);
 }
 
+module.exports.getSalonBySalonName = function (name, callback) {
+    const query = {
+        name: name
+    };
+    Salon.findOne(query, callback);
+}
+
 //update salon
 module.exports.updateSalon = function (updatedSalon, callback) {
 

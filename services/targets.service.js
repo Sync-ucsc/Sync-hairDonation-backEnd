@@ -225,6 +225,49 @@ module.exports = class TargetService {
         }
     }
 
+    /**
+     * get all targets of a driver by driverEmail
+     * @param driverEmail
+     * @param status NOT_COMPLETED | COMPLETED
+     * @returns {Promise<*>}
+     */
+    async getAllTargetById(driverEmail, { status }) {
+        try {
+            if (!status) {
+                return await targets.find({ driverEmail: driverEmail })
+            } else {
+                return await targets.find({
+                    driverEmail: driverEmail,
+                    'status': status,
+                })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
+
+    /**
+     *  driver by driverEmail and status
+     * @param driverEmail
+     * @param status
+     * @returns {Promise<*>}
+     */
+    async getNotCompletedTargetById(driverEmail, { status }) {
+        try {
+            if (!status) {
+                return await targets.find({ driverEmail: driverEmail })
+            } else {
+                return await targets.find({
+                    driverEmail: driverEmail,
+                    'status': status,
+                })
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+
     // Salon
 
     /**
