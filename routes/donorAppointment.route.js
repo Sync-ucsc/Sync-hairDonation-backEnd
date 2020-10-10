@@ -40,10 +40,70 @@ router.post('/create', (req, res, next) => {
     });
 });
 
+// Add a normal customerAppointment
+router.post('/createClose', (req, res, next) => {
+    const io = req.app.get('io');
+    let newDonorAppointment = new DonorAppointment({
+        salonEmail: req.body.SalonEmail,
+        DonorRequest: req.body.DonorRequest,
+        Donoremail: req.body.Donoremail,
+        customerEmail: req.body.customerEmail,
+        customerNumber: req.body.customerNumber,
+        customerName: req.body.customerName,
+        systemRequestDate: req.body.systemRequestDate,
+        appointmentDate: req.body.appointmentDate,
+        appointmentTimeSlot: req.body.appointmentTimeSlot,
+        endTime: req.body.endTime
+    });
+
+    //Create Appointment
+    DonorAppointment.createAppointment(newDonorAppointment, (err, appointment) => {
+        if (err) {
+            res.status(500).json({
+                data: err,
+                success: false,
+                msg: 'Failed to create the appointment'
+            })
+        } else {
+            res.json({
+                data: appointment,
+                success: true,
+                msg: 'Create Appointment',
+            })
+            io.emit('Create Appointment');
+        }
+    });
+});
+
 
 // Appointment time ubdate
 router.post('/updateTime', (req, res) => {
     DonorAppointment.updateTime(req.body.id,req.body.time,(err, appointment) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Failed to update appointment'
+            })
+        } else {
+            res.json({
+                data: appointment,
+                success: true,
+                msg: 'updated appointment',
+            })
+
+        }
+
+
+    })
+
+})
+
+// Appointment time ubdate
+router.post('/updateCloseTime', (req, res) => {
+    console.log(req.body.startTime)
+    DonorAppointment.updateCloseTime(req.body.id, req.body.startTime, req.body.endTime, (err, appointment) => {
         if (err) {
             res.status(500);
             res.json({
