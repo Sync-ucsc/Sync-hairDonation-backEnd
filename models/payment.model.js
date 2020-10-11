@@ -1,36 +1,40 @@
 const mongoose = require('mongoose');
 
 const donationSchema = mongoose.Schema({
-    name: {
+    items:  {
         type: String,
+        default: Date.now(),
         required: true
     },
-    order_id:{
+    amount:  {
         type: String,
+        default: Date.now(),
         required: true
     },
-    email: {
+    currency:  {
         type: String,
+        default: Date.now(),
         required: true
     },
-    address: {
+    first_name:  {
         type: String,
+        default: Date.now(),
         required: true
     },
-    phone: {
+    last_name:  {
         type: String,
+        default: Date.now(),
         required: true
     },
-    amount: {
+    email:  {
         type: String,
+        default: Date.now(),
         required: true
     },
-    status:{
-        type: String, // STARTED , FAILED , COMPLETED
-        required: true
-    },
-    developerMessage:{
+    phone:  {
         type: String,
+        default: Date.now(),
+        required: true
     },
     createdAt: {
         type: Date,
