@@ -77,15 +77,18 @@ router.put(`/assignToDriver/:driverEmail`, async (req, res) =>{
            // assign new job to target array
            await TargetsService.addNewTargetToTargets(req.body, driverEmail)
            // change salon NeedToDeliver status
-           await TargetsService.changeSalonNeedToDeliverStatus('AssignToDriver', requestId)
+
+           // await TargetsService.changeSalonNeedToDeliverStatus('AssignToDriver', requestId)
 
            return res.send(sendResponse(await TargetsService.getAllSalonNeedToDelivers()))
        }
 
        // assign new job to target array
        const  addNewTargetToDriver = await TargetsService.addNewTargetToTargets(req.body, driverEmail)
+
        // change salon NeedToDeliver status
-       await TargetsService.changeSalonNeedToDeliverStatus('AssignToDriver', requestId)
+
+       // await TargetsService.changeSalonNeedToDeliverStatus('AssignToDriver', requestId)
 
        res.send(sendResponse(driverEmail))
 
