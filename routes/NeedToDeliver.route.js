@@ -9,7 +9,7 @@ const needToDeliverService = new NeedToDeliverService();
 
 router.use(bodyParser.urlencoded({extended: false}));
 
-//adding new patient wigrequest
+//adding new needtodeliver
 router.put('/add/:salonEmail', async (req, res) => {
     try {
         const io = req.app.get('io');
@@ -20,15 +20,34 @@ router.put('/add/:salonEmail', async (req, res) => {
            return res.send(sendResponse(undefined, false, `salon email not found`));
         }
 
-        const response = await needToDeliverService.updateneedToDeliverStatus(req.body, salonEmail);
+        const response = await needToDeliverService.addNeedtodeliver(req.body, salonEmail);
         console.log(response)
-        console.log(`response`)
+        console.log(`kkk`)
         io.emit('new-wig-request');
 
         res.send(sendResponse(response));
     } catch (error) {
         console.log(error)
         console.log(`response`)
+        res.send(sendResponse(undefined, false, error.toString()));
+    }
+});
+
+//update wig count
+router.get('/updateWigCount/:requestId/:wigcount', async (req, res) => {
+    try {
+        const io = req.app.get('io');
+
+        const requestId = req.params.requestId;
+        const wigcount = req.params.wigcount;
+
+        console.log(wigcount)
+        const result = await needToDeliverService.updateWigCount({wigCount:wigcount}, requestId,wigcount);
+
+        io.emit('update-wig-request');
+
+        res.send(sendResponse(result));
+    } catch (error) {
         res.send(sendResponse(undefined, false, error.toString()));
     }
 });
