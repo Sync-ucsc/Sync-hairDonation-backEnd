@@ -7,7 +7,7 @@ module.exports = class smsService {
     constructor() {
     }
 
-    async sendMessage(body = "Driver is on the way to your salon for wigs dilivery", to ) {
+    async sendMessage(body = "Driver is on the way to your salon for wigs delivery", to ) {
 
         await client.messages
             .create({body, to, from: ''})
