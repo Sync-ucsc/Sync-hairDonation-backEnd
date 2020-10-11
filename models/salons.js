@@ -38,6 +38,10 @@ const SalonSchema = new Schema({
             type: String
         },
         NeedToDeliverStatus: [{
+            requestId: {
+                type: Number,
+                required: true
+            },
             status: {
                 type: String,
                 default: 'NeedToDeliver', // NeedToDeliver | Delivered  | Cancel

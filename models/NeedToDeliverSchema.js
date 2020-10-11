@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const NeedToDeliverSchema = module.exports  = new mongoose.Schema({
+    requestId: {
+        type: Number,
+        required: true
+    },
     status: {
         type: String,
         default: 'NeedToDeliver', // NeedToDeliver | Delivered | Cancel
