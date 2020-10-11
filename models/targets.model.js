@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const salons = require('./salons');
 
 // status COLLECTED , NOT_COLLECTED
 
@@ -86,6 +87,51 @@ const targets = mongoose.model('targets', targetsSchema);
 module.exports = {
     targetSalonLocations: targetSalonLocations,
     targets: targets,
+}
+
+//update appointment
+module.exports.notify = function (lat,lng,email, callback) {
+    const driverlat = lat;
+    const driverlng = lng;
+    targets.find({
+        driverEmail: email,
+        'status': 'NOT_COMPLETED',
+    }, (err, res) => {
+            console.log(res[0].targets)
+            res[0].targets.forEach(e=>{
+                if (e.notification != 'true'){
+                    console.log(e.salonId)
+                    const salonlat = e.lat;
+                    const salonlng = e.lng;
+                    
+                    var R = 6371; // km
+                    var dLat = (salonlat - driverlat) * Math.PI / 180;
+                    var dLon = (salonlng - driverlng) * Math.PI / 180;
+                    var lat1 = (driverlat) * Math.PI / 180;
+                    var lat2 = (salonlat) * Math.PI / 180;
+
+                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    var d = R * c;
+                    console.log(d)
+                    if(d<2){
+                        // targets.update(
+                        //     { 'targets.salonId': e.salonId },
+                        //     {
+                        //         '$set': {
+                        //             'targets.$.notification': 'true'
+                        //         }
+                        //     }
+                        // )
+                        console.log(e.salonName)
+                        salons.getSalonBySalonName(e.salonName, (err, res1) => {console.log(res1)})
+                    }
+                }
+            })
+        callback(null, null);
+    })
+    
 }
 
 // sample json

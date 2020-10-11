@@ -43,6 +43,7 @@ const fingerprint = require('./routes/fingerprint');
 const ip = require('./routes/ip');
 const targets = require('./routes/targets.route');
 const wigRequest = require('./routes/wigRequest.route');
+const donorRequest = require('./routes/donorRequest.route');
 const sms = require('./routes/sms.route');
 const attendant = require ('./routes/attendant.route');
 const driver = require('./routes/driver.route');
@@ -50,6 +51,7 @@ const donorAppointment = require('./routes/donorAppointment.route');
 const shortestPath=require('./routes/shortestPath.route');
 const selectedDonor = require('./routes/selectedDonor')
 const attendantDashboard = require('./routes/attendantDashboard.route')
+const NeedToDeliver = require('./routes/NeedToDeliver.route')
 
 const port = process.env.PORT || 3000;
 
@@ -89,12 +91,14 @@ app.use('/ip', ip);
 app.use('/targets', targets);
 app.use('/donorAppointment', donorAppointment);
 app.use('/wigRequest', wigRequest);
+app.use('/donorRequest', donorRequest);
 app.use('/sms', sms);
 app.use('/attendant', attendant);
 app.use('/driver',driver);
 app.use('/shortestPath', shortestPath);
 app.use('/selectedDonor', selectedDonor);
 app.use('/attendantDashboard', attendantDashboard);
+app.use('/NeedToDeliver', NeedToDeliver);
 
 app.get('/', (req,res) => {
     res.send('hi');

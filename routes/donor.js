@@ -99,8 +99,26 @@ router.get('/', (req, res) => {
           msg: 'Failed to get donors'
         })
       } else {
+        const donorrequest = [];
+        //get the last wig request of the donor
+        donor.forEach( p => {
+            const lastRequest = p.request.sort((a, b) => sharedService.sortByDate(a.requestDay, b.requestDay))[0];
+            donorrequest.push({
+                lastRequest,
+                id: p.id,
+                firstName: p.firstName,
+                lastName: p.lastName,
+                email: p.email,
+                telePhone: p.telePhone,
+                address: p.address,
+                nic: p.nic,
+                // lat: p.lat,
+                // lon: p.lon,
+                reportId: p.patientNumber
+            })
+        })
         res.json({
-          data: donor,
+          data: donorrequest,
           success: true,
           msg: 'got donors',
         })
@@ -220,7 +238,7 @@ router.get('/read/:id', (req, res) => {
   })
 
 
-// login
+// change online location
 
 
 // authenticate

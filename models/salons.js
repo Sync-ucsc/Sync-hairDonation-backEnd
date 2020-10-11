@@ -38,6 +38,10 @@ const SalonSchema = new Schema({
             type: String
         },
         NeedToDeliverStatus: [{
+            requestId: {
+                type: Number,
+                required: true
+            },
             status: {
                 type: String,
                 default: 'NeedToDeliver', // NeedToDeliver | Delivered  | Cancel
@@ -50,6 +54,7 @@ const SalonSchema = new Schema({
             },
             wigCount: {
                 type: Number,
+                default: 1,
                 required: true
             },
             deliveryDate: {
@@ -81,7 +86,7 @@ module.exports.getById = function (id, callback) {
     Salon.findById(id, callback);
 }
 
-//salon Location cahnge
+//salon Location change
 module.exports.changeLocation = function (lat, lon, email, callback) {
 
 
@@ -102,6 +107,13 @@ module.exports.changeLocation = function (lat, lon, email, callback) {
 module.exports.getSalonByEmail = function (email, callback) {
     const query = {
         email: email
+    };
+    Salon.findOne(query, callback);
+}
+
+module.exports.getSalonBySalonName = function (name, callback) {
+    const query = {
+        name: name
     };
     Salon.findOne(query, callback);
 }

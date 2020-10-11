@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const {sendResponse} = require('../utils/response.utils');
+const targets = require('../models/targets.model');
 
 
 // Driver model
@@ -156,6 +157,7 @@ router.delete('/delete/:id', (req, res) => {
                 msg: 'Failed to delete the driver'
             })
         } else {
+
             res.json({
                 data: driver,
                 success: true,
@@ -166,6 +168,31 @@ router.delete('/delete/:id', (req, res) => {
         }
     });
 
+})
+
+
+
+// change location
+router.post('/changeLocation', (req, res) => {
+  Driver.changeLocation(req.body.lat,req.body.lon,req.body.email,(err,driver)=>{
+        if (err) {
+          res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to change location'
+            })
+        } else {
+            targets.notify(req.body.lat, req.body.lon,req.body.email, (err, driver) => {})
+            
+            res.json({
+                data: driver,
+                success: true,
+                msg: 'Driver location change',
+            })
+
+        }
+    })
 })
 
 // error routes
