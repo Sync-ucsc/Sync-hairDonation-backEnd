@@ -49,6 +49,7 @@ const driver = require('./routes/driver.route');
 const donorAppointment = require('./routes/donorAppointment.route');
 const shortestPath=require('./routes/shortestPath.route');
 const selectedDonor = require('./routes/selectedDonor')
+const attendantDashboard = require('./routes/attendantDashboard.route')
 
 const port = process.env.PORT || 3000;
 
@@ -93,6 +94,7 @@ app.use('/attendant', attendant);
 app.use('/driver',driver);
 app.use('/shortestPath', shortestPath);
 app.use('/selectedDonor', selectedDonor);
+app.use('/attendantDashboard', attendantDashboard);
 
 app.get('/', (req,res) => {
     res.send('hi');
