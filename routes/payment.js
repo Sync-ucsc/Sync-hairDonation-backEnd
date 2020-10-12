@@ -23,6 +23,26 @@ router.post('/createPayment', async ( req , res) => {
 
 });
 
+router.get('/totalPayment', async (req, res) => {
+    try{
+        const data = (await paymentService.getAllRequest()).length;
+        res.send(sendResponse(data))
+    }catch (error){
+        res.send(sendResponse(undefined,false,error.toString()))
+    }
+})
+
+router.get('/monthlyPayment', async (req, res) => {
+    try{
+        const data = (await paymentService.getAllRequest());
+        res.send(sendResponse(data))
+    }catch (error){
+        res.send(sendResponse(undefined,false,error.toString()))
+    }
+})
+
+
+
 
 router.get('/testPayment', ( req , res) => {res.send(sendResponse('payment route'));});
 

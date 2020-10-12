@@ -69,4 +69,14 @@ module.exports = class PaymentService {
         }
     }
 
+    async getAllRequest(donationData){
+        try{
+
+            return await DonationSchema.find({});
+
+        }catch (error) {
+            throw error
+        }
+    }
+
 };
