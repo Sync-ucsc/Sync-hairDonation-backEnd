@@ -21,6 +21,36 @@ const patient = require('../models/patient');
 const EmailService = require('../services/email.service');
 const emailService = new EmailService();
 
+router.post('/patientadd', (req,res) => {
+    let newPatient = new Patient({
+        firstName: req.body.fname,
+        lastName: req.body.lname,
+        email: req.body.email,
+        telePhone: req.body.phone,
+        nic: req.body.nic,
+        address: req.body.address,
+        patientNumber: req.body.patientNumber,
+        patientReport: req.body.patientReport,
+        fingerprint: req.body.fingerprint
+    });
+    Patient.addPatient(newPatient, (err, patient) => {
+        if (err) {
+            res.status(500);
+            res.json({
+                data: err,
+                success: false,
+                msg: 'Faild to register user'
+            })
+
+        } else {
+            res.json({
+                data: patient,
+                success: true,
+                msg: 'User registere',
+            })
+        }
+    })
+})
 
 //signup donor and patient
 router.post('/signup', (req,res) => {
@@ -32,7 +62,7 @@ router.post('/signup', (req,res) => {
 
     z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
     // ip = z[Math.floor(Math.random() * z.length)]
-    ip = '112.134.56.6'
+    ip = '112.135.14.4'
 
     ipapi.location((ipdata) => {
         let nuser = {
@@ -387,7 +417,7 @@ router.post('/authenticate', (req, res) => {
         req.connection.socket.remoteAddress
     z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
     // ip = z[Math.floor(Math.random() * z.length)]
-    ip = '112.134.56.6'
+    ip = '112.135.14.4'
    
     User.getUserBYEmail(email,(err,user)=>{
         if(err){
@@ -931,7 +961,7 @@ router.post('/changePassword', passport.authenticate('jwt', {
 
     z = ['112.135.14.4', '112.134.15.8', '112.134.56.6', '112.135.250.50', '220.247.224.55', '61.245.163.70', '112.134.235.161']
     // ip = z[Math.floor(Math.random() * z.length)]
-        ip = '112.134.56.6'
+        ip = '112.135.14.4'
 
     User.getUserBYEmail(req.body.email, (err, user) => {
                 if (err) {

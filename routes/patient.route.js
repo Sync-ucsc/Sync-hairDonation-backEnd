@@ -41,6 +41,7 @@ router.get('/', (req, res) => {
                 reportId: p.patientNumber
             })
         })
+        wigrequest.forEach(e => console.log(e.lastRequest))
         res.json({
           data: wigrequest,
           success: true,
