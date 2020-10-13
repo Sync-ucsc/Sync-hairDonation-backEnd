@@ -125,7 +125,7 @@ module.exports.notify = function (lat,lng,email, callback) {
                                 }
                             }
                         )
-                        const result = await smsService.sendMessage("Driver is on the way to your salon for wigs delivery", "+94717615678");
+                        smsService.sendMessage("SYNC - Driver is on the way to your salon for wigs delivery", "+94717615678");
                         console.log(e.salonName)
                         salons.getSalonBySalonName(e.salonName, (err, res1) => {console.log(res1)})
                     }
