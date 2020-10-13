@@ -279,6 +279,7 @@ router.post('/add',async (req, res) => {
 
 router.post('/subcribe',async (req,res) => {
     let sub =req.body.sub;
+    console.log(sub)
     
     const vapidKeys = {
         publicKey: 'BE-J8ek0Xl6Mpgw5R6-B5M5BYISYVkQi6XVGmt8qymgz-u66hyrkEFcgZKJECL8bLHbPyPiVwgTaoH9EpP6VNlc',
