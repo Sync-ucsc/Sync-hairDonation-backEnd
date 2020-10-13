@@ -4,11 +4,20 @@ const bodyParser = require('body-parser');
 const md5 = require('md5');
 
 const  {sendResponse} = require('../utils/response.utils');
+const  PaymentService = require('../services/payment.service')
+const paymentService = new PaymentService()
 
 router.use(bodyParser.urlencoded({ extended: false }));
 
-router.post('/createPayment', ( req , res) => {
+router.post('/createPayment', async ( req , res) => {
 
+        try{
+            const data = await paymentService.addNewDonationToDb(req.body);
+
+            res.send(sendResponse(data))
+        }catch (error){
+            res.send(sendResponse(undefined,false,error.toString()))
+        }
 
     res.send(sendResponse('payment route'));
 
