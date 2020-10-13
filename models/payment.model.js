@@ -3,38 +3,30 @@ const mongoose = require('mongoose');
 const donationSchema = mongoose.Schema({
     items:  {
         type: String,
-        default: Date.now(),
-        required: true
+        default: "Hair donation",
     },
     amount:  {
         type: String,
-        default: Date.now(),
+        default: '70',
         required: true
     },
     currency:  {
         type: String,
-        default: Date.now(),
+        default: "LKR",
         required: true
     },
     first_name:  {
         type: String,
-        default: Date.now(),
-        required: true
+        default: '',
     },
     last_name:  {
         type: String,
-        default: Date.now(),
-        required: true
     },
     email:  {
         type: String,
-        default: Date.now(),
-        required: true
     },
     phone:  {
         type: String,
-        default: Date.now(),
-        required: true
     },
     createdAt: {
         type: Date,
