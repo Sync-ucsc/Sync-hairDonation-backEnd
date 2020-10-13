@@ -110,6 +110,23 @@ router.post('/getMyChatList', async (req, res) => {
 })
 
 
+router.post('/getMyOldMessage', async (req,res) => {
+    try{
+        const receiverId = req.body.receiverId;
+        const senderId = req.body.senderId;
+
+        /**
+         * @return {{receiverId: string, senderId: string, senderName: string, receiverName: string}}
+         */
+        const chatList = await chatService.getMyOldChatList(receiverId, senderId)
+
+        res.send(sendResponse(chatList))
+    }catch (error) {
+        res.send(sendResponse(undefined, false, error.toString()))
+    }
+})
+
+
 //test routes
 router.get('/ping', (_, res) => res.send(sendResponse('Chat Route')));
 

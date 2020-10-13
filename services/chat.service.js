@@ -58,6 +58,10 @@ module.exports = class ChatService {
             // chat id of receiver
             const receiverId = message.receiverId
             const senderId = message.senderId
+
+            console.log(senderId)
+            console.log(receiverId)
+
             // add message to database
             this.addNewMessage(message)
                 .then(() => console.log(`add message to db`))
@@ -66,6 +70,7 @@ module.exports = class ChatService {
             // send message to receiver chat room
             socket.in(receiverId).emit('receive_message', message)
             socket.in(senderId).emit('receive_message', message)
+            socket.broadcast.emit('new_message', message)
         })
     }
 
@@ -177,6 +182,51 @@ module.exports = class ChatService {
             throw error
         }
     }
+    /**
+     * get previous chat user list
+     * @param receiverId user id of message receiver
+     * @return {Promise} send previous chat list or if error throw error
+     */
+    async getMyOldChatList(receiverId, senderId) {
+        try {
+
+            // get all received messages of receiver
+            const message1 = await chatModel.find({
+                $and : [
+                    {receiverId:receiverId},
+                    {senderId: senderId},
+                ]});
+
+
+            const message2 = await chatModel.find({
+                $and : [
+                    {receiverId:senderId},
+                    {senderId: receiverId},
+                ]});
+
+            console.log(message1.length)
+            console.log(message2.length)
+
+            const data = message1.concat(message2).sort( (a, b) => {
+                    if (a.createdAt < b.createdAt) {
+                        return 1
+                    } else if (b.createdAt > a.createdAt) {
+                        return -1
+                    } else {
+                        return 0
+                    }
+                }
+            )
+
+            console.log(data)
+
+            return data
+
+        } catch (error) {
+            throw error
+        }
+    }
+
 
     /**
      * get user fullName and user profile pic
