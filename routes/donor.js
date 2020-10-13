@@ -7,6 +7,9 @@ const Donor = require('../models/donor');
 const User = require('../models/user');
 const {sendResponse} = require('../utils/response.utils');
 
+const SharedService = require('../services/shared.service')
+const sharedService = new SharedService();
+
 
 
 // Donor request
