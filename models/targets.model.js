@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const salons = require('./salons');
-
+const SmsService = require('../services/sms.service');
+const smsService = new SmsService();
 // status COLLECTED , NOT_COLLECTED
 
 const targetSalonLocationsSchema = mongoose.Schema({
@@ -116,14 +117,15 @@ module.exports.notify = function (lat,lng,email, callback) {
                     var d = R * c;
                     console.log(d)
                     if(d<2){
-                        // targets.update(
-                        //     { 'targets.salonId': e.salonId },
-                        //     {
-                        //         '$set': {
-                        //             'targets.$.notification': 'true'
-                        //         }
-                        //     }
-                        // )
+                        targets.update(
+                            { 'targets.salonId': e.salonId },
+                            {
+                                '$set': {
+                                    'targets.$.notification': 'true'
+                                }
+                            }
+                        )
+                        smsService.sendMessage("SYNC - Driver is on the way to your salon for wigs delivery", "+94717615678");
                         console.log(e.salonName)
                         salons.getSalonBySalonName(e.salonName, (err, res1) => {console.log(res1)})
                     }

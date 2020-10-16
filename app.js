@@ -55,12 +55,13 @@ const NeedToDeliver = require('./routes/NeedToDeliver.route')
 
 const port = process.env.PORT || 3000;
 
-if (app.get('env') === 'production') {
-    app.use(logger('combined'));
-} else {
-    app.use(logger('dev'));
-}
+// if (app.get('env') === 'production') {
+//     app.use(logger('combined'));
+// } else {
+//     app.use(logger('dev'));
+// }
 
+app.use(logger('combined'));
 
 //cors middlware
 app.use(cors());
@@ -109,7 +110,7 @@ app.get('/', (req,res) => {
 // });
 
 const server = app.listen(port ,() =>{
-    var host = 'http://' + /*server.address().address*/ '127.0.0.1'+ ':' + server.address().port;
+    var host = 'http://' + server.address().address /*'127.0.0.1'*/+ ':' + server.address().port;
     app.set('host', host);
     console.log("server start on "+port);
     console.log(app.get('env'));
