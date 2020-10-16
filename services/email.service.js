@@ -65,7 +65,7 @@ module.exports = class EmailService {
                                     alt>
                                  <br><br></h1>
                 <p> visit this link
-                for verification http://localhost:4200/register-password?email=${user.email}&token=${token}</p>`
+                for verification https://sync-hairdonation.web.app/register-password?email=${user.email}&token=${token}</p>`
         };
 
         // send mail with defined transport object
@@ -125,7 +125,7 @@ module.exports = class EmailService {
                                     style="max-height:100px"
                                     alt>
                                  <br><br></h1>
-                <p> visit this link for verification http://localhost:4200/donor-active?id=${user._id}&email=${user.email}</p>`
+                <p> visit this link for verification https://sync-hairdonation.web.app/donor-active?id=${user._id}&email=${user.email}</p>`
         };
 
         // send mail with defined transport object
@@ -201,7 +201,7 @@ module.exports = class EmailService {
                                     alt>
                                  <br><br></h1>
                 <p> visit this link
-                for reset password http://localhost:4200/change-password?email=${email}&token=${token}</p>`
+                for reset password https://sync-hairdonation.web.app/change-password?email=${email}&token=${token}</p>`
         };
 
         // send mail with defined transport object
