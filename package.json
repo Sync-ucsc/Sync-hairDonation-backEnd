@@ -27,7 +27,7 @@
     "passport": "*",
     "passport-jwt": "*",
     "request": "^2.88.2",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "socket.io-client": "^2.3.0",
     "twilio": "^3.47.0",
     "web-push": "^3.4.4"
